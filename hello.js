@@ -33,10 +33,10 @@ app.use(
 
     connection(mysql,{
 
-        host: '127.0.0.1',
+        host: 'localhost',
         user: 'root',
         password : 'observaproyecta',
-        port : 3306,
+        port : 22,
         database:'Observapp'
 
           },'pool')
