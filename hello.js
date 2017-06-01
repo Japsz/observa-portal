@@ -29,19 +29,19 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-//app.use(
-//
-//    connection(mysql,{
-//
-//        host: '127.0.0.1',
-//        user: 'root',
-//        password : 'observaproyecta',
-//        port : 3306,
-//        database:'observa'
-//
-//          },'pool')
-//
-//);
+app.use(
+
+    connection(mysql,{
+
+        host: '127.0.0.1',
+        user: 'root',
+        password : 'observaproyecta',
+        port : 3306,
+        database:'Observapp'
+
+          },'pool')
+
+);
 
 
 
