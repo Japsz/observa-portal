@@ -31,15 +31,12 @@ if ('development' == app.get('env')) {
 
 app.use(
 
-    connection(mysql,{
-
-        host: 'localhost',
-        user: 'root',
+    mysql.createPool({
+        host     : 'localhost',
+        user     : 'root',
         password : 'observaproyecta',
-        port : 2206,
-        database:'Observapp'
-
-          },'pool')
+        database : 'Observapp'
+    })
 
 );
 
