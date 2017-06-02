@@ -36,7 +36,7 @@ app.use(
         host: 'localhost',
         user: 'root',
         password : 'observaproyecta',
-        port : 22,
+        port : 2206,
         database:'Observapp'
 
           },'pool')
