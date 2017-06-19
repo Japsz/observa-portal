@@ -1,0 +1,51 @@
+<%- include layouts/user_header.ejs %>
+<div class="container blog-content">
+
+    <div class="row">
+
+        <div class="col-sm-8 blog-main">
+
+            <div class="row">
+                <div class="col-sm-12">
+<% if(data.length) {
+    for(var i = 0;i<data.length;i++){
+        switch(data[i].tipo) {
+            case 1:
+                status = "Inactivo";
+                break;
+            case 2:
+                status = "Activo";
+                break;
+            case 3:
+                status = "Archivado";
+                break;
+            default:
+                status = "inactivo";
+        }
+%>
+                <section class="blog-post">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <div class="blog-post-meta">
+                                <span class="label label-light label-primary"><%= data[i].tipo%></span>
+                                <p class="blog-post-date pull-right"><%= new Date(data[i].fecha).toLocaleDateString()%></p>
+                            </div>
+                            <div class="blog-post-content">
+                                <a href="post-image.html">
+                                    <h2 class="blog-post-title"> - </h2>
+                                </a>
+                                <p>Donec ut libero sed arcu vehicula ultricies a non tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut gravida lorem.</p>
+                                <a class="blog-post-share pull-left" href="#">
+                                    Creado por: <%= usr.iduser%>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+<% }
+} else {%>
+<p> No hay posts</p>
+<% } %>
+
+
+<%- include layouts/cdd_footer.ejs %>

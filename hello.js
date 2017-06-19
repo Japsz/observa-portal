@@ -4,6 +4,8 @@ var http = require('http');
 var path = require('path');
 
 var users = require('./routes/users');
+var observ = require('./routes/observatorio');
+var cdd = require('./routes/ciudadano');
 var admin = require('./routes/admin');
 var app = express();
 var flash = require('connect-flash');
@@ -46,14 +48,20 @@ app.use(
 
 
 app.get('/', routes.index);
+//Observatorios e Instituciones
+app.get('/instit', observ.list);
+app.get('/add_inst', observ.add_inst);
+app.post('/inst/add', observ.save);
+app.get('/obs/:id', observ.obs_list);
+app.post('/obs/add', observ.obs_save);
+//Ciudadano
+app.get('/indx', cdd.indx);
+app.post('/post/add', cdd.save);
 
 //Users
 app.get('/user', admin.list);
 app.get('/user/add', admin.add);
-app.get('/csv', admin.stats);
 app.post('/user/add', admin.save);
-app.post('/g_csv', admin.g_csv);
-app.get('/g_csv_j',admin.g_csv_j);
 app.get('/user/delete/:username', admin.delete_user);
 app.get('/user/edit/:username', admin.edit);
 app.post('/user/edit/:username',admin.save_edit);

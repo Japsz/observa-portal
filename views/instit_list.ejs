@@ -1,0 +1,23 @@
+<%- include layouts/admin_header.ejs %>
+    <h2 class="page-header">Instituciones <a class="btn btn-info pull-right" href="/add_inst"> + <span class="glyphicon glyphicon-education"  aria-hidden="true"></span> Nuevo</a> </h2>
+    <div class="row placeholders">
+        <%
+        if(data.length){
+            for(var i = 0;i < data.length; i++){
+        %>
+        <div class="col-sm-3 col-xs-6 placeholder">
+            <img src="<%= data[i].avatar_pat %>" width="150px" height="150px">
+            <h3><%= data[i].nom%></h3>
+            <a href="/obs/<%= data[i].idinstitucion%>" class="btn btn-info"><span class="glyphicon glyphicon-eye-open"  aria-hidden="true"></span> Observatorios</a>
+        </div>
+        <%
+        }
+        } else{%>
+        <div class="col-sm-6 col-xs-12">
+            <a>No hay Instituciones</a>
+        </div>
+        <%
+        }
+        %>
+    </div>
+<%- include layouts/footer.ejs %>

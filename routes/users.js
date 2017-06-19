@@ -1,14 +1,13 @@
 exports.bad_login = function(req, res){
-	res.render('bad_login', { title: 'Go Jump! - Auth Error' });
+	res.render('bad_login', { title: 'Observa Ciudadanía - Auth Error' });
 };
 
 exports.user_login = function(req, res){
-	res.render('user_login', { title: 'Go Jump! - User Login' });
+	res.render('user_login', { title: 'Observa Ciudadanía - User Login' });
 };
 
-
 exports.admin_login = function(req, res){
-	res.render('admin_login', { title: 'Go Jump! - Admins Login' });
+	res.render('admin_login', { title: 'Observa Ciudadanía - Admins Login' });
 };
 
 exports.user_logout = function(req, res){
@@ -43,9 +42,22 @@ exports.user_login_handler = function(req, res){
                   console.log("Error Selecting : %s ",err );
               
               if(rows.length == 1){
-              	req.session.isUserLogged = true;
-              	req.session.jumps = [];
-              	res.redirect('/venta');
+                  req.session.user = rows[0];
+                  req.session.isUserLogged = true;
+                  switch(rows[0].tipo) {
+                      case 1:
+                          res.redirect('/bad_login');
+                          break;
+                      case 2:
+                          res.redirect('/bad_login');
+                          break;
+                      case 3:
+                          res.redirect("/indx");
+                          break;
+                      default:
+                          res.redirect('/bad_login');
+
+                  }
               }
           });
            
@@ -75,7 +87,7 @@ exports.admin_login_handler = function(req, res){
               
               if(rows.length == 1){
               	req.session.isAdminLogged = true;
-              	res.redirect('/user');
+              	res.redirect('/instit');
               }           });
            
            //console.log(query.sql);
