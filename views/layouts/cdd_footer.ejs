@@ -184,16 +184,18 @@
             }
         } else {
             $(".modal-footer #tag").addClass("hidden");
-            $("#editor").jqte({
-                color: false,
-                source: false,
-                sub: false,
-                sup: false,
-                strike: false,
-                indent: false,
-                format: false,
-                outdent: false
-            });
+            if(quill){
+                $("#editor").jqte({
+                    color: false,
+                    source: false,
+                    sub: false,
+                    sup: false,
+                    strike: false,
+                    indent: false,
+                    format: false,
+                    outdent: false
+                });
+            }
             quill = false;
         }
     });
