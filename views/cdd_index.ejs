@@ -66,19 +66,15 @@
                                     <a href="post-image.html">
                                         <h2 class="blog-post-title"><%= data[i].t_principal%></h2>
                                     </a>
-                                    <p id="<%= data[i].idpost%>"><%= data[i].texto%></p>
+                                    <p><%- data[i].texto%></p>
                                     <a class="blog-post-share pull-left" href="#">
                                         Creado por: <%= usr.username%>
                                     </a>
                                 </div>
                             </div>
                         </div>
-                    </section>
-                    <script type="text/javascript">
-                        var el =$('<div></div>');
-                        el.html("<html><head><title>titleTest</title></head><body><div id='txt'><%= data[i].texto%></div></body></html>")
-;                       $("#<%= data[i].idpost%>").html($("#txt",el).innerHTML);
-                    </script><%
+                    </section><%
+
                 break;
             case 3:
                 %><section class="blog-post">
@@ -91,7 +87,7 @@
                                 </div>
                                 <div class="blog-post-content">
 
-                                    <p><%= data[i].texto%></p>
+                                    <p><%- data[i].texto%></p>
                                     <a class="blog-post-share pull-left" href="#">
                                         Creado por: <%= usr.username%>
                                     </a>
@@ -110,7 +106,7 @@
                                     <p class="blog-post-date pull-right"><%= f_gen%></p>
                                 </div>
                                 <div class="blog-post-content">
-                                    <p id="<%- data[i].texto%>"></p>
+                                    <p ><%- data[i].texto%></p>
                                     <a class="blog-post-share pull-left" href="#">
                                         Creado por: <%= usr.username%>
                                     </a>
