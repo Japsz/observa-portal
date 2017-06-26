@@ -1,5 +1,26 @@
 <%- include layouts/user_header.ejs %>
+<style>
+    .modalpost {
+        z-index: 0;
+        list-style-type: none;
+    }
+</style>
 <div class="container blog-content">
+    <div class="row">
+        <ul class="menu boxed clearfix modalpost" aria-hidden="true">
+            <li><img src="/assets/img/isov_iso.png" height="84px" height="auto"></li>
+            <li><a href="#" data-toggle="modal" data-target="#aa" data-tipo="1" class="poster"><i class="menu-icon"></i>Idea</a></li>
+            <li>
+                <a href="#" data-toggle="modal" data-target="#aa" data-tipo="2" class="poster"><i class="menu-icon menu-icon-5"></i>Escrito</a>
+            </li>
+            <li>
+                <a class="poster" href="#" data-toggle="modal" data-target="#aa" data-tipo="3"><i class="menu-icon menu-icon-7"></i>Imagen</a>
+            </li>
+            <li>
+                <a class="poster" href="#" data-toggle="modal" data-target="#aa" data-tipo="4"><i class="menu-icon menu-icon-6"></i>Video</a>
+            </li>
+        </ul>
+    </div>
 
     <div class="row">
 
@@ -8,41 +29,101 @@
             <div class="row">
                 <div class="col-sm-12">
 <% if(data.length) {
+    var f_gen;
     for(var i = 0;i<data.length;i++){
+        f_gen = new Date(data[i].fecha);
+        f_gen = f_gen.toLocaleString();
         switch(data[i].tipo) {
-            case 1:
-                status = "Inactivo";
+            case 1: <!--tipo -->
+                %><section class="blog-post">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <div class="blog-post-meta">
+                                    <span class="label label-light label-primary"><%= data[i].tipo%></span>
+                                    <p class="blog-post-date pull-right"><%= f_gen%></p>
+                                </div>
+                                <div class="blog-post-content">
+                                    <a href="post-image.html">
+                                        <h2 class="blog-post-title"><%= data[i].t_principal%></h2>
+                                    </a>
+                                    <a class="blog-post-share pull-left" href="#">
+                                        Creado por: <%= usr.username%>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </section><%
                 break;
             case 2:
-                status = "Activo";
+                %><section class="blog-post">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <div class="blog-post-meta">
+                                    <span class="label label-light label-primary"><%= data[i].tipo%></span>
+                                    <p class="blog-post-date pull-right"><%= f_gen%></p>
+                                </div>
+                                <div class="blog-post-content">
+                                    <a href="post-image.html">
+                                        <h2 class="blog-post-title"><%= data[i].t_principal%></h2>
+                                    </a>
+                                    <p id="<%= data[i].idpost%>"><%= data[i].texto%></p>
+                                    <a class="blog-post-share pull-left" href="#">
+                                        Creado por: <%= usr.username%>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <script type="text/javascript">
+                        var el =$('<div></div>');
+                        el.html("<html><head><title>titleTest</title></head><body><div id='txt'><%= data[i].texto%></div></body></html>")
+;                       $("#<%= data[i].idpost%>").html($("#txt",el).innerHTML);
+                    </script><%
                 break;
             case 3:
-                status = "Archivado";
+                %><section class="blog-post">
+                        <div class="panel panel-default">
+                            <img src="<%= data[i].t_principal%>" class="img-responsive">
+                            <div class="panel-body">
+                                <div class="blog-post-meta">
+                                    <span class="label label-light label-primary"><%= data[i].tipo%></span>
+                                    <p class="blog-post-date pull-right"><%= f_gen%></p>
+                                </div>
+                                <div class="blog-post-content">
+
+                                    <p><%= data[i].texto%></p>
+                                    <a class="blog-post-share pull-left" href="#">
+                                        Creado por: <%= usr.username%>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </section><%
+                break;
+            case 4:
+                %><section class="blog-post">
+                        <div class="panel panel-default">
+                            <iframe width="100%" height="372" src="https://www.youtube.com/embed/<%= data[i].t_principal%>?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen=""></iframe>
+                            <div class="panel-body">
+                                <div class="blog-post-meta">
+                                    <span class="label label-light label-primary"><%= data[i].tipo%></span>
+                                    <p class="blog-post-date pull-right"><%= f_gen%></p>
+                                </div>
+                                <div class="blog-post-content">
+                                    <p id="<%- data[i].texto%>"></p>
+                                    <a class="blog-post-share pull-left" href="#">
+                                        Creado por: <%= usr.username%>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+<%
                 break;
             default:
                 status = "inactivo";
         }
-%>
-                <section class="blog-post">
-                    <div class="panel panel-default">
-                        <div class="panel-body">
-                            <div class="blog-post-meta">
-                                <span class="label label-light label-primary"><%= data[i].tipo%></span>
-                                <p class="blog-post-date pull-right"><%= new Date(data[i].fecha).toLocaleDateString()%></p>
-                            </div>
-                            <div class="blog-post-content">
-                                <a href="post-image.html">
-                                    <h2 class="blog-post-title"> - </h2>
-                                </a>
-                                <p>Donec ut libero sed arcu vehicula ultricies a non tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut gravida lorem.</p>
-                                <a class="blog-post-share pull-left" href="#">
-                                    Creado por: <%= usr.iduser%>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-<% }
+    }
 } else {%>
 <p> No hay posts</p>
 <% } %>

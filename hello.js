@@ -57,6 +57,7 @@ app.post('/obs/add', observ.obs_save);
 //Ciudadano
 app.get('/indx', cdd.indx);
 app.post('/post/add', cdd.save);
+app.post('/m_post', cdd.m_post);
 
 //Users
 app.get('/user', admin.list);
