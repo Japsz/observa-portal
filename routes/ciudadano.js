@@ -88,7 +88,7 @@ exports.save = function(req,res){
                 console.log(input.tags);
                 var tags = input.tags.replace(/\s/g,'').split(",");
                 console.log(tags);
-                if(tags.length && tags[0] != ""){
+                if((tags.length && tags[0] != "") || input.cat != ""){
                     connection.query("SELECT * FROM post ORDER BY idpost DESC LIMIT 1", function(err, post)
                     {
 
@@ -119,6 +119,9 @@ exports.save = function(req,res){
                                 for(var i = 0; i < tags.length;i++){
                                     aux =[tags[i].idtag,post.idpost];
                                     list.push(aux);
+                                }
+                                if(input.cat != ""){
+                                    list.push([input.cat,post.idpost]);
                                 }
                                 connection.query(query,[list], function(err, rows)
                                 {

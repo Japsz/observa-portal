@@ -9,6 +9,7 @@
             <div class="row">
                 <div class="col-sm-2">
                     <i class="material-icons brand">&#xE871;</i>
+                    <p> Versión 1.02</p>
                 </div>
 
                 <div class="col-sm-8 text-center offset">
@@ -43,12 +44,36 @@
             </div>
             <form action="/post/add" method="post">
                 <div class="modal-body">
-                    <input type="text" name="tit" id="t_princ" class="form-control" placeholder="" required>
-                    <textarea type="text" name="texto" class="hidden" id="editor"></textarea>
+                    <div class="form-group">
+                        <input type="text" name="tit" id="t_princ" class="form-control" placeholder="" required>
+                        <select id="catego" class="form-control hidden" name="cat" required>
+                            <option value="" disabled selected>Selecciona una categoría</option>
+                            <option value="18">Fin de la Pobreza</option>
+                            <option value="78">Acción por el Clima</option>
+                            <option value="71">Agua limpia y saneamiento</option>
+                            <option value="82">Alianzas para lograr Objetivos</option>
+                            <option value="76">Ciudades y comunidades Sostenibles</option>
+                            <option value="69">Educación de Calidad</option>
+                            <option value="72">Energía asequible y no contaminante</option>
+                            <option value="67">Hambre Cero</option>
+                            <option value="70">Igualdad de Género</option>
+                            <option value="74">Industria Innovación e infraestructura</option>
+                            <option value="81">Pas justicia e Instituciones solidas</option>
+                            <option value="77">Producción y consumo responsable</option>
+                            <option value="75">Reducción de Desigualdades</option>
+                            <option value="68">Salud y Bienestar</option>
+                            <option value="73">Trabajo Decente y crecimiento económico</option>
+                            <option value="80">Vida de Ecosistemas terrestres</option>
+                            <option value="79">Vida submarina</option>
+                        </select>
+                        <textarea type="text" name="texto" class="hidden" id="editor"></textarea>
+                    </div>
                 </div>
                 <div class="modal-footer">
+
                     <div class="form-group form-inline">
-                        <input type='text' class='form-control hidden' name='tags' id="tag" value="" placeholder="tags (Ej: tag1, tag2, tag3)">
+
+                        <input type='text' class='form-control' name='tags' id="tag" value="" placeholder="tags (Ej: tag1, tag2, tag3)">
                         <div class="btn-group">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                             <button type="submit" id="tipo" name="tipo" value=""  class="btn btn-primary">+ Post</button>
@@ -91,7 +116,7 @@
                 status = "inactivo";
         }
         if(parseInt(data.tipo) > 1){
-            $(".modal-footer #tag").removeClass("hidden");
+            $(".modal-body #catego").removeClass("hidden");
             if(!quill){
                 $("#editor").jqte({
                     color: false,
@@ -106,7 +131,7 @@
                 quill = true;
             }
         } else {
-            $(".modal-footer #tag").addClass("hidden");
+            $(".modal-body #catego").addClass("hidden");
             if(quill){
                 $("#editor").jqte({
                     color: false,
@@ -126,7 +151,6 @@
         var tagger = $(this).val();
         var idpost = "#" + $(this).data('id');
         tagger = tagger.split(",");
-        console.log(tagger);
         for(var i = 0; i < tagger.length;i++){
             if(tagger[i] != "")
             $(idpost).append('<span class="label label-light label-primary">' + tagger[i] + '</span> ');
