@@ -59,6 +59,8 @@ exports.save = function(req,res){
         req.getConnection(function (err, connection) {
 
             var inst_data = {
+                correo : input.correo,
+                fono : input.fono,
                 nom   : input.nom,
                 avatar_pat : "/assets/img/placeholder.png"
             };
@@ -84,6 +86,7 @@ exports.obs_save = function(req,res){
         req.getConnection(function (err, connection) {
 
             var data = {
+                estado : 1,
                 nom   : input.nom,
                 avatar_pat : "/assets/img/placeholder.png",
                 maximo : input.maxim,

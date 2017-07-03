@@ -1,17 +1,63 @@
 exports.indx = function(req, res){
+    if(req.session.isUserLogged){
+        req.getConnection(function(err,connection){
 
-    req.getConnection(function(err,connection){
+            connection.query('SELECT post.*,GROUP_CONCAT(tags.tag ORDER BY tags.tag) AS tags FROM post LEFT JOIN tagpost ON post.idpost = tagpost.idpost LEFT JOIN tags ON tagpost.idtag = tags.idtag GROUP BY post.idpost ORDER BY post.fecha DESC LIMIT 6',function(err,rows)
+            {
+                if(err)
+                    console.log("Error Selecting : %s ",err );
+                console.log(rows[0].tags);
+                res.render('cdd_index',{data:rows,usr:req.session.user});
 
-        connection.query('SELECT * FROM post WHERE estado = 2 ORDER BY fecha DESC LIMIT 6',function(err,rows)
-        {
-            if(err)
-                console.log("Error Selecting : %s ",err );
-
-            res.render('cdd_index',{data:rows,usr:req.session.user});
-
-        //console.log(query.sql);
+            //console.log(query.sql);
+            });
         });
-    });
+    } else res.redirect('/bad_login');
+};
+exports.edit = function(req, res){
+
+    if(req.session.isUserLogged){
+
+        res.render('cdd_edit',{data: req.session.user});
+    }
+};
+exports.save_edit = function(req, res){
+
+    if(req.session.isUserLogged){
+        var input = JSON.parse(JSON.stringify(req.body));
+        var data = {
+            username : req.session.user.username,
+            password : req.session.user.password,
+            tipo : req.session.user.tipo,
+            name : input.name,
+            apellido : input.ape,
+            fnac : input.fnac,
+            gender : input.gend,
+            correo : input.correo
+
+        };
+        req.getConnection(function(err,connection){
+
+            connection.query("UPDATE user set ? WHERE iduser = ? ",[data,req.session.user.iduser],function(err,rows)
+            {
+                if(err)
+                    console.log("Error Selecting : %s ",err );
+                connection.query("SELECT * FROM user WHERE iduser = ? ",[req.session.user.iduser],function(err,rows)
+                {
+                    if(err)
+                        console.log("Error Selecting : %s ",err );
+                    if(rows.length == 1){
+                        req.session.user = rows[0];
+                        res.redirect('/cdd_edit');
+                    }
+
+                    //console.log(query.sql);
+                });
+
+                //console.log(query.sql);
+            });
+        });
+    }
 };
 // Logica agregar post.
 //    Estados
@@ -40,7 +86,7 @@ exports.save = function(req,res){
                 if (err)
                     console.log("Error inserting : %s ",err );
                 console.log(input.tags);
-                var tags = input.tags.split(",");
+                var tags = input.tags.replace(/\s/g,'').split(",");
                 console.log(tags);
                 if(tags.length && tags[0] != ""){
                     connection.query("SELECT * FROM post ORDER BY idpost DESC LIMIT 1", function(err, post)

@@ -12,7 +12,7 @@ exports.admin_login = function(req, res){
 
 exports.user_logout = function(req, res){
 	req.session.isUserLogged = false;
-	req.session.jumps = [];
+    req.session.user = 'undefined';
 	res.redirect('/');
 };
 

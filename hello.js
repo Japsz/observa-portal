@@ -6,6 +6,7 @@ var path = require('path');
 var users = require('./routes/users');
 var observ = require('./routes/observatorio');
 var cdd = require('./routes/ciudadano');
+var tags = require('./routes/tags');
 var admin = require('./routes/admin');
 var app = express();
 var flash = require('connect-flash');
@@ -58,6 +59,9 @@ app.post('/obs/add', observ.obs_save);
 app.get('/indx', cdd.indx);
 app.post('/post/add', cdd.save);
 app.post('/m_post', cdd.m_post);
+app.get('/cdd_edit',cdd.edit);
+app.post('/cdd/edit', cdd.save_edit);
+app.post('/tags/bsq',tags.b_tag);
 
 //Users
 app.get('/user', admin.list);
