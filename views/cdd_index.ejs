@@ -38,8 +38,8 @@
                 %><section class="blog-post">
                         <div class="panel panel-default">
                             <div class="panel-body">
-                                <div class="blog-post-meta">
-                                    <span class="label label-light label-primary">Idea</span>
+                                <div class="blog-post-meta" id="<%= data[i].idpost%>">
+                                    <input class="hidden" value="<%= data[i].tags%>" data-id="<%= data[i].idpost%>">
                                     <p class="blog-post-date pull-right"><%= f_gen%></p>
                                 </div>
                                 <div class="blog-post-content">

@@ -152,7 +152,7 @@
         var idpost = "#" + $(this).data('id');
         tagger = tagger.split(",");
         for(var i = 0; i < tagger.length;i++){
-            if(tagger[i] != "")
+            if(tagger[i] != "null")
             $(idpost).append('<span class="label label-light label-primary">' + tagger[i] + '</span> ');
         }
     })
