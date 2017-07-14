@@ -1,0 +1,149 @@
+<%- include layouts/user_header.ejs %>
+<div class="container blog-content">
+    <div class="row">
+
+        <div class="col-sm-8 blog-main">
+            <div class="row">
+                <div class="col-sm-12">
+                    <% if(typeof data != 'undefined') {
+                        var f_gen;
+                        f_gen = new Date(data.fecha);
+                        f_gen = f_gen.toLocaleString();
+                            switch(data.tipo) {
+                        case 1:
+                    %><section class="blog-post">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <div class="blog-post-meta" id="<%= data.idpost%>">
+                                    <input class="hidden" value="<%= data.tagz%>" data-id="<%= data.idpost%>">
+                                    <p class="blog-post-date pull-right"><%= f_gen%></p>
+                                </div>
+                                <div class="blog-post-content">
+                                    <a href="#">
+                                        <h2 class="blog-post-title"><%= data.t_principal%></h2>
+                                    </a>
+                                    <a class="blog-post-share pull-left" href="#">
+                                        Creado por: <%= data.username%>
+                                    </a>
+
+                                </div>
+                            </div>
+                        </div>
+                    </section><%
+                        break;
+                    case 2:
+                    %><section class="blog-post">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <div class="blog-post-meta">
+                                    <div id="<%= data.idpost%>">
+                                        <input class="hidden" value="<%= data.tagz%>" data-id="<%= data.idpost%>">
+                                        <p class="blog-post-date pull-right"><%= f_gen%></p>
+                                    </div>
+                                </div>
+                                <div class="blog-post-content">
+                                    <a href="#">
+                                        <h2 class="blog-post-title"><%= data.t_principal%></h2>
+                                    </a>
+                                    <p><%- data.contenido%></p>
+                                    <a class="blog-post-share pull-left" href="#">
+                                        Creado por: <%= data.username%>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </section><%
+
+                        break;
+                    case 3:
+                    %><section class="blog-post">
+                        <div class="panel panel-default">
+                            <img src="<%= data.t_principal%>" width="auto" class="img-responsive">
+                            <div class="panel-body">
+                                <div class="blog-post-meta">
+                                    <div id="<%= data.idpost%>">
+                                        <input class="hidden" value="<%= data.tagz%>" data-id="<%= data.idpost%>">
+                                        <p class="blog-post-date pull-right"><%= f_gen%></p>
+                                    </div>
+                                </div>
+                                <div class="blog-post-content">
+                                    <p><%- data.contenido%></p>
+                                    <a class="blog-post-share pull-left" href="#">
+                                        Creado por: <%= data.username%>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </section><%
+                        break;
+                    case 4:
+                    %><section class="blog-post">
+                        <div class="panel panel-default">
+                            <iframe width="100%" height="372" src="https://www.youtube.com/embed/<%= data.t_principal%>?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen=""></iframe>
+                            <div class="panel-body">
+                                <div class="blog-post-meta">
+                                    <div id="<%= data.idpost%>">
+                                        <input class="hidden" value="<%= data.tagz%>" data-id="<%= data.idpost%>">
+                                        <p class="blog-post-date pull-right"><%= f_gen%></p>
+                                    </div>
+                                </div>
+                                <div class="blog-post-content">
+                                    <p ><%- data.contenido%></p>
+                                    <a class="blog-post-share pull-left" href="#">
+                                        Creado por: <%= data.username%>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <%
+                        break;
+                        default:
+                            status = "inactivo";
+                    }
+                    } else {%>
+                    <p> No hay posts</p>
+                    <% } %>
+                    <section class="blog-comments">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <h2 class="blog-post-title">Comentarios</h2>
+                                <div class="blog-post-content">
+                                    <form action="/comment/add" method="post">
+                                        <div class="form-inline">
+                                            <div class="btn-group btn-group-justified">
+                                                <img class="circle pull-left" width="60px" height="auto" src="<%= usr.avatar_pat%>">
+                                                <textarea class="form-control pull-right" rows="2" cols="60" placeholder="Introduce tu comentario aquí" name="texto" type="text"></textarea>
+                                            </div>
+                                            <button class="btn btn-primary pull-right" type="submit" name="idpost" value="<%= data.idpost%>">Enviar</button>
+                                        </div>
+                                    </form>
+                                    <hr>
+                                    <% if(comments.length) {
+                                        var f_gen;
+                                        for(var i = 0; i < comments.length; i++){
+                                        f_gen = new Date(comments[i].fecha);
+                                        f_gen = f_gen.toLocaleString();
+                                    %>
+                                    <div class="row">
+                                        <img class="circle pull-left" width="60px" height="auto" src="<%= comments[i].avatar_pat%>">
+                                        <a href="#">  <%= comments[i].username%></a>
+                                        <p><%= comments[i].texto%></p>
+                                        <p class="pull-right" href="#"><%= f_gen%></p>
+                                    </div>
+                                    <hr>
+                                    <%  }
+                                    } else {
+                                    %>
+                                    <p>No hay comentarios</p>
+                                    <% }%>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+        </div><!-- /.blog-main -->
+
+<%- include layouts/cdd_footer.ejs %>

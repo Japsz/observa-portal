@@ -3,7 +3,7 @@ exports.list = function(req, res){
 	if(req.session.isAdminLogged){
 		req.getConnection(function(err,connection){
 					 
-						var query = connection.query('SELECT * FROM user',function(err,rows)
+						connection.query('SELECT * FROM user',function(err,rows)
 						{
 								
 								if(err)
@@ -35,7 +35,8 @@ exports.save = function(req,res){
 
 						username   : input.username,
 						password   : input.password,
-						tipo	   : input.tipo
+						tipo	   : input.tipo,
+						correo	   : input.correo
 
 				};
 

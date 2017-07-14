@@ -80,6 +80,10 @@ exports.save = function(req,res){
     else res.redirect('/bad_login');
 };
 // Logica agregar observatorio.
+// Estado:
+//      1 - Inactivo
+//      2 - Activo
+//      3 - Archivado
 exports.obs_save = function(req,res){
     if(req.session.isAdminLogged){
         var input = JSON.parse(JSON.stringify(req.body));
@@ -89,7 +93,7 @@ exports.obs_save = function(req,res){
                 estado : 1,
                 nom   : input.nom,
                 avatar_pat : "/assets/img/placeholder.png",
-                maximo : input.maxim,
+                max : input.maxim,
                 idinst : input.id
             };
 

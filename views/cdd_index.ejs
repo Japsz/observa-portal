@@ -4,32 +4,29 @@
         z-index: 0;
         list-style-type: none;
     }
+
 </style>
 <div class="container blog-content">
     <div class="row">
-        <ul class="menu boxed clearfix modalpost" aria-hidden="true">
-            <li><img src="/assets/img/isov_iso.png" height="84px" height="auto"></li>
-            <li><a href="#" data-toggle="modal" data-target="#aa" data-tipo="1" class="poster"><i class="menu-icon"></i>Idea</a></li>
-            <li>
-                <a href="#" data-toggle="modal" data-target="#aa" data-tipo="2" class="poster"><i class="menu-icon menu-icon-5"></i>Escrito</a>
-            </li>
-            <li>
-                <a class="poster" href="#" data-toggle="modal" data-target="#aa" data-tipo="3"><i class="menu-icon menu-icon-7"></i>Imagen</a>
-            </li>
-            <li>
-                <a class="poster" href="#" data-toggle="modal" data-target="#aa" data-tipo="4"><i class="menu-icon menu-icon-6"></i>Video</a>
-            </li>
-        </ul>
-    </div>
-
-    <div class="row">
 
         <div class="col-sm-8 blog-main">
-
+            <ul class="menu boxed clearfix modalpost" aria-hidden="true">
+                <li><img src="/assets/img/isov_iso.png" height="84px" height="auto"></li>
+                <li><a href="#" data-toggle="modal" data-target="#aa" data-tipo="1" class="poster"><i class="menu-icon"></i>Idea</a></li>
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#aa" data-tipo="2" class="poster"><i class="menu-icon menu-icon-5"></i>Escrito</a>
+                </li>
+                <li>
+                    <a class="poster" href="#" data-toggle="modal" data-target="#aa" data-tipo="3"><i class="menu-icon menu-icon-7"></i>Imagen</a>
+                </li>
+                <li>
+                    <a class="poster" href="#" data-toggle="modal" data-target="#aa" data-tipo="4"><i class="menu-icon menu-icon-6"></i>Video</a>
+                </li>
+            </ul>
             <div class="row">
                 <div class="col-sm-12">
 <% if(data.length) {
-    var f_gen,tagger;
+    var f_gen;
     for(var i = 0;i<data.length;i++){
         f_gen = new Date(data[i].fecha);
         f_gen = f_gen.toLocaleString();
@@ -43,12 +40,20 @@
                                     <p class="blog-post-date pull-right"><%= f_gen%></p>
                                 </div>
                                 <div class="blog-post-content">
-                                    <a href="#">
+                                    <a href="/post/<%= data[i].idpost%>">
                                         <h2 class="blog-post-title"><%= data[i].t_principal%></h2>
                                     </a>
                                     <a class="blog-post-share pull-left" href="#">
-                                        Creado por: <%= usr.username%>
+                                        Creado por: <%= data[i].username%>
                                     </a>
+                                    <div class="blog-post-share pull-right">
+                                        <a class="comm col-xs-2" data-id="<%= data[i].idpost%>" href="/post/<%= data[i].idpost%>">
+                                            <i class="glyphicon glyphicon-comment"></i>
+                                        </a>
+                                        <a class="laik col-xs-2" data-id="<%= data[i].idpost%>" href="#">
+                                            <i class="glyphicon glyphicon-thumbs-up"> <%= data[i].likes%></i>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -60,18 +65,26 @@
                             <div class="panel-body">
                                 <div class="blog-post-meta">
                                     <div id="<%= data[i].idpost%>">
-                                        <input class="hidden" value="<%= data[i].tags%>" data-id="<%= data[i].idpost%>">
+                                        <input class="hidden" value="<%= data[i].tagz%>" data-id="<%= data[i].idpost%>">
                                         <p class="blog-post-date pull-right"><%= f_gen%></p>
                                     </div>
                                 </div>
                                 <div class="blog-post-content">
-                                    <a href="#">
+                                    <a href="/post/<%= data[i].idpost%>">
                                         <h2 class="blog-post-title"><%= data[i].t_principal%></h2>
                                     </a>
-                                    <p><%- data[i].texto%></p>
+                                    <p><%- data[i].contenido%></p>
                                     <a class="blog-post-share pull-left" href="#">
-                                        Creado por: <%= usr.username%>
+                                        Creado por: <%= data[i].username%>
                                     </a>
+                                    <div class="blog-post-share pull-right">
+                                        <a class="comm col-xs-2" data-id="<%= data[i].idpost%>" href="/post/<%= data[i].idpost%>">
+                                            <i class="glyphicon glyphicon-comment"></i>
+                                        </a>
+                                        <a class="laik col-xs-2" data-id="<%= data[i].idpost%>" href="#">
+                                            <i class="glyphicon glyphicon-thumbs-up"></i> <%= data[i].likes%>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -85,15 +98,23 @@
                             <div class="panel-body">
                                 <div class="blog-post-meta">
                                     <div id="<%= data[i].idpost%>">
-                                        <input class="hidden" value="<%= data[i].tags%>" data-id="<%= data[i].idpost%>">
+                                        <input class="hidden" value="<%= data[i].tagz%>" data-id="<%= data[i].idpost%>">
                                         <p class="blog-post-date pull-right"><%= f_gen%></p>
                                     </div>
                                 </div>
                                 <div class="blog-post-content">
-                                    <p><%- data[i].texto%></p>
+                                    <p><%- data[i].contenido%></p>
                                     <a class="blog-post-share pull-left" href="#">
-                                        Creado por: <%= usr.username%>
+                                        Creado por: <%= data[i].username%>
                                     </a>
+                                    <div class="blog-post-share pull-right">
+                                        <a class="comm col-xs-1" data-id="<%= data[i].idpost%>" href="/post/<%= data[i].idpost%>">
+                                            <i class="glyphicon glyphicon-comment"></i>
+                                        </a>
+                                        <a class="laik col-xs-1" data-id="<%= data[i].idpost%>" href="#">
+                                            <i class="glyphicon glyphicon-thumbs-up"></i><%= data[i].likes%>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -106,15 +127,23 @@
                             <div class="panel-body">
                                 <div class="blog-post-meta">
                                     <div id="<%= data[i].idpost%>">
-                                        <input class="hidden" value="<%= data[i].tags%>" data-id="<%= data[i].idpost%>">
+                                        <input class="hidden" value="<%= data[i].tagz%>" data-id="<%= data[i].idpost%>">
                                         <p class="blog-post-date pull-right"><%= f_gen%></p>
                                     </div>
                                 </div>
                                 <div class="blog-post-content">
-                                    <p ><%- data[i].texto%></p>
+                                    <p ><%- data[i].contenido%></p>
                                     <a class="blog-post-share pull-left" href="#">
-                                        Creado por: <%= usr.username%>
+                                        Creado por: <%= data[i].username%>
                                     </a>
+                                    <div class="blog-post-share pull-right">
+                                        <a class="comm col-xs-1" data-id="<%= data[i].idpost%>" href="/post/<%= data[i].idpost%>">
+                                            <i class="glyphicon glyphicon-comment"></i>
+                                        </a>
+                                        <a class="laik col-xs-1" data-id="<%= data[i].idpost%>" href="#">
+                                            <i class="glyphicon glyphicon-thumbs-up"></i>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -139,65 +168,5 @@
 
         </div><!-- /.blog-main -->
 
-        <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
 
-            <div class="sidebar-module">
-                <form action="/tags/bsq" method="POST">
-                    <div class="form-group">
-                        <input type="text" name="busqueda" class="form-control" placeholder="Buscar por tags">
-                    </div>
-                </form>
-            </div><!-- /.sidebar-module -->
-
-            <div class="sidebar-module">
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                        <h4>Categorías</h4>
-                        <ol class="categories list-unstyled">
-                            <li>
-                                <a class="label label-light label-primary" href="#">ODS 1</a>
-                                <span class="label label-light label-default pull-right">8</span>
-                            </li>
-                            <li>
-                                <a class="label label-light label-warning" href="#">ODS 2</a>
-                                <span class="label label-light label-default pull-right">5</span>
-                            </li>
-                            <li>
-                                <a class="label label-light label-info" href="#">ODS 3</a>
-                                <span class="label label-light label-default pull-right">9</span>
-                            </li>
-                        </ol>
-                    </div>
-                </div>
-            </div><!-- /.sidebar-module -->
-            <div class="sidebar-module">
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                        <h4>Archives</h4>
-                        <ol class="list-unstyled">
-                            <li><a href="#">Mayo 2017</a></li>
-
-                        </ol>
-                    </div>
-                </div>
-            </div><!-- /.sidebar-module -->
-
-            <div class="sidebar-module">
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                        <h4>Elsewhere</h4>
-                        <ol class="list-unstyled">
-                            <li><a href="#">Facebook</a></li>
-                            <li><a href="#">Google+</a></li>
-                            <li><a href="#">Twitter</a></li>
-                        </ol>
-                    </div>
-                </div>
-            </div><!-- /.sidebar-module -->
-
-        </div><!-- /.blog-sidebar -->
-
-    </div><!-- /.row -->
-
-</div><!-- /.container -->
 <%- include layouts/cdd_footer.ejs %>

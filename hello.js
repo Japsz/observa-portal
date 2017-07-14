@@ -6,7 +6,7 @@ var path = require('path');
 var users = require('./routes/users');
 var observ = require('./routes/observatorio');
 var cdd = require('./routes/ciudadano');
-var tags = require('./routes/tags');
+var posts = require('./routes/posts');
 var admin = require('./routes/admin');
 var app = express();
 var flash = require('connect-flash');
@@ -38,7 +38,7 @@ app.use(
 
         host: '127.0.0.1',
         user: 'root',
-        password : 'observaproyecta',
+        password : '1234',
         port : 3306,
         database:'Observapp'
 
@@ -49,21 +49,34 @@ app.use(
 
 
 app.get('/', routes.index);
+
 //Observatorios e Instituciones
+
 app.get('/instit', observ.list);
 app.get('/add_inst', observ.add_inst);
 app.post('/inst/add', observ.save);
 app.get('/obs/:id', observ.obs_list);
 app.post('/obs/add', observ.obs_save);
+
 //Ciudadano
-app.get('/indx', cdd.indx);
-app.post('/post/add', cdd.save);
+
 app.post('/m_post', cdd.m_post);
-app.get('/cdd_edit',cdd.edit);
 app.post('/cdd/edit', cdd.save_edit);
-app.post('/tags/bsq',tags.b_tag);
+app.get('/cdd_edit',cdd.edit);
+app.post('/comment/add', cdd.save_comment);
+
+//Posts
+
+app.get('/indx', posts.indx);
+app.get('/post/:idpost', posts.getpost);
+app.post('/post/add', posts.save);
+app.post('/tags/bsq',posts.b_tag);
+app.get('/tagbsq/:id',posts.get_cat);
+app.post('/send_laik',posts.add_laik);
+app.post('/rm_laik',posts.rm_laik);
 
 //Users
+
 app.get('/user', admin.list);
 app.get('/user/add', admin.add);
 app.post('/user/add', admin.save);

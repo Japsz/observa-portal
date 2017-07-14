@@ -200,7 +200,7 @@ a:focus {
 .menu li {position: relative;}
 .menu > li {
   float: left;
-  width: 12.5%;
+  width: 20%;
 }
 .menu > li > a {
   display: block;
@@ -382,6 +382,9 @@ a:focus {
 
 .blog-post-share {
   margin: 10px auto;
+}
+.blog-post-share .laiked {
+  color: #43A047;
 }
 
 .blog-post-content {
