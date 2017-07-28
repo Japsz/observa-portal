@@ -5,14 +5,14 @@ exports.indx = function(req, res){
     if(req.session.isUserLogged){
         req.getConnection(function(err,connection){
 
-            connection.query('SELECT post.*,user.username,GROUP_CONCAT(tags.tag ORDER BY tags.tag) AS tagz,COUNT(megusta.iduser) as likes FROM' +
+            connection.query('SELECT post.*,user.username,GROUP_CONCAT(DISTINCT tags.tag ORDER BY tags.tag) AS tagz, COUNT(DISTINCT megusta.iduser) as likes FROM' +
                 ' post LEFT JOIN tagpost ON post.idpost = tagpost.idpost LEFT JOIN tags ON tagpost.idtag = tags.idtag INNER JOIN user ON user.iduser = post.iduser' +
                 ' LEFT JOIN megusta ON megusta.idpost = post.idpost GROUP BY post.idpost ORDER BY post.fecha DESC LIMIT 6',function(err,rows)
             {
                 if(err)
                     console.log("Error Selecting : %s ",err );
 
-                res.render('cdd_index',{data:rows,usr:req.session.user});
+                res.render('cdd_index',{data:rows, usr:req.session.user});
 
                 //console.log(query.sql);
             });
@@ -23,7 +23,7 @@ exports.getpost = function(req, res){
     if(req.session.isUserLogged){
         req.getConnection(function(err,connection){
 
-            connection.query('SELECT post.*,user.username,GROUP_CONCAT(tags.tag ORDER BY tags.tag) AS tagz, COUNT(megusta.iduser) as likes FROM' +
+            connection.query('SELECT post.*,user.username,GROUP_CONCAT(DISTINCT tags.tag ORDER BY tags.tag) AS tagz, COUNT(DISTINCT megusta.iduser) as likes FROM' +
                 ' post LEFT JOIN tagpost ON post.idpost = tagpost.idpost LEFT JOIN tags ON tagpost.idtag = tags.idtag INNER JOIN user ON user.iduser = post.iduser' +
                 ' LEFT JOIN megusta ON megusta.idpost = post.idpost WHERE post.idpost  = ? GROUP BY post.idpost',req.params.idpost,function(err,rows)
             {
@@ -144,9 +144,9 @@ exports.b_tag = function(req, res){
     req.getConnection(function(err,connection){
         var input = JSON.parse(JSON.stringify(req.body));
         input.busqueda = input.busqueda.replace(/\s/g,'').split(",");
-        connection.query('SELECT post.*,GROUP_CONCAT(tags.tag ORDER BY tags.tag) AS tagz FROM' +
-            ' post LEFT JOIN tagpost ON post.idpost = tagpost.idpost LEFT JOIN tags ON tagpost.idtag = tags.idtag' +
-            ' WHERE tags.tag = ? GROUP BY post.idpost ORDER BY post.fecha DESC LIMIT 6',input.busqueda,function(err,rows)
+        connection.query('SELECT post.*,user.username,GROUP_CONCAT(DISTINCT tags.tag ORDER BY tags.tag) AS tagz, COUNT(DISTINCT megusta.iduser) as likes FROM' +
+            ' post LEFT JOIN tagpost ON post.idpost = tagpost.idpost LEFT JOIN tags ON tagpost.idtag = tags.idtag INNER JOIN user ON user.iduser = post.iduser' +
+            ' LEFT JOIN megusta ON megusta.idpost = post.idpost WHERE tags.tag = ? GROUP BY post.idpost ORDER BY post.fecha DESC LIMIT 6',input.busqueda,function(err,rows)
         {
             if(err)
                 console.log("Error Selecting : %s ",err );
@@ -157,47 +157,16 @@ exports.b_tag = function(req, res){
     });
 
 };
-exports.add_laik = function (req, res) {
+
+exports.rm_post = function (req, res) {
     if(req.session.isUserLogged){
-        var input = JSON.parse(JSON.stringify(req.body));
         req.getConnection(function (err, connection) {
-            connection.query("INSERT INTO megusta (`iduser`, `idpost`) VALUES ?",[[[req.session.user.iduser,input.idpost]]], function(err, rows)
+            connection.query("DELETE FROM post WHERE idpost = ? AND iduser = ?",[req.params.idpost,req.session.user.iduser], function(err, rows)
             {
 
                 if (err)
                     console.log("Error inserting : %s ",err );
-                connection.query("SELECT * FROM megusta WHERE idpost = ?",[input.idpost], function(err, rows)
-                {
-
-                    if (err)
-                        console.log("Error inserting : %s ",err );
-                    var len = rows.length;
-                    res.send(len.toString());
-
-                });
-
-            });
-        });
-    } else res.send("no");
-};
-exports.rm_laik = function (req, res) {
-    if(req.session.isUserLogged){
-        var input = JSON.parse(JSON.stringify(req.body));
-        req.getConnection(function (err, connection) {
-            connection.query("DELETE FROM megusta WHERE idpost = ? AND iduser = ?",[input.idpost,req.session.user.iduser], function(err, rows)
-            {
-
-                if (err)
-                    console.log("Error inserting : %s ",err );
-                connection.query("SELECT * FROM megusta WHERE idpost = ?",[input.idpost], function(err, rows)
-                {
-
-                    if (err)
-                        console.log("Error inserting : %s ",err );
-
-                    res.send(rows.length.toString());
-
-                });
+                res.redirect("/indx");
 
             });
         });
@@ -206,8 +175,9 @@ exports.rm_laik = function (req, res) {
 exports.get_cat = function(req, res){
 
     req.getConnection(function(err,connection){
-        connection.query('SELECT post.*,GROUP_CONCAT(tags.tag ORDER BY tags.tag) AS tagz FROM' +
-            ' post LEFT JOIN tagpost ON post.idpost = tagpost.idpost LEFT JOIN tags ON tagpost.idtag = tags.idtag WHERE tags.idtag = ? GROUP BY post.idpost ORDER BY post.fecha DESC LIMIT 6',req.params.id,function(err,rows)
+        connection.query('SELECT post.*,user.username,GROUP_CONCAT(DISTINCT tags.tag ORDER BY tags.tag) AS tagz, COUNT(DISTINCT megusta.iduser) as likes FROM' +
+            ' post LEFT JOIN tagpost ON post.idpost = tagpost.idpost LEFT JOIN tags ON tagpost.idtag = tags.idtag INNER JOIN user ON user.iduser = post.iduser' +
+            ' LEFT JOIN megusta ON megusta.idpost = post.idpost WHERE tags.idtag = ? GROUP BY post.idpost ORDER BY post.fecha DESC LIMIT 6',req.params.id,function(err,rows)
         {
             if(err)
                 console.log("Error Selecting : %s ",err );

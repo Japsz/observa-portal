@@ -8,7 +8,11 @@
         <div class="col-sm-3 col-xs-6 placeholder">
             <img src="<%= data[i].avatar_pat %>" width="150px" height="150px">
             <h3><%= data[i].nom%></h3>
-            <a href="/obs/<%= data[i].idinstitucion%>" class="btn btn-info"><span class="glyphicon glyphicon-eye-open"  aria-hidden="true"></span> Observatorios</a>
+            <div class="btn-group">
+                <a href="/obs/<%= data[i].idinstitucion%>" class="btn btn-info"><span class="glyphicon glyphicon-eye-open"  aria-hidden="true"></span> Observatorios</a>
+                <a  class="btn btn-warning nmonit"  data-toggle="modal" data-target="#obs" data-nom="<%= data[i].nom%>" data-direccion="<%= data[i].direccion%>" data-comuna="<%= data[i].comuna%>" data-fono="<%= data[i].fono%>" data-corr="<%= data[i].correo%>" data-idinst="<%= data[i].idinstitucion%>"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span></a>
+            </div>
+
         </div>
         <%
         }
@@ -20,4 +24,55 @@
         }
         %>
     </div>
+<div class="modal fade" id="obs" tabindex="-1" role="dialog" >
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Crear Observatorio</h4>
+            </div>
+            <form action="/instit_edit" method="POST">
+                <div class="modal-body">
+                    <label for="nom">Nombre Institución</label>
+                    <input type="text" class="form-control" name="nom" id="nom" required>
+                    <label for="nom">Correo Contacto</label>
+                    <input type="text" class="form-control" name="correo" id="corr" required>
+                    <label for="nom">Teléfono de contacto</label>
+                    <input type="text" class="form-control" name="fono" id="fono"required>
+                    <label>Comuna</label>
+                    <input type="text" name="comuna" id="comuna" class="form-control" >
+                    <label>Direccion</label>
+                    <input type="text" name="direccion" id="direccion" class="form-control" >
+                </div>
+                <div class="modal-footer">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" id="continue" name="id" value="" class="btn btn-primary">Modificar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $(document).on("click", ".nmonit", function() {
+            var instid = $(this).data('idinst');
+            var corr = $(this).data('corr');
+            var nom = $(this).data('nom');
+            var fono = $(this).data('fono');
+            var comuna = $(this).data('comuna');
+            var direccion = $(this).data('direccion');
+            $(".modal-footer #continue").val(instid);
+            $(".modal-body #corr").val(corr);
+            $(".modal-body #fono").val(fono);
+            $(".modal-body #nom").val(nom);
+            $(".modal-body #comuna").val(comuna);
+            $(".modal-body #direccion").val(direccion);
+        });
+    });
+    function habilit(){
+        $("#continue").attr("disabled", false);
+    };
+</script>
 <%- include layouts/footer.ejs %>

@@ -36,18 +36,17 @@ exports.save = function(req,res){
 						username   : input.username,
 						password   : input.password,
 						tipo	   : input.tipo,
-						correo	   : input.correo
+						correo	   : input.correo,
+	                    avatar_pat : "/assets/img/placeholder.png"
 
 				};
-
 				var query = connection.query("INSERT INTO user SET ? ",data, function(err, rows)
 				{
 
 					if (err)
 							console.log("Error inserting : %s ",err );
 
-					res.redirect('/user');
-
+                    res.redirect('/user');
 				});
 
 			 // console.log(query.sql); get raw query
@@ -119,7 +118,7 @@ exports.delete_user = function(req,res){
 		
 		 req.getConnection(function (err, connection) {
 				
-				connection.query("DELETE FROM user WHERE username = ? ",[username], function(err, rows)
+				connection.query("DELETE FROM user WHERE iduser = ? ",[username], function(err, rows)
 				{
 						
 						 if(err)

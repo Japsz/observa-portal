@@ -62,12 +62,17 @@
                         <li><a href="#">Date</a></li>
                     </ul>
                 </li>
-                <li class="dropdown">
+                <li >
                     <a href="/cdd_edit">Mi Perfil </a>
-
                 </li>
+                <% if(usr.tipo == 1){%>
+                <li >
+                    <a href="/obs_monit">Mis observatorios </a>
+                </li>
+                <%}%>
             </ul>
             <ul class="nav navbar-nav navbar-right">
+                <li><a href="#">Conectado como <%= usr.username%></a></li>
                 <li><a href="/user_logout">Salir</a></li>
             </ul>
         </div>

@@ -31,7 +31,7 @@ exports.obs_list = function(req, res){
     if(req.session.isAdminLogged){
         req.getConnection(function(err,connection){
 
-            connection.query('SELECT * FROM observatorio WHERE idinst = ?',req.params.id,function(err,rows)
+            connection.query('SELECT observatorio.*,user.correo FROM observatorio LEFT JOIN user ON observatorio.idmonitor = user.iduser WHERE idinst = ?',req.params.id,function(err,rows)
             {
 
                 if(err)
@@ -79,6 +79,34 @@ exports.save = function(req,res){
     }
     else res.redirect('/bad_login');
 };
+exports.inst_edit = function(req,res){
+    if(req.session.isAdminLogged){
+        var input = JSON.parse(JSON.stringify(req.body));
+        req.getConnection(function (err, connection) {
+
+            var inst_data = {
+                correo : input.correo,
+                fono : input.fono,
+                nom   : input.nom,
+                comuna : input.comuna,
+                direccion : input.direccion,
+                avatar_pat : "/assets/img/placeholder.png"
+            };
+            console.log(input);
+            connection.query("UPDATE institucion SET ? WHERE idinstitucion = ?",[inst_data,input.id], function(err, rows)
+            {
+
+                if (err)
+                    console.log("Error inserting : %s ",err );
+
+                res.redirect('/instit');
+
+            });
+            // console.log(query.sql); get raw query
+        });
+    }
+    else res.redirect('/bad_login');
+};
 // Logica agregar observatorio.
 // Estado:
 //      1 - Inactivo
@@ -94,7 +122,8 @@ exports.obs_save = function(req,res){
                 nom   : input.nom,
                 avatar_pat : "/assets/img/placeholder.png",
                 max : input.maxim,
-                idinst : input.id
+                idinst : input.id,
+                idmonitor : input.idmonit
             };
 
             connection.query("INSERT INTO observatorio SET ? ",data, function(err, rows)

@@ -1,0 +1,65 @@
+<%- include layouts/user_header.ejs %>
+
+<div class="container blog-content">
+
+    <div class="row">
+
+        <div class="col-sm-8 blog-main">
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <section class="blog-post">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <div class="blog-post-meta">
+                                    <h1 class="blog-post-title">Mis Observatorios</h1>
+                                </div>
+                                <div class="blog-post-content">
+                                    <%
+                                    if(data.length){
+                                        var status;
+                                    for(var i = 0;i < data.length; i++){
+                                        switch(data[i].estado) {
+                                            case 1:
+                                                status = "Inactivo";
+                                                break;
+                                            case 2:
+                                                status = "Activo";
+                                                break;
+                                            case 3:
+                                                status = "Archivado";
+                                                break;
+                                            default:
+                                                status = "inactivo";
+                                        }
+                                    %>
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <img src="<%= data[i].avatar_pat %>" width="150px" height="150px">
+                                        </div>
+                                        <div class="col-sm-8 col-sm-offset-1">
+                                            <h3><%= data[i].nom%></h3>
+                                            <h5>Máx: <%= data[i].max%></h5>
+                                            <a class="btn btn-primary pull-right" href="/obs_usr/<%= data[i].idobservatorio%>">Ver</a>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <%
+                                    }
+                                    } else{%>
+                                    <div class="col-sm-6 col-xs-12">
+                                        <p>No tienes Observatorios asignados</p>
+                                    </div>
+                                    <%
+                                    }
+                                    %>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+        </div><!-- /.blog-main -->
+
+<%- include layouts/cdd_footer.ejs %>

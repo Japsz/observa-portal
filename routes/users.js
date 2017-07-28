@@ -33,7 +33,7 @@ exports.user_login_handler = function(req, res){
             console.log("Error Selecting : %s ",err );
           connection.query('SELECT * FROM user WHERE username = ? AND password = ?',[username,password],function(err,rows)
           {
-          	  if(rows.length == 0 ){
+          	  if(rows.length == 0 || rows[0].tipo == 4){
           	  	console.log('Invalid Username or Password.');
           	  	res.redirect('/bad_login');
           	  }
@@ -42,22 +42,12 @@ exports.user_login_handler = function(req, res){
                   console.log("Error Selecting : %s ",err );
               
               if(rows.length == 1){
+
                   req.session.user = rows[0];
                   req.session.isUserLogged = true;
-                  switch(rows[0].tipo) {
-                      case 1:
-                          res.redirect('/bad_login');
-                          break;
-                      case 2:
-                          res.redirect('/bad_login');
-                          break;
-                      case 3:
-                          res.redirect("/indx");
-                          break;
-                      default:
-                          res.redirect('/bad_login');
-
-                  }
+                  if(rows[0].tipo == 3 && rows[0].nombre == null){
+                      res.redirect("/f_login");
+                  } else res.redirect("/indx");
               }
           });
            
@@ -65,7 +55,20 @@ exports.user_login_handler = function(req, res){
 	});
   
 };
+exports.get_monit = function (req, res) {
+    var input = JSON.parse(JSON.stringify(req.body));
+    req.getConnection(function(err,connection){
 
+        connection.query('SELECT * FROM user WHERE correo LIKE ? AND tipo = 1',[input.corr + "%"],function(err,rows)
+        {
+            if(err)
+                console.log("Error Selecting : %s ",err );
+
+            res.render("monit_stream",{data : rows});
+        });
+        //console.log(query.sql);
+    });
+};
 exports.admin_login_handler = function(req, res){
 
 	var input = JSON.parse(JSON.stringify(req.body));
@@ -88,10 +91,10 @@ exports.admin_login_handler = function(req, res){
               if(rows.length == 1){
               	req.session.isAdminLogged = true;
               	res.redirect('/instit');
-              }           });
-           
+              }
+          });
            //console.log(query.sql);
-      });
+    });
   
 };
 

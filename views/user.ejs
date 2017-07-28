@@ -5,19 +5,38 @@
                     <th width="50px">No</th>
                     <th>Username</th>
                     <th>Password</th>
-                    <th>Action</th>
+                    <th>Correo</th>
+                    <th>Tipo</th>
+                    <th></th>
+                    <th></th>
                 </tr>
                                
                 <% if(data.length){ 
-                                
-                 for(var i = 0;i < data.length;i++) { %>
+                var usrtype;
+                 for(var i = 0;i < data.length;i++) {
+                    switch(data[i].tipo) {
+                        case 1:
+                            usrtype = "Monitor";
+                            break;
+                        case 2:
+                            usrtype = "Moderador";
+                            break;
+                        case 3:
+                            usrtype = "Ciudadano";
+                            break;
+                        default:
+                            usrtype = "notype";
+
+                    }%>
                  
                 <tr>
                     <td><%=(i+1)%></td>
                     <td><%=data[i].username%></td>
                     <td><%=data[i].password%></td>
+                    <td><%=data[i].correo%></td>
+                    <td><%=usrtype%></td>
                     <td>
-                        <a class="btn btn-danger btn-xs a-inside delete" href="user/delete/<%=data[i].username%>">- Borrar</a>
+                        <a class="btn btn-danger btn-xs a-inside delete" href="user/delete/<%=data[i].iduser%>">- Borrar</a>
                     </td>
                 </tr>
             <% }
