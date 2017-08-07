@@ -21,7 +21,7 @@ exports.list = function(req, res){
 //Vista agregar usuario.
 exports.add = function(req, res){
 	if(req.session.isAdminLogged){
-		res.render('add_user',{page_title:"Agregar usuario"});
+		res.render('add_user',{page_title:"Agregar usuario", usr:req.session.user});
 		}
 		else res.redirect('/bad_login');
 };
