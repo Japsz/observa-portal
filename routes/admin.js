@@ -9,7 +9,7 @@ exports.list = function(req, res){
 								if(err)
 										console.log("Error Selecting : %s ",err );
 				 
-								res.render('user',{page_title:"Stats",data:rows});
+								res.render('user',{page_title:"Stats",data:rows, usr:req.session.user});
 										
 						 });
 						 //console.log(query.sql);
@@ -69,7 +69,7 @@ exports.edit = function(req, res){
 						if(err)
 								console.log("Error Selecting : %s ",err );
 		 
-						res.render('edit_user',{page_title:"Edit Users",data:rows});
+						res.render('edit_user',{page_title:"Edit Users",data:rows, usr:req.session.user});
 								
 					 
 				 });

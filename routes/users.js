@@ -115,6 +115,7 @@ exports.admin_login_handler = function(req, res){
                   console.log("Error Selecting : %s ",err );
               
               if(rows.length == 1){
+                  req.session.user = rows[0];
               	req.session.isAdminLogged = true;
               	res.redirect('/instit');
               }

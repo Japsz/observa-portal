@@ -19,7 +19,7 @@ exports.list = function(req, res){
                 if(err)
                     console.log("Error Selecting : %s ",err );
 
-                res.render('instit_list',{page_title:"Instituciones",data:rows});
+                res.render('instit_list',{page_title:"Instituciones",data:rows, usr:req.session.user});
 
             });
             //console.log(query.sql);
@@ -42,7 +42,7 @@ exports.obs_list = function(req, res){
                     if(err)
                         console.log("Error Selecting : %s ",err );
 
-                    res.render('obs_list',{page_title:"Observatorios",data:rows,inst:insts[0]});
+                    res.render('obs_list',{page_title:"Observatorios",data:rows,inst:insts[0], usr:req.session.user});
 
                 });
 
