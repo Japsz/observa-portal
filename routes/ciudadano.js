@@ -80,7 +80,7 @@ exports.edit = function(req, res){
 
     if(req.session.isUserLogged){
 
-        res.render('cdd_edit',{data: req.session.user,usr:req.session.user});
+        res.render('cdd_edit',{data: req.session.user,usr:req.session.user, obs: req.session.idobs});
     }
 };
 exports.save_edit = function(req, res){
@@ -124,7 +124,7 @@ exports.edit_f = function(req, res){
 
     if(req.session.isUserLogged){
 
-        res.render('f_login',{data: req.session.user,usr:req.session.user});
+        res.render('f_login',{data: req.session.user,usr:req.session.user, obs: req.session.idobs});
     }
 };
 exports.save_edit_f = function(req, res){
@@ -154,7 +154,7 @@ exports.save_edit_f = function(req, res){
                         console.log("Error Selecting : %s ",err );
                     if(rows.length == 1){
                         req.session.user = rows[0];
-                        res.redirect('/cdd_edit');
+                        res.redirect('/indx');
                     }
 
                     //console.log(query.sql);
@@ -165,6 +165,7 @@ exports.save_edit_f = function(req, res){
         });
     }
 };
+
 exports.m_post = function(req,res){
     if(req.session.isUserLogged){
         var input = JSON.parse(JSON.stringify(req.body));

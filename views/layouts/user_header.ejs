@@ -55,21 +55,23 @@
             <ul class="nav navbar-nav">
                 <li class="active dropdown">
                 <li class="dropdown">
-                    <a href="bootstrap-elements.html" data-target="#" class="dropdown-toggle" data-toggle="dropdown">Filters <b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">Categoría</a></li>
-                        <li><a href="#">Author</a></li>
-                        <li><a href="#">Date</a></li>
-                    </ul>
+                    <a href="/indx" >Inicio</a>
                 </li>
                 <li >
                     <a href="/cdd_edit">Mi Perfil </a>
                 </li>
                 <% if(usr.tipo == 1){%>
-                <li >
+                <li>
                     <a href="/obs_monit">Mis observatorios </a>
                 </li>
+                <%} else if(usr.tipo == 3){%>
+                <li>
+                    <a href="/post_obs">Mi Observatorio</a>
+                </li>
                 <%}%>
+                <li >
+                    <a href="/usr_post">Mis Posts</a>
+                </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="#">Conectado como <%= usr.username%></a></li>

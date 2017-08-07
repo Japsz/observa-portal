@@ -94,7 +94,6 @@
     </div><!-- /.sidebar-module -->
 
 </div><!-- /.blog-sidebar -->
-
 </div><!-- /.row -->
 
 </div><!-- /.container -->
@@ -141,11 +140,28 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h2 class="modal-title" id="myModalLabel">Crear Post</h2>
             </div>
-            <form action="/post/add" method="post">
+            <form action="/post/add" method="post" id="mform">
                 <div class="modal-body">
                     <div class="form-group">
+                        <%  if(usr.tipo == 1){ %>
+                                <select name="idobserva" class="form-control">
+                                    <option value="" disabled selected>Seleccione un observatorio</option>
+                        <%
+                                    for(var j = 0; j<obs.length;j++){
+                            %>
+                                    <option value="<%= obs[j].idobservatorio%>"><%= obs[j].nom%></option>
+                        <%
+
+                                    }%>
+                                    <option value="no">Sin observatorio</option>
+                                </select>
+                        <%
+                            } else if(usr.tipo == 3){%>
+                                <input name="idobserva" type="hidden" value="<%= obs[0].idobservatorio%>">
+                        <%}%>
+
                         <input type="text" name="tit" id="t_princ" class="form-control" placeholder="" required>
-                        <select id="catego" class="form-control hidden" name="cat">
+                        <select id="catego" class="form-control hidden" name="cat" required>
                             <option value="" disabled selected>Selecciona una categoría</option>
                             <option value="18">Fin de la Pobreza</option>
                             <option value="78">Acción por el Clima</option>
@@ -247,10 +263,82 @@
             quill = false;
         }
     });
+    $(document).on("click", ".edit", function() {
+        var data = {};
+        data.tipo = $(this).data('tipo');
+        $("#mform").attr('action','/post/edit/' + $(this).data('idpost'));
+        $(".modal-footer #tipo").val($(this).data('tipo'));
+        switch(data.tipo) {
+            case 1:
+                $("#t_princ").val($(this).data('tit'));
+                $("#editor").val($(this).data('cont'));
+                $("#tag").val($(this).data('tags'));
+                break;
+            case 2:
+                $("#t_princ").val($(this).data('tit'));
+                $("#editor").val($(this).data('cont'));
+                break;
+            case 3:
+                $("#t_princ").val($(this).data('tit'));
+                $("#editor").val($(this).data('cont'));
+                break;
+            case 4:
+                $("#t_princ").val($(this).data('tit'));
+                $("#editor").val($(this).data('cont'));
+                break;
+            default:
+                status = "inactivo";
+        }
+        if(parseInt(data.tipo) > 1){
+            $(".modal-body #catego").removeClass("hidden");
+            if(!quill){
+                $("#editor").jqte({
+                    color: false,
+                    source: false,
+                    sub: false,
+                    sup: false,
+                    strike: false,
+                    indent: false,
+                    format: false,
+                    outdent: false
+                });
+                quill = true;
+            }
+        } else {
+            $(".modal-body #catego").addClass("hidden");
+            if(quill){
+                $("#editor").jqte({
+                    color: false,
+                    source: false,
+                    sub: false,
+                    sup: false,
+                    strike: false,
+                    indent: false,
+                    format: false,
+                    outdent: false
+                });
+            }
+            quill = false;
+        }
+    });
     $.material.init();
     $('body').materialScrollTop();
 
     $(function () {
+        $(".strim").click(function(e){
+            var data = {};
+            data.idpost = $("#idpst").val();
+            $.ajax({
+                type: 'POST',
+                data: JSON.stringify(data),
+                contentType: 'application/json',
+                url: '/post_stream',
+                success: function(data) {
+                    $("#psts").append(data);
+                    $("#idpst").val();
+                }
+            });
+        });
         $('.laik').click(function(e){
             /*$.ajax({
              dataType: 'jsonp',
@@ -301,17 +389,17 @@
         });
 
     });
-    $(":input.hidden").each(function (j) {
+    $(".blog-post-meta :input.hidden").each(function (j) {
         var tagger = $(this).val();
         var idpost = "#" + $(this).data('id');
         tagger = tagger.split(",");
         for(var i = 0; i < tagger.length;i++){
             if(tagger[i] != "null") {
-                $(idpost).append('<span class="label label-light label-primary">' + tagger[i] + '</span> ');
-            } else $(idpost).append('<span class="label label-light label-primary">jeje</span> ');
+                $(idpost + " .blog-post-meta").append('<span class="label label-light label-primary">' + tagger[i] + '</span> ');
+            } else $(idpost + " .blog-post-meta").append('<span class="label label-light label-primary">jeje</span> ');
 
         }
-    })
+    });
 </script>
 
 </body>

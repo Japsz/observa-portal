@@ -1,38 +1,28 @@
 <%- include layouts/user_header %>
 
-<style>
-    .modalpost {
-        z-index: 0;
-        list-style-type: none;
-    }
-
-</style>
-
 <div class="container blog-content">
     <div class="row">
 
         <div class="col-sm-8 blog-main">
-            <ul class="menu boxed clearfix modalpost" aria-hidden="true">
-                <li><img src="/assets/img/isov_iso.png" height="84px" height="auto"></li>
-                <li><a href="#" data-toggle="modal" data-target="#aa" data-tipo="1" class="poster"><i class="menu-icon"></i>Idea</a></li>
-                <li>
-                    <a href="#" data-toggle="modal" data-target="#aa" data-tipo="2" class="poster"><i class="menu-icon menu-icon-5"></i>Escrito</a>
-                </li>
-                <li>
-                    <a class="poster" href="#" data-toggle="modal" data-target="#aa" data-tipo="3"><i class="menu-icon menu-icon-7"></i>Imagen</a>
-                </li>
-                <li>
-                    <a class="poster" href="#" data-toggle="modal" data-target="#aa" data-tipo="4"><i class="menu-icon menu-icon-6"></i>Video</a>
-                </li>
-            </ul>
             <div class="row">
                 <div class="col-sm-12">
 <% if(data.length) {
-    var f_gen;
+    var f_gen,estado;
     for(var i = 0;i<data.length;i++){
         f_gen = new Date(data[i].fecha);
         f_gen = f_gen.toLocaleString();
-        console.log(data[i].estado);
+        switch(data[i].estado){
+            case 1:
+                estado = "<a class='btn btn-warning'>Aprovación Pendiente</a>";
+                break;
+            case 2:
+                estado = "<a class='btn btn-success'>Aprovado</a>";
+                break;
+            case 3:
+                estado = "<a class='btn btn-danger'>Rechazado</a><a class='btn btn-warning edit' data-toggle='modal' data-target='#aa' data-tipo='" + data[i].tipo
+                        + "' data-tit='" + data[i].t_principal + "' data-cont='" + data[i].contenido + "' data-tags='" + data[i].tags + "' data-idpost = '" + data[i].idpost + "'><i class='glyphicon glyphicon-wrench'></i></a>";
+                break;
+        }
         switch(data[i].tipo) {
             case 1:
                 %><section class="blog-post" id="<%= data[i].idpost %>">
@@ -49,13 +39,9 @@
                                     <a class="blog-post-share pull-left" href="#">
                                         Creado por: <%= data[i].username%>
                                     </a>
+
                                     <div class="blog-post-share pull-right">
-                                        <a class="comm col-xs-2" data-id="<%= data[i].idpost%>" href="/post/<%= data[i].idpost%>">
-                                            <i class="glyphicon glyphicon-comment"></i>
-                                        </a>
-                                        <a class="laik col-xs-2" data-id="<%= data[i].idpost%>" href="#">
-                                            <i class="glyphicon glyphicon-thumbs-up"> <%= data[i].likes%></i>
-                                        </a>
+                                        <%- estado%>
                                     </div>
                                 </div>
                             </div>
@@ -79,12 +65,7 @@
                                         Creado por: <%= data[i].username%>
                                     </a>
                                     <div class="blog-post-share pull-right">
-                                        <a class="comm col-xs-2" data-id="<%= data[i].idpost%>" href="/post/<%= data[i].idpost%>">
-                                            <i class="glyphicon glyphicon-comment"></i>
-                                        </a>
-                                        <a class="laik col-xs-2" data-id="<%= data[i].idpost%>" href="#">
-                                            <i class="glyphicon glyphicon-thumbs-up"></i> <%= data[i].likes%>
-                                        </a>
+                                        <%- estado%>
                                     </div>
                                 </div>
                             </div>
@@ -106,12 +87,7 @@
                                         Creado por: <%= data[i].username%>
                                     </a>
                                     <div class="blog-post-share pull-right">
-                                        <a class="comm col-xs-1" data-id="<%= data[i].idpost%>" href="/post/<%= data[i].idpost%>">
-                                            <i class="glyphicon glyphicon-comment"></i>
-                                        </a>
-                                        <a class="laik col-xs-1" data-id="<%= data[i].idpost%>" href="#">
-                                            <i class="glyphicon glyphicon-thumbs-up"></i><%= data[i].likes%>
-                                        </a>
+                                        <%- estado%>
                                     </div>
                                 </div>
                             </div>
@@ -133,12 +109,7 @@
                                         Creado por: <%= data[i].username%>
                                     </a>
                                     <div class="blog-post-share pull-right">
-                                        <a class="comm col-xs-1" data-id="<%= data[i].idpost%>" href="/post/<%= data[i].idpost%>">
-                                            <i class="glyphicon glyphicon-comment"></i>
-                                        </a>
-                                        <a class="laik col-xs-1" data-id="<%= data[i].idpost%>" href="#">
-                                            <i class="glyphicon glyphicon-thumbs-up"></i>
-                                        </a>
+                                        <%- estado%>
                                     </div>
                                 </div>
                             </div>

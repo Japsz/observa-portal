@@ -71,11 +71,18 @@ app.post('/inst/add', observ.save);
 app.get('/obs/:id', observ.obs_list);
 app.post('/obs/add', observ.obs_save);
 
-// Monitor
+// Monitor y Moderador
 app.get('/obs_monit', monitor.obs_monit);
 app.get('/obs_usr/:idobs', monitor.get_obs);
 app.post('/add_cdd', monitor.save_cdd);
 app.post('/drop_cdd', monitor.drop_cdd);
+app.post('/approve', monitor.approve_p);
+app.post('/rmm', monitor.remove_p);
+app.get('/app_post/:idobs', monitor.get_prepost);
+app.get('/mod_indx', monitor.get_modpost);
+app.post('/rmm_comm', monitor.del_comment);
+app.post('/approve_comm', monitor.approve_comment);
+
 
 //Ciudadano
 
@@ -95,6 +102,9 @@ app.post('/tags/bsq',posts.b_tag);
 app.get('/tagbsq/:id',posts.get_cat);
 app.post('/send_laik',cdd.add_laik);
 app.post('/rm_laik',cdd.rm_laik);
+app.get('/usr_post',posts.usr_post);
+app.get('/post_obs',posts.post_obs);
+app.post('/post/edit/:idpost', posts.p_edit);
 
 //Users
 

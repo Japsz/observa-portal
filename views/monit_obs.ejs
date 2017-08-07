@@ -4,7 +4,7 @@
 
     <div class="row">
 
-        <div class="col-sm-8 blog-main">
+        <div class="col-sm-12 blog-main">
 
             <div class="row">
                 <div class="col-sm-12">
@@ -40,7 +40,8 @@
                                         <div class="col-sm-8 col-sm-offset-1">
                                             <h3><%= data[i].nom%></h3>
                                             <h5>Máx: <%= data[i].max%></h5>
-                                            <a class="btn btn-primary pull-right" href="/obs_usr/<%= data[i].idobservatorio%>">Ver</a>
+                                            <a class="btn btn-primary pull-right" href="/obs_usr/<%= data[i].idobservatorio%>">Usuarios</a>
+                                            <a class="btn btn-warning pull-right" href="/app_post/<%= data[i].idobservatorio%>">Moderar Posts</a>
                                         </div>
                                     </div>
                                     <hr>
@@ -62,4 +63,66 @@
 
         </div><!-- /.blog-main -->
 
-<%- include layouts/cdd_footer.ejs %>
+    </div><!-- /.row -->
+
+</div><!-- /.container -->
+
+
+
+<footer class="blog-footer">
+
+    <div id="links">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-2">
+                    <i class="material-icons brand">&#xE871;</i>
+                    <p> Versión 1.3</p>
+                </div>
+
+                <div class="col-sm-8 text-center offset">
+                    <ul class="list-inline">
+                        <li><a href="#">Inicio</a></li>
+                        <li><a href="#">Privacidad</a></li>
+                        <li><a href="#">Documentation</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-md-2 text-right offset">
+                    <ul class="list-inline">
+                        <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                        <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+                        <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</footer>
+
+<button class="material-scrolltop primary" type="button"></button>
+
+<link href="/assets/css/jquery-te-1.4.0.css" rel="stylesheet">
+<script src="/assets/js/jquery-te-1.4.0.min.js"></script>
+<script src="/assets/js/ripples.min.js"></script>
+<script src="/assets/js/material.min.js"></script>
+<script src="/assets/js/material-scrolltop.js"></script>
+<script src="/assets/js/main.js"></script>
+<script type="text/javascript">
+    $(function(){
+        $(".blog-post-meta :input.hidden").each(function (j) {
+            var tagger = $(this).val();
+            var idpost = "#" + $(this).data('id');
+            tagger = tagger.split(",");
+            for(var i = 0; i < tagger.length;i++){
+                if(tagger[i] != "null") {
+                    $(idpost).append('<span class="label label-light label-primary">' + tagger[i] + '</span> ');
+                } else $(idpost).append('<span class="label label-light label-primary">jeje</span> ');
+
+            }
+        })
+
+    });
+</script>
+</body>
+</html>

@@ -77,19 +77,8 @@ exports.get_obs = function(req, res){
 };
 exports.obs_monit = function(req, res){
     if(req.session.isUserLogged && req.session.user.tipo == 1){
-        req.getConnection(function(err,connection){
 
-            connection.query('SELECT * FROM observatorio WHERE idmonitor = ?',req.session.user.iduser,function(err,rows)
-            {
-
-                if(err)
-                    console.log("Error Selecting : %s ",err );
-
-                res.render('monit_obs',{page_title:"Observatorios",data:rows,usr:req.session.user});
-
-            });
-            //console.log(query.sql);
-        });
+            res.render('monit_obs',{page_title:"Observatorios",data:req.session.idobs,usr:req.session.user, obs: req.session.idobs});
     }
     else res.redirect('/bad_login');
 };
@@ -122,4 +111,155 @@ exports.drop_cdd = function (req, res) {
     }
     else res.redirect('/bad_login');
 };
+exports.get_prepost = function(req, res){
+    if(req.session.isUserLogged && req.session.user.tipo == 1){
+        req.getConnection(function(err,connection){
 
+            connection.query('SELECT post.*,user.username,ciudadano.idobs,GROUP_CONCAT(DISTINCT tags.tag ORDER BY tags.tag) AS tagz FROM' +
+                ' post LEFT JOIN tagpost ON post.idpost = tagpost.idpost LEFT JOIN tags ON tagpost.idtag = tags.idtag INNER JOIN user ON user.iduser = post.iduser' +
+                ' LEFT JOIN ciudadano ON ciudadano.idobs = post.idobs WHERE post.tipo > 1 AND post.estado = 1 AND post.idobs = ? GROUP BY post.idpost ORDER BY post.fecha ASC ',req.params.idobs,function(err,rows)
+            {
+                if(err)
+                    console.log("Error Selecting : %s ",err );
+
+                res.render('app_post',{data:rows, usr:req.session.user, obs: req.session.idobs});
+
+                //console.log(query.sql);
+            });
+        });
+    } else res.redirect('/bad_login');
+};
+exports.get_modpost = function(req, res){
+    if(req.session.isUserLogged && req.session.user.tipo == 2){
+        req.getConnection(function(err,connection){
+
+            connection.query('SELECT post.*,user.username,GROUP_CONCAT(DISTINCT tags.tag ORDER BY tags.tag) AS tagz FROM' +
+                ' post LEFT JOIN tagpost ON post.idpost = tagpost.idpost LEFT JOIN tags ON tagpost.idtag = tags.idtag INNER JOIN user ON user.iduser = post.iduser' +
+                ' WHERE post.tipo = 1 AND post.estado = 1 GROUP BY post.idpost ORDER BY post.fecha ASC ',function(err,rows)
+            {
+                if(err)
+                    console.log("Error Selecting : %s ",err );
+                console.log(rows);
+
+                var posts = rows;
+                connection.query('SELECT comentario.*,user.username,user.iduser FROM' +
+                    ' comentario INNER JOIN user ON user.iduser = comentario.iduser WHERE comentario.estado = 1 GROUP BY comentario.idcomentario ORDER BY comentario.fecha ASC ',function(err,rows)
+                {
+                    if(err)
+                        console.log("Error Selecting : %s ",err );
+
+                    res.render('mod_moderate',{data:posts, data2:rows, usr:req.session.user, obs: req.session.idobs});
+
+                    //console.log(query.sql);
+                });
+                //console.log(query.sql);
+            });
+        });
+    } else res.redirect('/bad_login');
+};
+exports.approve_p = function(req, res){
+    var input = JSON.parse(JSON.stringify(req.body));
+    if(req.session.isUserLogged && (req.session.user.tipo == 1 || req.session.user.tipo == 2)){
+        req.getConnection(function(err,connection){
+
+            connection.query("UPDATE post SET estado = '2', fecha = CURRENT_TIMESTAMP WHERE idpost = ? ",[input.idpost],function(err,rows)
+            {
+                if(err)
+                    console.log("Error Selecting : %s ",err );
+                res.send("si");
+                //console.log(query.sql);
+            });
+        });
+    } else res.send("no, maldito ghjaker");
+};
+exports.remove_p = function(req, res){
+    var input = JSON.parse(JSON.stringify(req.body));
+    if(typeof input.comment == 'undefined'){
+        input.comment = "";
+    }
+    if(req.session.isUserLogged && (req.session.user.tipo == 1 || req.session.user.tipo == 2)){
+        req.getConnection(function(err,connection){
+
+            connection.query("UPDATE post SET estado = 3 WHERE idpost = ?",[input.idpost],function(err,rows)
+            {
+                if(err)
+                    console.log("Error Selecting : %s ",err );
+                connection.query("SELECT post.*,user.correo FROM post INNER JOIN user ON user.iduser = post.iduser WHERE idpost = ? GROUP BY post.idpost",[input.idpost],function(err,rows)
+                {
+                    if(err)
+                        console.log("Error Selecting : %s ",err );
+                    res.mailer.send('mail_rechazo', {
+                        to: rows[0].correo, // REQUIRED. This can be a comma delimited string just like a normal email to field.
+                        subject: 'Un post tuyo fue rechazado', // REQUIRED.
+                        post: rows[0], // All additional properties are also passed to the template as local variables.
+                        tipo: req.session.user.tipo,
+                        razon: input.razon,
+                        comm: input.comment
+                    }, function (err) {
+                        if (err) {
+                            // handle error
+                            console.log(err);
+                            res.send('There was an error sending the email');
+                            return;
+                        }
+                        res.send("si");
+                    });
+                    //console.log(query.sql);
+                });
+                //console.log(query.sql);
+            });
+        });
+    } else res.send("no, maldito ghjaker");
+};
+exports.approve_comment = function(req, res){
+    var input = JSON.parse(JSON.stringify(req.body));
+    if(req.session.isUserLogged && req.session.user.tipo == 2){
+        req.getConnection(function(err,connection){
+
+            connection.query("UPDATE comentario SET estado = '2' WHERE idcomentario = ? ",[input.idcoment],function(err,rows)
+            {
+                if(err)
+                    console.log("Error Selecting : %s ",err );
+                res.send("si");
+                //console.log(query.sql);
+            });
+        });
+    } else res.send("no, maldito ghjaker");
+};
+exports.del_comment = function (req,res) {
+    if(req.session.isUserLogged && req.session.user.tipo == 2){
+        var input = JSON.parse(JSON.stringify(req.body));
+        req.getConnection(function(err,connection){
+            connection.query('SELECT comentario.*,user.correo FROM comentario INNER JOIN user ON user.iduser = comentario.iduser WHERE idcomentario = ?',[input.idcomentario],function(err,rows)
+            {
+                if(err) {
+                    console.log("Error Deleting : %s ",err );
+                    res.send("no");
+                } else {
+                    var comment = rows[0];
+                    connection.query('DELETE FROM comentario WHERE idcomentario = ?',[input.idcomentario],function(err,rows)
+                    {
+                        if(err)
+                            console.log("Error Deleting : %s ",err );
+                        res.mailer.send('mail_c_rechazo', {
+                            to: comment.correo, // REQUIRED. This can be a comma delimited string just like a normal email to field.
+                            subject: 'Un comentario tuyo fue eliminado', // REQUIRED.
+                            comm: comment, // All additional properties are also passed to the template as local variables.
+                            razon: input.razon
+                        }, function (err) {
+                            if (err) {
+                                // handle error
+                                console.log(err);
+                                res.send('There was an error sending the email');
+                                return;
+                            }
+                            res.send("si");
+                        });
+                        //console.log(query.sql);
+                    });
+                }
+                //console.log(query.sql);
+            });
+        });
+    } else res.redirect('/bad_login');
+};

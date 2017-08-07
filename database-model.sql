@@ -86,16 +86,23 @@ CREATE TABLE IF NOT EXISTS `Observapp`.`post` (
   `idpost` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `fecha` DATETIME DEFAULT CURRENT_TIMESTAMP,
   `iduser` INT(11) NOT NULL,
+  `idobs` INT UNSIGNED NULL,
   `tipo` INT UNSIGNED NOT NULL,
   `t_principal` VARCHAR(300) NOT NULL,
   `estado` INT NOT NULL DEFAULT 1,
   `contenido` MEDIUMTEXT NULL,
   `tags` VARCHAR(320) NULL,
   INDEX `fk_post_user1_idx` (`iduser` ASC),
+  INDEX `fk_post_obs1_idx` (`idobs` ASC),
   PRIMARY KEY (`idpost`),
   CONSTRAINT `fk_post_user1`
     FOREIGN KEY (`iduser`)
     REFERENCES `Observapp`.`user` (`iduser`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION),
+  CONSTRAINT `fk_post_obs1`
+    FOREIGN KEY (`idobs`)
+    REFERENCES `Observapp`.`observatorio` (`idobservatorio`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -120,6 +127,7 @@ CREATE TABLE IF NOT EXISTS `Observapp`.`ciudadano` (
     REFERENCES `Observapp`.`user` (`iduser`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
+
 ENGINE = InnoDB;
 
 
@@ -132,6 +140,7 @@ CREATE TABLE IF NOT EXISTS `Observapp`.`comentario` (
   `fecha` DATETIME DEFAULT userCURRENT_TIMESTAMP,
   `iduser` INT(11) NOT NULL,
   `idpost` INT UNSIGNED NOT NULL,
+  `estado` INT NOT NULL DEFAULT 1,
   PRIMARY KEY (`idcomentario`),
   INDEX `fk_comentario_user1_idx` (`iduser` ASC),
   INDEX `fk_comentario_post1_idx` (`idpost` ASC),

@@ -31,9 +31,9 @@ exports.user_login_handler = function(req, res){
     req.getConnection(function(err,connection){
         if(err)
             console.log("Error Selecting : %s ",err );
-          connection.query('SELECT * FROM user WHERE username = ? AND password = ?',[username,password],function(err,rows)
+          connection.query('SELECT * FROM user WHERE username = ? AND password = ?',[username,password],function(err,users)
           {
-          	  if(rows.length == 0 || rows[0].tipo == 4){
+          	  if(users.length == 0 || users[0].tipo == 4){
           	  	console.log('Invalid Username or Password.');
           	  	res.redirect('/bad_login');
           	  }
@@ -41,13 +41,39 @@ exports.user_login_handler = function(req, res){
               if(err)
                   console.log("Error Selecting : %s ",err );
               
-              if(rows.length == 1){
+              if(users.length == 1){
+                  req.session.user = users[0];
+                  var nom = users[0].nombre;
 
-                  req.session.user = rows[0];
-                  req.session.isUserLogged = true;
-                  if(rows[0].tipo == 3 && rows[0].nombre == null){
-                      res.redirect("/f_login");
-                  } else res.redirect("/indx");
+                  switch(users[0].tipo){
+                      case 3:
+                          connection.query('SELECT observatorio.* FROM observatorio LEFT JOIN ciudadano ON ciudadano.idobs = observatorio.idobservatorio WHERE ciudadano.iduser = ?',users[0].iduser,function (err, rows){
+                              if(err) console.log("Error selecting cdd: %s",err);
+                              req.session.idobs = rows;
+                              req.session.isUserLogged = true;
+                              console.log(rows);
+                              if(nom == null){
+                                  res.redirect("/f_login");
+                              } else res.redirect('/indx');
+                          });
+                          break;
+                      case 2:
+                          req.session.isUserLogged = true;
+                          res.redirect("/mod_indx");
+                          break;
+                      case 1:
+                          connection.query('SELECT * FROM observatorio WHERE idmonitor = ?',users[0].iduser,function (err, rows){
+                              if(err) console.log("Error selecting obs: %s",err);
+                              console.log(typeof rows);
+                              console.log(rows);
+                              req.session.idobs = rows;
+                              req.session.isUserLogged = true;
+                              res.redirect('/indx');
+                          });
+                          break;
+                      default:
+                          res.redirect('/bad_login');
+                  }
               }
           });
            
