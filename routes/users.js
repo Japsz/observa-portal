@@ -11,6 +11,7 @@ exports.admin_login = function(req, res){
 };
 
 exports.user_logout = function(req, res){
+    req.session.isAdminLogged = false;
 	req.session.isUserLogged = false;
     req.session.user = 'undefined';
 	res.redirect('/');
@@ -18,7 +19,9 @@ exports.user_logout = function(req, res){
 
 exports.admin_logout = function(req, res){
 	req.session.isAdminLogged = false;
-	res.redirect('/');
+    req.session.isUserLogged = false;
+    req.session.user = 'undefined';
+    res.redirect('/');
 };
 
 exports.user_login_handler = function(req, res){
