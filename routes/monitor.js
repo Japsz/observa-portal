@@ -29,7 +29,8 @@ exports.save_cdd = function(req,res){
                         res.mailer.send('mail', {
                             to: input.correo, // REQUIRED. This can be a comma delimited string just like a normal email to field.
                             subject: 'Estás Inscrito en ObservaCiudadanía!', // REQUIRED.
-                            password: pass // All additional properties are also passed to the template as local variables.
+                            password: pass,
+                            usrname: input.correo.split("@")[0]// All additional properties are also passed to the template as local variables.
                         }, function (err) {
                             if (err) {
                                 // handle error
