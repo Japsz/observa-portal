@@ -89,9 +89,11 @@ app.post('/approve_comm', monitor.approve_comment);
 app.post('/m_post', cdd.m_post);
 app.post('/cdd/edit', cdd.save_edit);
 app.get('/cdd_edit',cdd.edit);
+app.get('/cdd_cedit',cdd.commitedit);
 app.get('/f_login',cdd.edit_f);
 app.post('/cdd/edit_f', cdd.save_edit_f);
 app.post('/comment/add', cdd.save_comment);
+app.post('/check_usr',cdd.check_usr);
 
 //Posts
 
@@ -122,6 +124,30 @@ app.get('/admin_login', users.admin_login);
 app.get('/bad_login', users.bad_login);
 app.post('/admin_login_handler', users.admin_login_handler);
 app.post('/user_login_handler', users.user_login_handler);
+
+// file ajax
+app.post('/subir_pic', function (req,res) {
+    var formidable = require('formidable');
+    var fs = require('fs');
+    var f_gen = new Date().toLocaleString();
+    f_gen = f_gen.replace(/\s/g,'');
+    f_gen = f_gen.replace(/\:/g,'');
+    f_gen = f_gen + req.session.user.iduser.toString() + ".jpg";
+    console.log("fecha: " + f_gen);
+    var form = new formidable.IncomingForm();
+    form.parse(req, function (err, fields, files) {
+        if(err) console.log("error file: %s",err);
+        var oldpath = files.filetoupload.path;
+        console.log(files);
+        var newpath = 'C:/Users/benja/Desktop/JibJab/observa-ciudadania/public/web-img/' + f_gen;
+        fs.rename(oldpath, newpath, function (err) {
+            if (err) throw err;
+            console.log('File uploaded and moved!');
+            res.send("/web-img/" + f_gen);
+        });
+
+    });
+});
 
 
 app.use(app.router);

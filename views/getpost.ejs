@@ -106,7 +106,7 @@
                                     <form action="/comment/add" method="post">
                                         <div class="form-inline">
                                             <div class="btn-group btn-group-justified">
-                                                <img class="circle pull-left" width="60px" height="auto" src="<%= usr.avatar_pat%>">
+                                                <img class="img-responsive img-circle pull-left" width="60px" height="auto" src="<%= usr.avatar_pat%>">
                                                 <textarea class="form-control pull-right" rows="2" cols="60" placeholder="Introduce tu comentario aquí" name="texto" type="text"></textarea>
                                             </div>
                                             <button class="btn btn-primary pull-right" type="submit" name="idpost" value="<%= data.idpost%>">Enviar</button>
@@ -120,7 +120,7 @@
                                         f_gen = f_gen.toLocaleString();
                                     %>
                                     <div class="row">
-                                        <img class="circle pull-left" width="60px" height="auto" src="<%= comments[i].avatar_pat%>">
+                                        <img class="img-responsive img-circle pull-left" width="60px" height="auto" src="<%= comments[i].avatar_pat%>">
                                         <a href="#">  <%= comments[i].username%></a>
                                         <p><%= comments[i].texto%></p>
                                         <p class="pull-right" href="#"><%= f_gen%></p>

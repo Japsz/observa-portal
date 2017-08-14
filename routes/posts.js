@@ -265,7 +265,7 @@ exports.get_cat = function(req, res){
         {
             if(err)
                 console.log("Error Selecting : %s ",err );
-            res.render('cdd_index',{data:rows,usr:req.session.user});
+            res.render('cdd_index',{data:rows,usr:req.session.user, obs: req.session.idobs});
 
             //console.log(query.sql);
         });

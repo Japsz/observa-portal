@@ -136,12 +136,14 @@
 <div class="modal fade" id="aa" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
+
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h2 class="modal-title" id="myModalLabel">Crear Post</h2>
             </div>
             <form action="/post/add" method="post" id="mform">
                 <div class="modal-body">
+                    <div id="preview"></div>
                     <div class="form-group">
                         <%  if(usr.tipo == 1){ %>
                                 <select name="idobserva" class="form-control">
@@ -161,8 +163,12 @@
                         <%}%>
 
                         <input type="text" name="tit" id="t_princ" class="form-control" placeholder="" required>
+                        <div class="input-group hidden" id="fail">
+                            <input type="file" name="filetoupload" onchange="upload(this)">
+                            <a class="input-group-btn btn btn-success">Sube una foto <i class="glyphicon glyphicon-upload"></i></a>
+                        </div>
                         <select id="catego" class="form-control hidden" name="cat" required>
-                            <option value="" disabled selected>Selecciona una categoría</option>
+                            <option value="" disabled selected>Selecciona una categoría </option>
                             <option value="18">Fin de la Pobreza</option>
                             <option value="78">Acción por el Clima</option>
                             <option value="71">Agua limpia y saneamiento</option>
@@ -212,21 +218,34 @@
 
     $(document).on("click", ".poster", function() {
         var data = {};
+        $("#t_princ").val("");
+        $("#editor").val("");
         data.tipo = $(this).data('tipo');
         $(".modal-footer #tipo").val(data.tipo);
         switch(data.tipo) {
             case 1:
                 $("#t_princ").attr("placeholder","Paz Mundial");
+                $("#preview").html("");
+                $("#fail").addClass("hidden");
+                $("#t_princ").removeClass("hidden");
                 break;
             case 2:
                 $("#t_princ").attr("placeholder","Título");
-
+                $("#fail").addClass("hidden");
+                $("#preview").html("");
+                $("#t_princ").removeClass("hidden");
                 break;
             case 3:
+                $("#preview").html("");
                 $("#t_princ").attr("placeholder","Url Imagen");
+                $("#t_princ").removeClass("hidden");
+                $("#fail").removeClass("hidden");
                 break;
             case 4:
+                $("#preview").html("");
                 $("#t_princ").attr("placeholder","Url Video (sólo youtube)");
+                $("#fail").addClass("hidden");
+                $("#t_princ").removeClass("hidden");
                 break;
             default:
                 status = "inactivo";
@@ -400,6 +419,36 @@
 
         }
     });
+    function upload(e){
+
+        if (!e.files) {
+            alert("This browser doesn't seem to support the `files` property of file inputs.");
+        }
+        else if (!e.files[0]) {
+            alert("Porfavor seleccione algún archivo");
+        }
+        else {
+            var formData = new FormData();
+            formData.append("filetoupload", e.files[0]);
+            $(function (){
+               $.ajax({
+                   url: '/subir_pic',
+                   data: formData,
+                   cache: false,
+                   contentType: false,
+                   processData: false,
+                   type: 'POST',
+                   success: function(data){
+                       $("#preview").html("<img width='auto' class='img-responsive' src='" + data + "' >");
+                       $("#avat").val(data);
+                       $("#t_princ").val(data);
+                       $("#t_princ").addClass("hidden");
+                   }
+               })
+            });
+        }
+
+    }
 </script>
 
 </body>

@@ -10,39 +10,59 @@ exports.save_cdd = function(req,res){
         req.getConnection(function (err, connection) {
 
             var data = {
-
-                username   : input.correo.split("@")[0],
                 password   : pass,
                 tipo	   : 3,
                 correo	   : input.correo
             };
-            connection.query("INSERT INTO user SET ? ",data, function(err, rows)
+            connection.query("SELECT * FROM user WHERE correo = ?",input.correo,function(err, rows)
             {
-
-                if (err){
-                    console.log("Error inserting : %s ",err );
-                    res.redirect('/obs_usr/' + input.idobs);
-                } else {
-                    connection.query("INSERT INTO ciudadano SET ?",{idobs : input.idobs, iduser : rows.insertId}, function(err, rows)
+                if(err) console.log("Error Selecting correo: %s",err);
+                if(rows.length){
+                    connection.query("INSERT INTO ciudadano SET ?",{idobs : input.idobs, iduser : rows[0].iduser}, function(err, rows)
                     {
-                        if (err) console.log("Error Inserting cdd : %s ", err);
-                        res.mailer.send('mail', {
-                            to: input.correo, // REQUIRED. This can be a comma delimited string just like a normal email to field.
-                            subject: 'Estás Inscrito en ObservaCiudadanía!', // REQUIRED.
-                            password: pass,
-                            usrname: input.correo.split("@")[0]// All additional properties are also passed to the template as local variables.
-                        }, function (err) {
-                            if (err) {
-                                // handle error
-                                console.log(err);
-                                res.send('There was an error sending the email');
-                                return;
-                            }
+
+                        if (err){
+                            console.log("Error inserting : %s ",err );
                             res.redirect('/obs_usr/' + input.idobs);
-                        });
+                        } else {
+                            connection.query("UPDATE user SET tipo = 3 WHERE correo = ?",input.correo, function(err, rows)
+                            {
+                                if (err) console.log("Error Inserting cdd : %s ", err);
+                                    res.redirect('/obs_usr/' + input.idobs);
+                            });
+                        }
+                    });
+                } else {
+                    connection.query("INSERT INTO user SET ? ",data, function(err, rows)
+                    {
+
+                        if (err){
+                            console.log("Error inserting : %s ",err );
+                            res.redirect('/obs_usr/' + input.idobs);
+                        } else {
+                            connection.query("INSERT INTO ciudadano SET ?",{idobs : input.idobs, iduser : rows.insertId}, function(err, rows)
+                            {
+                                if (err) console.log("Error Inserting cdd : %s ", err);
+                                res.mailer.send('mail', {
+                                    to: input.correo, // REQUIRED. This can be a comma delimited string just like a normal email to field.
+                                    subject: 'Estás Inscrito en ObservaCiudadanía!', // REQUIRED.
+                                    password: pass,
+                                    usrname: input.correo.split("@")[0]// All additional properties are also passed to the template as local variables.
+                                }, function (err) {
+                                    if (err) {
+                                        // handle error
+                                        console.log(err);
+                                        res.send('There was an error sending the email');
+                                        return;
+                                    }
+                                    res.redirect('/obs_usr/' + input.idobs);
+                                });
+                            });
+                        }
                     });
                 }
-            });
+            })
+
 
             // console.log(query.sql); get raw query
 

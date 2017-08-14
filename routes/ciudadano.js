@@ -16,7 +16,6 @@ exports.save_comment = function (req,res) {
 };
 exports.del_comment = function (req,res) {
     if(req.session.isUserLogged){
-        input.iduser = req.session.user.iduser;
         req.getConnection(function(err,connection){
             connection.query('DELETE FROM comentario WHERE idcomentario = ? AND iduser = ?',[req.params.idcom,req.session.user.iduser],function(err,rows)
             {
@@ -28,6 +27,28 @@ exports.del_comment = function (req,res) {
                 //console.log(query.sql);
             });
         });
+    } else res.redirect('/bad_login');
+};
+exports.check_usr = function (req,res) {
+    if(req.session.isUserLogged){
+        var input = JSON.parse(JSON.stringify(req.body));
+        if(input.username != req.session.user.username) {
+            req.getConnection(function (err, connection) {
+                connection.query('SELECT * FROM user WHERE username = ?', input.username, function (err, rows) {
+                    if (err ) {
+                        console.log("Error Deleting : %s ", err);
+                    } else if (rows.length){
+                        res.send("no");
+                    } else {
+                        res.send("si");
+
+                    }
+                    //console.log(query.sql);
+                });
+            });
+        } else {
+            res.send("si")
+        }
     } else res.redirect('/bad_login');
 };
 exports.add_laik = function (req, res) {
@@ -80,6 +101,13 @@ exports.edit = function(req, res){
 
     if(req.session.isUserLogged){
 
+        res.render('cdd_predit',{data: req.session.user,usr:req.session.user, obs: req.session.idobs});
+    }
+};
+exports.commitedit = function(req, res){
+
+    if(req.session.isUserLogged){
+
         res.render('cdd_edit',{data: req.session.user,usr:req.session.user, obs: req.session.idobs});
     }
 };
@@ -87,7 +115,9 @@ exports.save_edit = function(req, res){
 
     if(req.session.isUserLogged){
         var input = JSON.parse(JSON.stringify(req.body));
+        console.log(input.avatr);
         var data = {
+            avatar_pat: input.avatr,
             username : input.username,
             password : req.session.user.password,
             tipo : req.session.user.tipo,
@@ -132,6 +162,7 @@ exports.save_edit_f = function(req, res){
     if(req.session.isUserLogged){
         var input = JSON.parse(JSON.stringify(req.body));
         var data = {
+            avatar_pat: input.avatr,
             username : input.username,
             password : input.pass,
             tipo : req.session.user.tipo,

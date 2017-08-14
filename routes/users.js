@@ -27,14 +27,19 @@ exports.admin_logout = function(req, res){
 exports.user_login_handler = function(req, res){
 
 	var input = JSON.parse(JSON.stringify(req.body));
-
+    if(input.username.split("@").length > 1){
+        var query = "SELECT * FROM user WHERE correo = ? AND password = ?";
+    } else {
+        var query = 'SELECT * FROM user WHERE username = ? AND password = ?'
+    }
 	var username = input.username;
+
 	var password = input.password;
 
     req.getConnection(function(err,connection){
         if(err)
             console.log("Error Selecting : %s ",err );
-          connection.query('SELECT * FROM user WHERE username = ? AND password = ?',[username,password],function(err,users)
+          connection.query(query,[username,password],function(err,users)
           {
           	  if(users.length == 0 || users[0].tipo == 4){
           	  	console.log('Invalid Username or Password.');

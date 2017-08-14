@@ -15,6 +15,12 @@
                                 </div>
                                 <div class="blog-post-content">
                                     <form action="/cdd/edit" method="POST">
+                                        <input name="avatr" id="avat" value="<%=data.avatar_pat%>" class="hidden">
+                                        <div class="input-group" id="fail">
+                                            <div id="preview"><img class="img-responsive img-circle" src="<%=data.avatar_pat%>" width="100px" height="auto"></div>
+                                            <label>Sube tu Avatar</label>
+                                            <input type="file" name="filetoupload"  onchange="upload(this)">
+                                        </div>
                                         <label for="userame">Usuario</label>
                                         <input type="text" class="form-control" name="username" value="<% if(data.username){%><%= data.username%><%}%>" required>
                                         <label for="correo">Correo</label>
@@ -23,7 +29,7 @@
                                         <input type="text" class="form-control" name="name" value="<% if(data.nombre){%><%= data.nombre%><%}%>" required>
                                         <label for="ape">Apellido</label>
                                         <input type="text" class="form-control" name="ape" value="<% if(data.apellido){%><%= data.apellido%><%}%>" required>
-                                        <label for="fnac">Fecha de Naciento</label>
+                                        <label for="fnac">Fecha de Nacimiento</label>
                                         <input type="date" class="form-control" name="fnac" value="<% if(data.fnac){%><%= new Date(data.fnac).toLocaleDateString()%><%}%>" required>
                                         <label for="gend">Género</label>
                                         <select class="form-control" name="gend">

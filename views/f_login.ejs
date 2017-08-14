@@ -76,10 +76,17 @@
                                 <div class="blog-post-meta">
                                     <h1 class="blog-post-title">Completa tu perfil</h1>
                                 </div>
-                                <div class="blog-post-content">
+                                <div class="blog-post-content list-group">
                                     <form action="/cdd/edit_f" method="POST">
+                                        <input name="avatr" id="avat" value="/assets/img/placeholder.png" class="hidden">
+                                        <div class="input-group" id="fail">
+                                            <div id="preview"></div>
+                                            <label>Sube tu Avatar</label>
+                                            <input type="file" name="filetoupload"  onchange="upload(this)">
+                                        </div>
                                         <label for="userame">Usuario</label>
-                                        <input type="text" class="form-control" name="username" value="<% if(data.username){%><%= data.username%><%}%>" required>
+                                        <input type="text" onkeyup="checkusr(this)" class="form-control" id="usr" name="username" value="<% if(data.username){%><%= data.username%><%}%>" required>
+                                        <div id="checkusr" class="alert hidden"></div>
                                         <label for="pass">Contraseña</label>
                                         <div class="input-group">
                                             <input type="password" onkeyup="check()" class="form-control" id="pass" name="pass" required>
@@ -90,6 +97,7 @@
                                             <input type="password" onkeyup="check()" class="form-control" id="pass2" name="pass2" required>
                                             <span class="input-group-addon glyphicon glyphicon-remove" id="span2"></span>
                                         </div>
+                                        <div id="checkpass" class="alert hidden"></div>
                                         <label for="correo">Correo</label>
                                         <input type="text" class="form-control" name="correo" value="<% if(data.correo){%><%= data.correo%><%}%>" required>
                                         <label for="name">Nombre</label>
@@ -163,23 +171,118 @@
 <script type="text/javascript">
     $.material.init();
     $('body').materialScrollTop();
+    var ispass, isusr;
 
     function check() {
-        if($("#pass").val() == $("#pass2").val()){
-            $("#savedit").attr("disabled", false);
-            $("#span").removeClass("glyphicon-remove");
-            $("#span2").removeClass("glyphicon-remove");
-            $("#span").addClass("glyphicon-ok");
-            $("#span2").addClass("glyphicon-ok");
-        } else {
+        if($("#pass").val() == "" || $("#pass").val() != $("#pass2").val()){
+
+            ispass=false;
             $("#savedit").attr("disabled", true);
             $("#span").removeClass("glyphicon-ok");
             $("#span2").removeClass("glyphicon-ok");
             $("#span").addClass("glyphicon-remove");
             $("#span2").addClass("glyphicon-remove");
+            $("#checkpass").removeClass("hidden");
+            $("#checkpass").removeClass("alert-success");
+            $('#checkpass').addClass("alert-danger");
+            $('#checkpass').html("<i class='glyphicon glyphicon-remove'></i> <strong>No Coinciden!</strong> rayos, las contraseñas no son iguales.");
+
+        } else {
+            ispass = true;
+            if(isusr) $("#savedit").attr("disabled", true);
+            $("#savedit").attr("disabled", false);
+            $("#span").removeClass("glyphicon-remove");
+            $("#span2").removeClass("glyphicon-remove");
+            $("#span").addClass("glyphicon-ok");
+            $("#span2").addClass("glyphicon-ok");
+            $("#checkpass").removeClass("alert-danger");
+            $('#checkpass').addClass("alert-success");
+            $('#checkpass').html("<i class='glyphicon glyphicon-ok'></i>  <strong>Coinciden!</strong> no la olvides.");
+
 
         }
     }
+    function checkusr (e) {
+        var data = { usr: e.value }
+        $("#checkusr").removeClass("hidden");
+        if(data.usr.split("@").length > 1){
+            isusr = false;
+            $("#savedit").attr("disabled", true);
+            $("#checkusr").removeClass("alert-danger");
+            $('#checkusr').removeClass("alert-success");
+            $('#checkusr').addClass("alert-warning");
+            $('#checkusr').html("<i class='glyphicon glyphicon-warning-sign'></i>  <strong>Sin caracteres especiales!</strong> No se pueden usar '@'.");
+        } else if(data.usr == ""){
+            isusr = false;
+            $("#savedit").attr("disabled", true)
+            $("#checkusr").removeClass("alert-danger");
+            $('#checkusr').removeClass("alert-success");
+            $('#checkusr').addClass("alert-warning");
+            $('#checkusr').html("<i class='glyphicon glyphicon-info-sign'></i>  <strong>Sin Ideas?</strong> " +
+
+               "" +
+                ".");
+        } else {
+            $(function(){
+                $.ajax({
+                    type: 'POST',
+                    data: JSON.stringify({username: e.value}),
+                    contentType: 'application/json',
+                    url: '/check_usr',
+                    success: function(data) {
+                        if(data == "si"){
+                            if(ispass) {
+                                $("#savedit").attr("disabled", false);
+                            }
+                            isusr = true;
+                            $("#checkusr").removeClass("alert-warning");
+                            $("#checkusr").removeClass("alert-danger");
+                            $('#checkusr').addClass("alert-success");
+                            $('#checkusr').html("<i class='glyphicon glyphicon-ok'></i> <strong>Bien!</strong> el nombre de usuario está disponible.");
+
+                        } else {
+                            isusr = false;
+                            $("#savedit").attr("disabled", true);
+                            $("#checkusr").removeClass("alert-warning");
+                            $('#checkusr').removeClass("alert-success");
+                            $("#checkusr").addClass("alert-danger");
+                            $('#checkusr').html("<i class='glyphicon glyphicon-remove'></i> <strong>Ocupado!</strong> rayos, intenta con otro.");
+                        }
+                    }
+                });
+            });
+
+        }
+    }
+    function upload(e){
+
+        if (!e.files) {
+            alert("This browser doesn't seem to support the `files` property of file inputs.");
+        }
+        else if (!e.files[0]) {
+            alert("Please select a file before clicking 'Load'");
+        }
+        else {
+            var formData = new FormData();
+            formData.append("filetoupload", e.files[0]);
+            $(function (){
+                $.ajax({
+                    url: '/subir_pic',
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    type: 'POST',
+                    success: function(data){
+                        $("#preview").html("<img width='60px' height='auto' class='img-circle img-responsive' src='" + data + "' >");
+                        $("#avat").val(data);
+                    }
+                })
+            });
+        }
+
+    }
+
 </script>
 </body>
 </html>
