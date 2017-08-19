@@ -38,9 +38,9 @@
 
 <body>
 
-<div class="navbar navbar-material-blog navbar-primary navbar-absolute-top navbar-overlay">
+<div class="navbar navbar-material-blog navbar-inverse navbar-absolute-top navbar-overlay">
 
-    <div class="navbar-image" style="background-image: url('/assets/img/unsplash-1.jpg');background-position: center 40%;"></div>
+    <div class="navbar-image" style="background-image: url('/assets/img/unsplash-2.jpg');background-position: center 10%;"></div>
 
     <div class="navbar-wrapper container" >
         <div class="navbar-header">
@@ -51,25 +51,21 @@
             </button>
         </div>
         <div class="navbar-collapse collapse navbar-responsive-collapse">
-            <a href="/indx"><img class="navbar-brand material-icons" src="/assets/img/iso_iso.png"></a>
+            <a href="/indx"><img class="navbar-brand" src="/assets/img/isov_iso.png"></a>
             <ul class="nav navbar-nav">
                 <li class="active dropdown">
                 <li class="dropdown">
-                    <a href="/indx" >Inicio</a>
+                    <a href="/lab" >Todos los proyectos</a>
                 </li>
                 <% if(usr.tipo == 1){%>
                 <li>
-                    <a href="/obs_monit">Mis observatorios </a>
+                    <a href="/obs_monit">Mis observatorios</a>
                 </li>
                 <%} else if(usr.tipo == 3){%>
                 <li>
-                    <a href="/post_obs">Mi Observatorio</a>
+                    <a href="/proy_cdd">Mis Proyectos</a>
                 </li>
                 <%}%>
-                <li >
-                    <a href="/usr_post">Mis Posts</a>
-                </li>
-                <li><a href="/lab" class="navbar-danger navbar-link">Lab de Ideas</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="/cdd_edit"><%=usr.username%></a></li>
@@ -79,4 +75,3 @@
         </div>
     </div>
 </div>
-

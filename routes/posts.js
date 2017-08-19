@@ -5,7 +5,7 @@ exports.indx = function(req, res){
     if(req.session.isUserLogged){
         req.getConnection(function(err,connection){
 
-            connection.query('SELECT post.*,user.username,GROUP_CONCAT(DISTINCT tags.tag ORDER BY tags.tag) AS tagz, COUNT(DISTINCT megusta.iduser) as likes FROM' +
+            connection.query('SELECT post.*,user.username,user.avatar_pat AS iconouser,GROUP_CONCAT(DISTINCT tags.tag ORDER BY tags.tag) AS tagz, COUNT(DISTINCT megusta.iduser) as likes FROM' +
                 ' post LEFT JOIN tagpost ON post.idpost = tagpost.idpost LEFT JOIN tags ON tagpost.idtag = tags.idtag INNER JOIN user ON user.iduser = post.iduser' +
                 ' LEFT JOIN megusta ON megusta.idpost = post.idpost WHERE post.estado = 2 GROUP BY post.idpost ORDER BY post.fecha DESC LIMIT 6',function(err,rows)
             {
@@ -134,7 +134,6 @@ exports.save = function(req,res){
 
                                     if (err)
                                         console.log("Error inserting : %s ",err );
-
                                     res.redirect('/indx');
 
                                 });

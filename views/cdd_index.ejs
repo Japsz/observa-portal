@@ -32,7 +32,6 @@
     for(var i = 0;i<data.length;i++){
         f_gen = new Date(data[i].fecha);
         f_gen = f_gen.toLocaleString();
-        console.log(data[i].estado);
         switch(data[i].tipo) {
             case 1:
                 %><section class="blog-post" id="<%= data[i].idpost %>">
@@ -47,6 +46,7 @@
                                         <h2 class="blog-post-title"><%= data[i].t_principal%></h2>
                                     </a>
                                     <a class="blog-post-share pull-left" href="#">
+                                        <img src="<%= data[i].iconouser%>" width="50px" height="auto" class="img-circle img-responsive">
                                         Creado por: <%= data[i].username%>
                                     </a>
                                     <div class="blog-post-share pull-right">
@@ -76,6 +76,7 @@
                                     </a>
                                     <p><%- data[i].contenido%></p>
                                     <a class="blog-post-share pull-left" href="#">
+                                        <img src="<%= data[i].iconouser%>" width="50px" height="auto" class="img-circle img-responsive">
                                         Creado por: <%= data[i].username%>
                                     </a>
                                     <div class="blog-post-share pull-right">
@@ -103,6 +104,7 @@
                                 <div class="blog-post-content">
                                     <p><%- data[i].contenido%></p>
                                     <a class="blog-post-share pull-left" href="#">
+                                        <img src="<%= data[i].iconouser%>" width="50px" height="auto" class="img-circle img-responsive">
                                         Creado por: <%= data[i].username%>
                                     </a>
                                     <div class="blog-post-share pull-right">
@@ -130,6 +132,7 @@
                                 <div class="blog-post-content">
                                     <p ><%- data[i].contenido%></p>
                                     <a class="blog-post-share pull-left" href="#">
+                                        <img src="<%= data[i].iconouser%>" width="50px" height="auto" class="img-circle img-responsive">
                                         Creado por: <%= data[i].username%>
                                     </a>
                                     <div class="blog-post-share pull-right">

@@ -1,0 +1,75 @@
+<%- include layouts/proyect_header %>
+
+
+<div class="container blog-content">
+    <div class="row">
+        <h1 class="page-header">Proyectos<a class="btn btn-success btn-lg pull-right" href="#" data-toggle="modal" data-target="#create"> + <i class="fa fa-lightbulb-o"></i> Tengo una idea!</a></h1>
+        <div class="col-sm-10 col-sm-offset-1 blog-main">
+
+                <div class="col-sm-4">
+<% if(data.length) {
+    var f_gen;
+
+    for(var i = 0;i<data.length;i++){
+        f_gen = new Date(data[i].actualizado);
+        f_gen = f_gen.toLocaleString();
+        if(i>0 && i%3 == 0){
+        %>
+                </div>
+                <div class="col-sm-4">
+        <%
+        }
+
+        %>
+                    <section class="blog-post" id="<%= data[i].idproyecto%>">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <% if(data[i].media != "no"){ %>
+                                <img src="<%= data[i].media%>" width="auto" class="img-responsive">
+                                <% } %>
+                                <div class="blog-post-meta">
+                                    <input class="hidden" value="<%= data[i].tagz%>" data-id="<%= data[i].idproyecto%>">
+                                    <p class="blog-post-date pull-right">etapa: <%= data[i].etapa%> | <%= f_gen%></p>
+                                </div>
+                                <div class="blog-post-content">
+                                    <a href="/proy/<%= data[i].idproyecto%>">
+                                        <h2 class="blog-post-title"><%= data[i].titulo%></h2>
+                                        <h4><%= data[i].problema%></h3>
+                                    </a>
+                                    <p><%- data[i].descripcion%></p>
+                                    <img src="<%= data[i].iconouser%>" width="30px" height="auto" class="img-circle img-responsive pull-left">
+                                    <a class="blog-post-share pull-left text-right" href="#">
+                                        <%= data[i].username%>
+                                    </a>
+                                    <div class="blog-post-share pull-right">
+                                        <a class="comm col-xs-2" data-id="<%= data[i].idproyecto%>" href="/proy/<%= data[i].idproyecto%>">
+                                            <i class="glyphicon glyphicon-comment"></i>
+                                        </a>
+                                        <a class="laik col-xs-2" data-id="<%= data[i].idproyecto%>" href="#">
+                                            <i class="glyphicon glyphicon-thumbs-up"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <%
+
+    }
+} else {%>
+<p> No hay proyectos</p>
+<% } %>
+
+                </div>
+
+        </div><!-- /.blog-main -->
+        <div id="next">
+            <nav>
+                <ul class="pager center-block">
+                    <input type="hidden" value="<% if(data.length){%><%= data[data.length-1].idpost%><%}%>" id="idpst">
+                    <li><a class="withripple strim" href="#">Más</a></li>
+                </ul>
+            </nav>
+        </div>
+
+<%- include layouts/proyect_footer.ejs %>

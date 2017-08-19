@@ -8,6 +8,7 @@ var observ = require('./routes/observatorio');
 var cdd = require('./routes/ciudadano');
 var monitor = require('./routes/monitor');
 var posts = require('./routes/posts');
+var proyect = require('./routes/proyectos');
 var admin = require('./routes/admin');
 var app = express(), mailer = require("express-mailer");
 var flash = require('connect-flash');
@@ -107,6 +108,11 @@ app.post('/rm_laik',cdd.rm_laik);
 app.get('/usr_post',posts.usr_post);
 app.get('/post_obs',posts.post_obs);
 app.post('/post/edit/:idpost', posts.p_edit);
+
+// Proyectos
+
+app.get('/lab',proyect.indx);
+app.post('/proy/add',proyect.save);
 
 //Users
 

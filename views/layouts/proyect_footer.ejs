@@ -1,0 +1,207 @@
+
+</div>
+</div>
+</div>
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+
+
+
+<script src="/assets/js/jquery-min.js"></script>
+
+<div class="modal fade" id="create" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h2 class="modal-title" id="myModalLabel">Crear Proyecto</h2>
+            </div>
+            <form action="/proy/add" method="post" id="mform">
+                <div class="modal-body">
+                    <div id="preview"></div>
+                    <div class="form-group">
+                        <%  if(usr.tipo == 1){ %>
+                        <select name="idobserva" class="form-control">
+                            <option value="" disabled selected>Seleccione un observatorio</option>
+                            <%
+                            for(var j = 0; j<obs.length;j++){
+                            %>
+                            <option value="<%= obs[j].idobservatorio%>"><%= obs[j].nom%></option>
+                            <%
+
+                            }%>
+                            <option value="no">Sin observatorio</option>
+                        </select>
+                        <%
+                        }
+                        %>
+                        <input name="media" type="hidden" id="media" value="no">
+                        <div class="input-group" id="fail">
+                            <input type="file" name="filetoupload" onchange="upload(this)">
+                            <a class="input-group-btn btn btn-success">Sube una Portada de proyecto <i class="glyphicon glyphicon-upload"></i></a>
+                        </div>
+
+                        <input type="text" name="tit" id="tit" class="form-control" placeholder="Título del proyecto" required>
+                        <input type="textarea" maxlength="140" rows="2" name="prob" class="form-control" placeholder="Problema Base" required>
+
+                        <select id="catego" class="form-control" name="cat">
+                            <option value="" disabled selected>Selecciona una categoría </option>
+                            <option value="18">Fin de la Pobreza</option>
+                            <option value="78">Acción por el Clima</option>
+                            <option value="71">Agua limpia y saneamiento</option>
+                            <option value="82">Alianzas para lograr Objetivos</option>
+                            <option value="76">Ciudades y comunidades Sostenibles</option>
+                            <option value="69">Educación de Calidad</option>
+                            <option value="72">Energía asequible y no contaminante</option>
+                            <option value="67">Hambre Cero</option>
+                            <option value="70">Igualdad de Género</option>
+                            <option value="74">Industria Innovación e infraestructura</option>
+                            <option value="81">Paz justicia e Instituciones solidas</option>
+                            <option value="77">Producción y consumo responsable</option>
+                            <option value="75">Reducción de Desigualdades</option>
+                            <option value="68">Salud y Bienestar</option>
+                            <option value="73">Trabajo Decente y crecimiento económico</option>
+                            <option value="80">Vida de Ecosistemas terrestres</option>
+                            <option value="79">Vida submarina</option>
+                        </select>
+                        <label for="testo">Descripción</label>
+                        <textarea type="text" name="testo" id="editor" ></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                    <div class="form-group form-inline">
+
+                        <input type='text' class='form-control' name='tags' id="tag" value="" placeholder="tags (Ej: tag1, tag2, tag3)">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                            <button type="submit"  class="btn btn-primary">+ Proyecto</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<link href="/assets/css/jquery-te-1.4.0.css" rel="stylesheet">
+<script src="/assets/js/jquery-te-1.4.0.min.js"></script>
+<script src="/assets/js/ripples.min.js"></script>
+<script src="/assets/js/material.min.js"></script>
+<script src="/assets/js/material-scrolltop.js"></script>
+<script src="/assets/js/main.js"></script>
+
+<script src="/assets/js/bootstrap.min.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="/assets/js/ie10-viewport-bug-workaround.js"></script>
+<!-- datepicker -->
+<script type="text/javascript" src="/assets/js/bootstrap-datepicker.min.js"></script>
+<script type="text/javascript" src="/assets/js/moment-with-locales.min.js"></script>
+<script type="text/javascript" src="/assets/js/transition.js"></script>
+<script type="text/javascript" src="/assets/js/collapse.js"></script><script type="text/javascript" src="/assets/js/bootstrap-datetimepicker.min.js"></script>
+<link rel="stylesheet" href="/assets/css/bootstrap-datetimepicker.min.css" >
+<script type="text/javascript">
+    $("ul.qcontrols li").click(function(){
+        // If this isn't already active
+        if (!$(this).hasClass("active")) {
+            // Remove the class from anything that is active
+            $("ul.qcontrols li.active").removeClass("active");
+            // And make this active
+            $(this).addClass("active");
+        }
+    });
+
+    $(document).on("click", ".prejumps", function() { 
+        var val = [];
+        var emailRegex = '^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$';
+        var email = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+        console.log(email.test(verif));
+        $(':checkbox:checked').each(function(i){
+            val[i] = $(this).val();
+        });
+        if(val.length){
+            var verif = $("#verif").val();
+            console.log(email.test(verif));
+            if(verif == ""){
+                $("#preregistro").modal("toggle");
+            } else if (email.test(verif)){
+                $("#pform").submit();
+            } else {
+                alert("Ingrese un email válido");
+            }
+        } else {
+            alert("Seleccione algún prejumper");
+        }
+        
+
+    });
+    $(".blog-post-meta :input.hidden").each(function (j) {
+        var tagger = $(this).val();
+        var idpost = "#" + $(this).data('id');
+        tagger = tagger.split(",");
+        for(var i = 0; i < tagger.length;i++){
+            if(tagger[i] != "null") {
+                $(idpost + " .blog-post-meta").append('<span class="label label-light label-primary">' + tagger[i] + '</span> ');
+            } else $(idpost + " .blog-post-meta").append('<span class="label label-light label-primary">jeje</span> ');
+
+        }
+    });
+    $(function () {
+        $("#editor").jqte({
+            color: false,
+            source: false,
+            sub: false,
+            sup: false,
+            strike: false,
+            indent: false,
+            format: false,
+            outdent: false
+        });
+    });
+    function upload(e){
+
+        if (!e.files) {
+            alert("This browser doesn't seem to support the `files` property of file inputs.");
+        }
+        else if (!e.files[0]) {
+            alert("Porfavor seleccione algún archivo");
+            $("#media").val("no");
+            $("#preview").html("");
+        }
+        else {
+            var formData = new FormData();
+            formData.append("filetoupload", e.files[0]);
+            $(function (){
+                $.ajax({
+                    url: '/subir_pic',
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    type: 'POST',
+                    success: function(data){
+                        $("#preview").html("<img width='auto' class='img-responsive' src='" + data + "' >");
+                        $("#media").val(data);
+                    }
+                })
+            });
+        }
+
+    }
+</script>
+<script>
+
+    function enable2() {
+        document.getElementById("myBtn1").disabled = false;
+        document.getElementById("del").className = "btn btn-primary btn-danger btn-lg deljump";
+    }
+    function enable() {
+        document.getElementById("del").className = "btn btn-primary deljump btn-danger";
+        document.getElementById("add").disabled = false;
+        document.getElementById("continuar").disabled = false;
+    }
+</script>
+
+</body>
+</html>
