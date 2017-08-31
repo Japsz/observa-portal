@@ -233,6 +233,8 @@
                     success: function(data){
                         $("#preview").html("<img width='auto' class='img-responsive' src='" + data + "' >");
                         $("#media").val(data);
+                        $("#t_princ").val(data);
+                        $("#t_princ").addClass("hidden");
                     }
                 })
             });
