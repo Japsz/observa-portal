@@ -146,6 +146,7 @@ app.post('/subir_pic', function (req,res) {
     f_gen = f_gen.replace(/\s/g,'');
     f_gen = f_gen.replace(/\:/g,'');
     f_gen = f_gen.replace(/\//g,'');
+    f_gen = f_gen.replace(/\,/g,'');
     f_gen = f_gen + req.session.user.iduser.toString() + ".jpg";
     console.log("fecha: " + f_gen);
     var form = new formidable.IncomingForm();
