@@ -37,6 +37,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.methodOverride());
 app.use(flash());
 app.use(express.cookieParser('isLogged'));
+app.use(express.cookieParser('laiks'));
+
 app.use(express.cookieSession());
 
 app.use(express.static(path.join(__dirname, 'public')));
@@ -113,6 +115,11 @@ app.post('/post/edit/:idpost', posts.p_edit);
 
 app.get('/lab',proyect.indx);
 app.post('/proy/add',proyect.save);
+app.get('/proy_cdd',proyect.myproy);
+app.get('/proy/get/:idproy',proyect.getproy);
+app.post('/act/add',proyect.act_save);
+app.post('/sol/add',proyect.sol_save);
+app.get('/sol/get/:idproy',proyect.getsol);
 
 //Users
 

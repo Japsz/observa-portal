@@ -11,6 +11,13 @@
 
     <title>Observa</title>
 
+    <style>
+        img {
+            margin: auto;
+            display: block;
+        }
+    </style>
+
     <!-- Loading animation -->
     <script src="/assets/js/pace.min.js"></script>
 
@@ -69,9 +76,10 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="/cdd_edit"><%=usr.username%></a></li>
-                <li><img class="navbar-link navbar-brand img-circle material-icons" src="<%= usr.avatar_pat%>"></li>
+                <li><img class="navbar-link navbar-brand img-circle material-icons" style="margin: auto;display: block;" src="<%= usr.avatar_pat%>"></li>
                 <li><a href="/user_logout" class="navbar-link">Salir</a></li>
             </ul>
         </div>
     </div>
 </div>
+<div id="success"></div>
