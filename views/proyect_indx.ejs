@@ -25,27 +25,27 @@
                         <div class="panel panel-default">
                             <div class="panel-body">
                                 <% if(data[i].media != "no"){ %>
-                                <img src="<%= data[i].media%>" width="auto" class="img-responsive">
+                                <img src="<%= data[i].media%>" width="auto" style="margin: auto;display: block;" class="img-responsive">
                                 <% } %>
                                 <div class="blog-post-meta">
                                     <input class="hidden" value="<%= data[i].tagz%>" data-id="<%= data[i].idproyecto%>">
                                     <p class="blog-post-date pull-right">etapa: <%= data[i].etapa%> | <%= f_gen%></p>
                                 </div>
                                 <div class="blog-post-content">
-                                    <a href="/proy/<%= data[i].idproyecto%>">
+                                    <a href="/proy/get/<%= data[i].idproyecto%>">
                                         <h2 class="blog-post-title"><%= data[i].titulo%></h2>
                                         <h4><%= data[i].problema%></h3>
                                     </a>
                                     <p><%- data[i].descripcion%></p>
-                                    <img src="<%= data[i].iconouser%>" width="30px" height="auto" class="img-circle img-responsive pull-left">
+                                    <img src="<%= data[i].iconouser%>" width="30px" height="auto" style="margin: auto;display: block;" class="img-circle img-responsive pull-left">
                                     <a class="blog-post-share pull-left text-right" href="#">
                                         <%= data[i].username%>
                                     </a>
                                     <div class="blog-post-share pull-right">
-                                        <a class="comm col-xs-2" data-id="<%= data[i].idproyecto%>" href="/proy/<%= data[i].idproyecto%>">
-                                            <i class="glyphicon glyphicon-comment"></i>
+                                        <a class="comm col-sm-2" data-id="<%= data[i].idproyecto%>" href="/proy/get/<%= data[i].idproyecto%>">
+                                            <i class="glyphicon glyphicon-eye-open"></i>
                                         </a>
-                                        <a class="laik col-xs-2" data-id="<%= data[i].idproyecto%>" href="#">
+                                        <a class="laik col-sm-2" data-id="<%= data[i].idproyecto%>" href="#">
                                             <i class="glyphicon glyphicon-thumbs-up"></i>
                                         </a>
                                     </div>

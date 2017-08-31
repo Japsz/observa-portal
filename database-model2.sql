@@ -227,7 +227,7 @@ ENGINE = InnoDB;
 -- Table `Observapp`.`proyecto`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Observapp`.`proyecto` (
-  `idproyecto` INT NOT NULL,
+  `idproyecto` INT NOT NULL AUTO_INCREMENT,
   `titulo` VARCHAR(45) NULL,
   `descripcion` MEDIUMTEXT NULL,
   `problema` VARCHAR(140) NULL,
@@ -257,7 +257,7 @@ ENGINE = InnoDB;
 -- Table `Observapp`.`solucion`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Observapp`.`solucion` (
-  `idsolucion` INT NOT NULL,
+  `idsolucion` INT NOT NULL AUTO_INCREMENT,
   `idproyecto` INT NOT NULL,
   `iduser` INT(11) NOT NULL,
   `contenido` MEDIUMTEXT NULL,
@@ -307,8 +307,8 @@ ENGINE = InnoDB;
 -- Table `Observapp`.`actualizacion`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Observapp`.`actualizacion` (
-  `idactualizacion` INT NOT NULL,
-  `tipo` INT NULL,
+  `idactualizacion` INT NOT NULL AUTO_INCREMENT,
+  `tipo` INT NULL NOUT NULL DEFAULT 1,
   `idproyecto` INT NOT NULL,
   `iduser` INT(11) NOT NULL,
   `fecha` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,

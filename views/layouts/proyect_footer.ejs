@@ -67,7 +67,7 @@
                             <option value="79">Vida submarina</option>
                         </select>
                         <label for="testo">Descripción</label>
-                        <textarea type="text" name="testo" id="editor" ></textarea>
+                        <textarea type="text" name="testo" id="editor2" ></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -111,6 +111,43 @@
             $(this).addClass("active");
         }
     });
+    var quill = false;
+
+    $(document).on("click", ".poster", function() {
+        var data = {};
+        $("#t_princ").val("");
+        $("#editor").val("");
+        data.tipo = $(this).data('tipo');
+        $(".modal-footer #tipo").val(data.tipo);
+        switch(data.tipo) {
+            case 1:
+                $("#t_princ").attr("placeholder","Paz Mundial");
+                $("#preview").html("");
+                $("#fail").addClass("hidden");
+                $("#t_princ").removeClass("hidden");
+                break;
+            case 2:
+                $("#t_princ").attr("placeholder","Título");
+                $("#fail").addClass("hidden");
+                $("#preview").html("");
+                $("#t_princ").removeClass("hidden");
+                break;
+            case 3:
+                $("#preview").html("");
+                $("#t_princ").attr("placeholder","Url Imagen");
+                $("#t_princ").removeClass("hidden");
+                $("#fail").removeClass("hidden");
+                break;
+            case 4:
+                $("#preview").html("");
+                $("#t_princ").attr("placeholder","Url Video (sólo youtube)");
+                $("#fail").addClass("hidden");
+                $("#t_princ").removeClass("hidden");
+                break;
+            default:
+                status = "inactivo";
+        }
+    });
 
     $(document).on("click", ".prejumps", function() { 
         var val = [];
@@ -147,8 +184,21 @@
 
         }
     });
+    $.material.init();
+    $('body').materialScrollTop();
+
     $(function () {
         $("#editor").jqte({
+            color: false,
+            source: false,
+            sub: false,
+            sup: false,
+            strike: false,
+            indent: false,
+            format: false,
+            outdent: false
+        });
+        $("#editor2").jqte({
             color: false,
             source: false,
             sub: false,
