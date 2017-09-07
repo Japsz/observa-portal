@@ -78,9 +78,6 @@ exports.getproy = function(req, res){
                 connection.query('SELECT group_concat(user.username , "@" , user.iduser, "@", user.avatar_pat) as usuarios,proyecto.* FROM proyecto LEFT JOIN userproyecto ON userproyecto.idproyecto = proyecto.idproyecto LEFT JOIN user ON user.iduser = userproyecto.iduser WHERE proyecto.idproyecto = ?',req.params.idproy,function(err,rows)
                 {
                     if(rows.length){
-                        console.log(acts);
-                        console.log(rows);
-                        console.log(req.params.idproy);
                         rows[0].usuarios = rows[0].usuarios.split(",");
                         for(var i = 0; i<rows[0].usuarios.length;i++){
                             rows[0].usuarios[i] = rows[0].usuarios[i].split("@");
@@ -228,6 +225,7 @@ exports.act_save = function(req, res){
         });
     } else res.redirect('/bad_login');
 };
+
 exports.sol_save = function(req, res){
     if(req.session.isUserLogged){
         var input = JSON.parse(JSON.stringify(req.body));
@@ -244,7 +242,7 @@ exports.sol_save = function(req, res){
             {
                 if(err)
                     console.log("Error Selecting : %s ",err );
-                res.send('si');
+                res.redirect('/sol/get/' + input.idproy);
                 //console.log(query.sql);
             });
         });

@@ -10,81 +10,6 @@
 
 <script src="/assets/js/jquery-min.js"></script>
 
-<div class="modal fade" id="create" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h2 class="modal-title" id="myModalLabel">Crear Proyecto</h2>
-            </div>
-            <form action="/proy/add" method="post" id="mform">
-                <div class="modal-body">
-                    <div id="preview"></div>
-                    <div class="form-group">
-                        <%  if(usr.tipo == 1){ %>
-                        <select name="idobserva" class="form-control">
-                            <option value="" disabled selected>Seleccione un observatorio</option>
-                            <%
-                            for(var j = 0; j<obs.length;j++){
-                            %>
-                            <option value="<%= obs[j].idobservatorio%>"><%= obs[j].nom%></option>
-                            <%
-
-                            }%>
-                            <option value="no">Sin observatorio</option>
-                        </select>
-                        <%
-                        }
-                        %>
-                        <input name="media" type="hidden" id="media" value="no">
-                        <div class="input-group" id="fail">
-                            <input type="file" name="filetoupload" onchange="upload(this)">
-                            <a class="input-group-btn btn btn-success">Sube una Portada de proyecto <i class="glyphicon glyphicon-upload"></i></a>
-                        </div>
-
-                        <input type="text" name="tit" id="tit" class="form-control" placeholder="Título del proyecto" required>
-                        <input type="textarea" maxlength="140" rows="2" name="prob" class="form-control" placeholder="Problema Base" required>
-
-                        <select id="catego" class="form-control" name="cat">
-                            <option value="" disabled selected>Selecciona una categoría </option>
-                            <option value="18">Fin de la Pobreza</option>
-                            <option value="78">Acción por el Clima</option>
-                            <option value="71">Agua limpia y saneamiento</option>
-                            <option value="82">Alianzas para lograr Objetivos</option>
-                            <option value="76">Ciudades y comunidades Sostenibles</option>
-                            <option value="69">Educación de Calidad</option>
-                            <option value="72">Energía asequible y no contaminante</option>
-                            <option value="67">Hambre Cero</option>
-                            <option value="70">Igualdad de Género</option>
-                            <option value="74">Industria Innovación e infraestructura</option>
-                            <option value="81">Paz justicia e Instituciones solidas</option>
-                            <option value="77">Producción y consumo responsable</option>
-                            <option value="75">Reducción de Desigualdades</option>
-                            <option value="68">Salud y Bienestar</option>
-                            <option value="73">Trabajo Decente y crecimiento económico</option>
-                            <option value="80">Vida de Ecosistemas terrestres</option>
-                            <option value="79">Vida submarina</option>
-                        </select>
-                        <label for="testo">Descripción</label>
-                        <textarea type="text" name="testo" id="editor2" ></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-
-                    <div class="form-group form-inline">
-
-                        <input type='text' class='form-control' name='tags' id="tag" value="" placeholder="tags (Ej: tag1, tag2, tag3)">
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                            <button type="submit"  class="btn btn-primary">+ Proyecto</button>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 <link href="/assets/css/jquery-te-1.4.0.css" rel="stylesheet">
 <script src="/assets/js/jquery-te-1.4.0.min.js"></script>
 <script src="/assets/js/ripples.min.js"></script>
@@ -111,7 +36,6 @@
             $(this).addClass("active");
         }
     });
-    var quill = false;
 
     $(document).on("click", ".poster", function() {
         var data = {};
@@ -148,30 +72,36 @@
                 status = "inactivo";
         }
     });
-
-    $(document).on("click", ".prejumps", function() { 
-        var val = [];
-        var emailRegex = '^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$';
-        var email = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
-        console.log(email.test(verif));
-        $(':checkbox:checked').each(function(i){
-            val[i] = $(this).val();
-        });
-        if(val.length){
-            var verif = $("#verif").val();
-            console.log(email.test(verif));
-            if(verif == ""){
-                $("#preregistro").modal("toggle");
-            } else if (email.test(verif)){
-                $("#pform").submit();
-            } else {
-                alert("Ingrese un email válido");
+    var both = true;
+    $(document).on("click", ".postint", function() {
+        var data = {};
+        $("#editor").val("");
+        data.tipo = $(this).data('tipo');
+        $(".modal-footer #tipo").val(data.tipo);
+        if(data.tipo == 1){
+            $(".t1").html("Comparte algo")
+            $(".t2").html("")
+            if(both){
+                $("#editor2").jqte();
+                both = false;
             }
         } else {
-            alert("Seleccione algún prejumper");
+            $(".t1").html("Describa la situación y/o problema que aborda el proyecto (causas y consecuencias).")
+            $(".t2").html("Señale cómo cambiará o incidirá el proyecto en cambiar la situación y/o problema identificado.")
+            if(!both){
+                $("#editor2").jqte({
+                    color: false,
+                    source: false,
+                    sub: false,
+                    sup: false,
+                    strike: false,
+                    indent: false,
+                    format: false,
+                    outdent: false
+                });
+                both = true;
+            }
         }
-        
-
     });
     $(".blog-post-meta :input.hidden").each(function (j) {
         var tagger = $(this).val();

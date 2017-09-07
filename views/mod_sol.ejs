@@ -1,6 +1,5 @@
 <%- include layouts/proyect_header.ejs %>
 
-
 <div class="container blog-content">
     <h3 class="page-header">Soluciones</h3>
     <ol class="breadcrumb">
@@ -26,12 +25,14 @@
                                         <img src="<%= data[i].iconouser%>" style="margin: 0;height: 30px" width="30px" class="img-circle img-responsive">
                                         <h5 style="margin-left: 10px"><%= data[i].username%></h5>
                                     </div>
-                                    <div class="blog-post-date pull-right">
-                                        <span class="glyphicon glyphicon-pushpin"></span>
+                                    <div class="blog-post-share pull-right">
+                                        <a href="#" data-toggle="modal" data-target="#sendsol" data-idsol="<%= data[i].idsolucion%>" class="btn btn-border postsol">
+                                        <span class="glyphicon glyphicon-pushpin"></span></a>
                                     </div>
                                 </div>
                             </div>
                             <div class="panel-footer"><p>Etapa: <%= data[i].etapa%> | <%=f_gen%></p></div>
+                            <div class="exito"></div>
                         </div>
                     </section>
 <%
@@ -67,31 +68,31 @@
                         <div class="text-center" style="display: flex;margin: 10px"><img src="<%= gral.usuarios[j][2]%>"  class="img-responsive img-circle" style="margin: 0; height: 30px" width="30px"> <p style="margin-left: 10px"><%= gral.usuarios[j][0]%></p></div>
                         <%}%>
                         <br>
-                        <a class="btn btn-primary">Muro Interno</a>
+                        <a class="btn btn-primary" href="/intern/<%=gral.idproyecto%>">Muro Interno</a>
                     </div>
                 </div>
             </div><!-- /.sidebar-module -->
 
         </div><!-- /.blog-sidebar -->
-        <div class="modal fade" id="aa" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal fade" id="sendsol" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
 
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h2 class="modal-title" id="myModalLabel">Proponer Solución</h2>
+                        <h2 class="modal-title" id="myModalLabel">Postear en muro interno</h2>
                     </div>
-                    <form id="mform">
+                    <form id="sform">
                         <div class="modal-body">
-                            <div class="prev"></div>
-                            <label>Solución</label>
+                            <h4>¿Quieres agregar una opinión?</h4>
                             <div class="form-group">
-                                <textarea type="text" name="texto" class="hidden" id="editor"></textarea>
+                                <input type="text" name="texto2" class="hidden" id="editor2">
                             </div>
+                            <p>Una vez que esté en el muro interno, podrán votar para agregar al creador del aporte como integrante del proyecto</p>
                         </div>
                         <div class="modal-footer">
-                            <input type="hidden" value="<%= gral.idproyecto%>" id="proy" name="idproy">
-                            <input name="tipo" value="" type="hidden" id="tipo">
+                            <input type="hidden" value="" id="idsol" name="idsol">
+                            <input name="tipo" value="2" type="hidden" id="tipo">
                             <div class="form-group form-inline">
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
@@ -106,30 +107,35 @@
         <script type="text/javascript">
 
             $(function(){
+                $(".postsol").click(function(){
+                    var idsol = $(this).data('idsol');
+                    $("#idsol").val(idsol);
+                })
                $("#send").click(function (e) {
                    e.preventDefault();
                     var data={};
                     data.tipo = $("#tipo").val();
-                    data.texto=$("#editor").val();
-                    data.idproy=$("#proy").val();
+                    data.texto2=$("#editor2").val();
+                    data.idsol=$("#idsol").val();
+
                     $.ajax({
                        type: 'POST',
                        data: JSON.stringify(data),
                        contentType: 'application/json',
-                       url: '/sol/add',
+                       url: '/postsol',
                        success: function(data) {
                            if(data == "si"){
-                               $("#mfrom").trigger('reset');
-                               $('#success').html("<div class='alert alert-success'>");
-                               $('#success > .alert-success')
-                                   .append("<strong>Bien!</strong> tu solución fue enviada.");
-                               $('#success > .alert-success')
+                               $("#sform").trigger('reset');
+                               $('#'+ $("#idsol").val() + " .exito").html("<div class='alert alert-success'>");
+                               $('#'+ $("#idsol").val() + ' .exito > .alert-success')
+                                   .append("<strong>Bien!</strong> se posteó en el muro interno.");
+                               $('#'+ $("#idsol").val() + ' .exito > .alert-success')
                                    .append('</div>');
-                               $("#success").fadeTo(2000, 500).slideUp(500, function(){
-                                   $("#success").slideUp(500);
+                               $('#'+ $("#idsol").val() + " .exito").fadeTo(2000, 500).slideUp(500, function(){
+                                   $('#'+ $("#idsol").val() + " .exito").slideUp(500);
                                });
                            } else {
-                               $(".prev").html("")
+                               $('#'+ $("#idsol").val() + " .exito").html("<div class='alert alert-danger'><strong>Rayos!</strong> hubo un error al mandar el post</div>");
                            }
                        }
                     });

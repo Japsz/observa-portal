@@ -8,6 +8,7 @@ var observ = require('./routes/observatorio');
 var cdd = require('./routes/ciudadano');
 var monitor = require('./routes/monitor');
 var posts = require('./routes/posts');
+var intern = require('./routes/intern');
 var proyect = require('./routes/proyectos');
 var admin = require('./routes/admin');
 var app = express(), mailer = require("express-mailer");
@@ -120,6 +121,11 @@ app.get('/proy/get/:idproy',proyect.getproy);
 app.post('/act/add',proyect.act_save);
 app.post('/sol/add',proyect.sol_save);
 app.get('/sol/get/:idproy',proyect.getsol);
+
+// Muro interno proyectos
+app.post('/postsol',intern.post_sol);
+app.get('/intern/:idproy',intern.getproy);
+app.post('/intern/add',intern.intern_save);
 
 //Users
 

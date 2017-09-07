@@ -71,5 +71,65 @@
                 </ul>
             </nav>
         </div>
+        <div class="modal fade" id="create" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h2 class="modal-title" id="myModalLabel">Crear Proyecto</h2>
+                    </div>
+                    <form action="/proy/add" method="post" id="mform">
+                        <div class="modal-body">
+                            <div id="preview"></div>
+                            <div class="form-group">
+                                <input name="media" type="hidden" id="media" value="no">
+                                <div class="input-group" id="fail">
+                                    <input type="file" name="filetoupload" onchange="upload(this)">
+                                    <a class="input-group-btn btn btn-success">Sube una Portada de proyecto <i class="glyphicon glyphicon-upload"></i></a>
+                                </div>
+
+                                <input type="text" name="tit" id="tit" class="form-control" placeholder="Título del proyecto" required>
+                                <input type="textarea" maxlength="140" rows="2" name="prob" class="form-control" placeholder="Problema Base" required>
+
+                                <select id="catego" class="form-control" name="cat">
+                                    <option value="" disabled selected>Selecciona una categoría </option>
+                                    <option value="18">Fin de la Pobreza</option>
+                                    <option value="78">Acción por el Clima</option>
+                                    <option value="71">Agua limpia y saneamiento</option>
+                                    <option value="82">Alianzas para lograr Objetivos</option>
+                                    <option value="76">Ciudades y comunidades Sostenibles</option>
+                                    <option value="69">Educación de Calidad</option>
+                                    <option value="72">Energía asequible y no contaminante</option>
+                                    <option value="67">Hambre Cero</option>
+                                    <option value="70">Igualdad de Género</option>
+                                    <option value="74">Industria Innovación e infraestructura</option>
+                                    <option value="81">Paz justicia e Instituciones solidas</option>
+                                    <option value="77">Producción y consumo responsable</option>
+                                    <option value="75">Reducción de Desigualdades</option>
+                                    <option value="68">Salud y Bienestar</option>
+                                    <option value="73">Trabajo Decente y crecimiento económico</option>
+                                    <option value="80">Vida de Ecosistemas terrestres</option>
+                                    <option value="79">Vida submarina</option>
+                                </select>
+                                <label for="testo">Descripción</label>
+                                <textarea type="text" name="testo" id="editor2" ></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+
+                            <div class="form-group form-inline">
+
+                                <input type='text' class='form-control' name='tags' id="tag" value="" placeholder="tags (Ej: tag1, tag2, tag3)">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                                    <button type="submit"  class="btn btn-primary">+ Proyecto</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 
 <%- include layouts/proyect_footer.ejs %>

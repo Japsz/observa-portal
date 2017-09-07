@@ -60,7 +60,7 @@
                         <div class="text-center" style="display: flex;margin: 10px"><img src="<%= gral.usuarios[j][2]%>"  class="img-responsive img-circle" style="margin: 0; height: 30px" width="30px"> <p style="margin-left: 10px"><%= gral.usuarios[j][0]%></p></div>
                         <%}%>
                         <br>
-                        <a class="btn btn-success poster" data-toggle="modal" data-target="#aa" data-tipo="<%= gral.etapa%>">Proponer solución</a>
+                        <a class="btn btn-success poster" data-toggle="modal" data-target="#aa" data-tipo="<%= gral.etapa%>">Aportar al proyecto</a>
                     </div>
                 </div>
             </div><!-- /.sidebar-module -->
@@ -72,12 +72,13 @@
 
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h2 class="modal-title" id="myModalLabel">Proponer Solución</h2>
+                        <h2 class="modal-title" id="myModalLabel">Aporte</h2>
                     </div>
-                    <form id="mform">
+                    <form action="/sol/add" method="post" id="mform">
                         <div class="modal-body">
                             <div class="prev"></div>
-                            <label>Solución</label>
+                            <h4>Contribuye con alguna idea, solución o conocimiento que creas pueda ser útil para el proyecto.</h4>
+                            <h5>Si eres seleccionado por los integrantes, podrás participar del mismo.</h5>
                             <div class="form-group">
                                 <textarea type="text" name="texto" class="hidden" id="editor"></textarea>
                             </div>
@@ -88,7 +89,7 @@
                             <div class="form-group form-inline">
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                                    <button type="button" data-dismiss="modal" id="send" class="btn btn-primary">Proponer</button>
+                                    <button type="submit" class="btn btn-primary">Aportar</button>
                                 </div>
                             </div>
                         </div>
@@ -96,6 +97,8 @@
                 </div>
             </div>
         </div>
+
+        <!--
         <script type="text/javascript">
 
             $(function(){
@@ -129,6 +132,6 @@
                });
             });
         </script>
-
+        -->
 
 <%- include layouts/proyect_footer.ejs %>
