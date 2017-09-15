@@ -51,6 +51,71 @@ exports.check_usr = function (req,res) {
         }
     } else res.redirect('/bad_login');
 };
+exports.intern_laik = function (req, res) {
+    if(req.session.isUserLogged){
+        var input = JSON.parse(JSON.stringify(req.body));
+        req.getConnection(function (err, connection) {
+            connection.query("SELECT postinterno.laiks,COUNT(userproyecto.iduser) as cantint FROM postinterno INNER JOIN userproyecto ON postinterno.idproyecto = userproyecto.idproyecto WHERE postinterno.idpostinterno = ? GROUP BY postinterno.laiks",[input.idpost], function(err, rows)
+            {
+
+                if (err)
+                    console.log("Error inserting : %s ",err );
+                var newlike, classname, numint, totvot;
+                if(rows){
+                    numint = rows[0].cantint;
+                    if(rows[0].laiks){
+                        if(rows[0].laiks.indexOf("&" + req.session.user.iduser + "&") != -1){
+                            newlike =  rows[0].laiks.replace("&" + req.session.user.iduser + "&",'');
+                            classname = "btn-inverse";
+                        } else {
+                            newlike = rows[0].laiks + "&" + req.session.user.iduser + "&";
+                            classname = "btn-success";
+                        }
+                    } else {
+                        newlike = "&" + req.session.user.iduser + "&";
+                        classname = "btn-success";
+                        }
+                    connection.query("UPDATE postinterno SET laiks = ? WHERE idpostinterno = ?",[newlike,input.idpost], function(err, rows)
+                    {
+
+                        if (err)
+                            console.log("Error inserting : %s ",err );
+                        if(newlike == ""){
+                            totvot = 0;
+                        } else {
+                            totvot = newlike.split("&&").length;
+                        }
+                        res.send({html: '<i class="glyphicon glyphicon-thumbs-up"></i>' + totvot + ' / ' + ((numint - numint%2)/2 + 1),newlaik: classname});
+                    });
+                } else
+                    res.send("no");
+            });
+        });
+    } else res.send("no");
+};
+exports.rm_laik_intern = function (req, res) {
+    if(req.session.isUserLogged){
+        var input = JSON.parse(JSON.stringify(req.body));
+        req.getConnection(function (err, connection) {
+            connection.query("DELETE FROM megusta WHERE idpost = ? AND iduser = ?",[input.idpost,req.session.user.iduser], function(err, rows)
+            {
+
+                if (err)
+                    console.log("Error inserting : %s ",err );
+                connection.query("SELECT * FROM megusta WHERE idpost = ?",[input.idpost], function(err, rows)
+                {
+
+                    if (err)
+                        console.log("Error inserting : %s ",err );
+
+                    res.send(rows.length.toString());
+
+                });
+
+            });
+        });
+    } else res.send("no");
+};
 exports.add_laik = function (req, res) {
     if(req.session.isUserLogged){
         var input = JSON.parse(JSON.stringify(req.body));

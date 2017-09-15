@@ -7,6 +7,7 @@
 <!-- Placed at the end of the document so the pages load faster -->
 
 
+<button class="material-scrolltop primary" type="button"></button>
 
 <script src="/assets/js/jquery-min.js"></script>
 
@@ -27,6 +28,7 @@
 <script type="text/javascript" src="/assets/js/collapse.js"></script><script type="text/javascript" src="/assets/js/bootstrap-datetimepicker.min.js"></script>
 <link rel="stylesheet" href="/assets/css/bootstrap-datetimepicker.min.css" >
 <script type="text/javascript">
+    var both = true;
     $("ul.qcontrols li").click(function(){
         // If this isn't already active
         if (!$(this).hasClass("active")) {
@@ -36,7 +38,6 @@
             $(this).addClass("active");
         }
     });
-
     $(document).on("click", ".poster", function() {
         var data = {};
         $("#t_princ").val("");
@@ -72,15 +73,14 @@
                 status = "inactivo";
         }
     });
-    var both = true;
     $(document).on("click", ".postint", function() {
-        var data = {};
+        var data;
         $("#editor").val("");
-        data.tipo = $(this).data('tipo');
-        $(".modal-footer #tipo").val(data.tipo);
-        if(data.tipo == 1){
-            $(".t1").html("Comparte algo")
-            $(".t2").html("")
+        data = $(this).data('tipo');
+        $(".modal-footer #tipo").val(data);
+        if(data == 1){
+            $(".t1").html("Comparte algo");
+            $(".t2").html("");
             if(both){
                 $("#editor2").jqte();
                 both = false;
@@ -114,6 +114,15 @@
 
         }
     });
+    $(".blog-post-share :input.hidden").each(function (j) {
+        var laiktoken = $(this).val();
+        console.log(laiktoken);
+        var idpost = "#" + $(this).data('id');
+        if(laiktoken.indexOf("&"+ <%=usr.iduser%> +"&") != -1){
+            $(idpost + " .laik").removeClass("btn-inverse");
+            $(idpost + " .laik").addClass("btn-success");
+        }
+    });
     $.material.init();
     $('body').materialScrollTop();
 
@@ -137,6 +146,72 @@
             indent: false,
             format: false,
             outdent: false
+        });
+        $(".comm").click(function (e) {
+            var data = {};
+            data.idpost = $(this).data('id');
+            var like = $(this);
+            $.ajax({
+                type: 'POST',
+                data: JSON.stringify(data),
+                contentType: 'application/json',
+                url: '/comment_stream',
+                success: function(data) {
+                    $("#"+like.data('id') + " .panel-footer").html(data);
+                    $("#"+like.data('id') + " .panel-footer").removeClass("hidden");
+                    $("#"+like.data('id') + " .panel-footer").slideDown(4000);
+                    like.html('<i class="glyphicon glyphicon-refresh"></i>');
+                }
+            });
+        });
+        $('.laik').click(function(e){
+            /*$.ajax({
+             dataType: 'jsonp',
+             data: "data=yeah",
+             jsonp: 'callback',
+             url: 'http://localhost:3000/endpoint?callback=?',
+             success: function(data) {
+             console.log('success');
+             console.log(JSON.stringify(data));
+             }
+             });*/
+            var data = {};
+            data.idpost = $(this).data('id');
+            var like = $(this);
+            $.ajax({
+                type: 'POST',
+                data: JSON.stringify(data),
+                contentType: 'application/json',
+                url: '/laik_intern',
+                success: function(data) {
+                    if(data != "no"){
+                        like.html(data.html);
+                        like.removeClass("btn-success");
+                        like.removeClass("btn-inverse");
+                        like.addClass(data.newlaik);
+                    }
+                }
+            });
+            e.preventDefault();
+            /*$.ajax('http://localhost:3000/endpoint', {
+             type: 'POST',
+             data: JSON.stringify(data),
+             contentType: 'application/json',
+             success: function() { console.log('success');},
+             error  : function() { console.log('error');}
+             });*/
+        });
+        $(".redit").click(function(e){
+            var data = $(this).data('tipo');
+            $(".modal-footer #tipo").val(data);
+            $(".t1").html("Describa la situación y/o problema que aborda el proyecto (causas y consecuencias).")
+            $(".t2").html("Señale cómo cambiará o incidirá el proyecto en cambiar la situación y/o problema identificado.")
+            $("#editor").val($(this).data('prim'));
+            if(!both){
+                $("#editor2").jqte();
+                both = true;
+            }
+            $("#editor2").val($(this).data('sec'));
         });
     });
     function upload(e){

@@ -9,8 +9,15 @@ exports.getproy = function(req, res){
                     console.log("Error Selecting : %s ",err );
                 var psts = rows;
                 for(var j = 0; j<psts.length;j++){
-                    if(psts[j].tipo != 1)
-                    psts[j].token = psts[j].token.split("&&");
+
+                    if(psts[j].tipo > 1){
+                        psts[j].token = psts[j].token.split("&&");
+                        if(psts[j].laiks && psts[j].laiks != ""){
+                            psts[j].lenlaik = psts[j].laiks.split("&&").length;
+                        } else {
+                            psts[j].lenlaik = 0;
+                        }
+                    }
                 }
                 connection.query('SELECT group_concat(user.username , "@" , user.iduser, "@", user.avatar_pat) as usuarios,proyecto.* FROM proyecto LEFT JOIN userproyecto ON userproyecto.idproyecto = proyecto.idproyecto LEFT JOIN user ON user.iduser = userproyecto.iduser WHERE proyecto.idproyecto = ?',req.params.idproy,function(err,rows)
                 {
@@ -80,6 +87,49 @@ exports.post_sol = function(req, res){
                     if(err)
                         console.log("Error Selecting : %s ",err );
                     res.send("si");
+                });
+                //console.log(query.sql);
+            });
+        });
+    } else res.redirect('/bad_login');
+};
+exports.getcomments = function(req, res){
+    var input = JSON.parse(JSON.stringify(req.body));
+    if(req.session.isUserLogged){
+        req.getConnection(function(err,connection){
+
+                connection.query('SELECT comentinterno.*,user.username,user.avatar_pat FROM comentinterno INNER JOIN user ON user.iduser = comentinterno.iduser' +
+                    ' WHERE idpost  = ? GROUP BY comentinterno.idcomentinterno',input.idpost,function(err,rows)
+                {
+                    if(err)
+                        console.log("Error Selecting : %s ",err );
+
+                    res.render('intcmnt_stream',{data:input.idpost,usr:req.session.user,comments : rows});
+
+                    //console.log(query.sql);
+                });
+                //console.log(query.sql);
+        });
+    } else res.redirect('/bad_login');
+};
+exports.save_comment = function (req,res) {
+    if(req.session.isUserLogged){
+        var input = JSON.parse(JSON.stringify(req.body));
+        input.iduser = req.session.user.iduser;
+        req.getConnection(function(err,connection){
+            connection.query('INSERT INTO comentinterno SET ? ',[input],function(err,rows)
+            {
+                if(err)
+                    console.log("Error Inserting : %s ",err );
+                connection.query('SELECT comentinterno.*,user.username,user.avatar_pat FROM comentinterno INNER JOIN user ON user.iduser = comentinterno.iduser' +
+                    ' WHERE idpost  = ? GROUP BY comentinterno.idcomentinterno',input.idpost,function(err,rows)
+                {
+                    if(err)
+                        console.log("Error Selecting : %s ",err );
+
+                    res.render('intcmnt_stream',{data:input.idpost,usr:req.session.user,comments : rows});
+
+                    //console.log(query.sql);
                 });
                 //console.log(query.sql);
             });

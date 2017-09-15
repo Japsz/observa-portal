@@ -5,6 +5,7 @@ var path = require('path');
 
 var users = require('./routes/users');
 var observ = require('./routes/observatorio');
+var event = require('./routes/eventos');
 var cdd = require('./routes/ciudadano');
 var monitor = require('./routes/monitor');
 var posts = require('./routes/posts');
@@ -75,6 +76,14 @@ app.post('/inst/add', observ.save);
 app.get('/obs/:id', observ.obs_list);
 app.post('/obs/add', observ.obs_save);
 
+// Eventos
+app.get('/event', event.list);
+app.get('/add_event', event.add_evnt);
+app.post('/evnt/add', event.save);
+app.get('/evnt/:id', event.obs_list);
+app.post('/obs_stream', event.obstream);
+app.post('/addto_evnt', event.addto_evnt);
+
 // Monitor y Moderador
 app.get('/obs_monit', monitor.obs_monit);
 app.get('/obs_usr/:idobs', monitor.get_obs);
@@ -124,8 +133,11 @@ app.get('/sol/get/:idproy',proyect.getsol);
 
 // Muro interno proyectos
 app.post('/postsol',intern.post_sol);
+app.post('/comment_stream',intern.getcomments);
+app.post('/intcomment/add', intern.save_comment);
 app.get('/intern/:idproy',intern.getproy);
 app.post('/intern/add',intern.intern_save);
+app.post('/laik_intern',cdd.intern_laik);
 
 //Users
 

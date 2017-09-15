@@ -71,23 +71,33 @@
                                     <p><%- data[i].texto2%></p>
                                     <%
                                         break;
-                                        default:
-                                            break;
-
+                                    default:
+                                        break;
                                     }%>
                                     <div class="blog-post-share pull-left" style="display: flex">
                                         <img src="<%= data[i].iconouser%>" style="margin: 0;height: 30px" width="30px" class="img-circle img-responsive">
                                         <h5 style="margin-left: 10px"><%= data[i].username%></h5>
                                     </div>
-                                    <div class="blog-post-share pull-right">
-                                        <a class="comm col-sm-2" data-id="<%= data[i].idproyecto%>" href="#">
+                                    <div class="blog-post-share pull-right" style="display: flex">
+                                        <% if(data[i].tipo == 3){%>
+                                        <a class="redit btn btn-primary" data-id="<%= data[i].idproyecto%>" data-toggle="modal" data-target="#aa" data-tipo="3" data-prim="<%= data[i].texto1%>" data-sec="<%= data[i].texto2%>"  href="#">
+                                            <i class="glyphicon glyphicon-edit"></i>
+                                        </a>
+                                        <%}%>
+                                        <a class="comm btn btn-info" data-id="<%= data[i].idpostinterno%>" href="#">
                                             <i class="glyphicon glyphicon-comment"></i>
                                         </a>
-                                        <a class="laik col-sm-2" data-id="<%= data[i].idproyecto%>" href="#">
-                                            <i class="glyphicon glyphicon-thumbs-up"></i>
+                                        <% if(data[i].tipo > 1){%>
+                                        <input type="hidden" class="hidden" name="laiktoken" data-id="<%= data[i].idpostinterno%>" value="<%=data[i].laiks%>">
+                                        <a class="laik btn btn-inverse" data-id="<%= data[i].idpostinterno%>" href="#">
+                                            <i class="glyphicon glyphicon-thumbs-up"></i> <%= data[i].lenlaik%> / <%= (gral.usuarios.length - gral.usuarios.length%2)/2 + 1%>
                                         </a>
+                                        <%}%>
+
                                     </div>
                                 </div>
+                            </div>
+                            <div class="panel-footer blog-comments hidden">
                             </div>
                         </div>
                     </section><%
@@ -144,7 +154,7 @@
                             </div>
                             <div class="form-group" id="t2">
                                 <h3 class="t2"></h3>
-                                <textarea type="hidden" name="texto2" class="hidden" id="editor2"></textarea>
+                                <textarea type="text" name="texto2" class="hidden" id="editor2"></textarea>
                             </div>
                         </div>
                         <div class="modal-footer">
