@@ -3,7 +3,7 @@ exports.getproy = function(req, res){
     if(req.session.isUserLogged){
         req.getConnection(function(err,connection){
 
-            connection.query('SELECT postinterno.*,user.username,user.avatar_pat as iconouser FROM postinterno inner JOIN user ON user.iduser = postinterno.iduser WHERE postinterno.idproyecto = ? GROUP BY postinterno.idpostinterno ORDER BY postinterno.fecha DESC LIMIT 10',req.params.idproy,function(err,rows)
+            connection.query('SELECT postinterno.*,user.username,user.avatar_pat as iconouser FROM postinterno INNER JOIN user ON user.iduser = postinterno.iduser WHERE postinterno.idproyecto = ? GROUP BY postinterno.idpostinterno ORDER BY postinterno.fecha DESC LIMIT 10',req.params.idproy,function(err,rows)
             {
                 if(err)
                     console.log("Error Selecting : %s ",err );
@@ -19,8 +19,10 @@ exports.getproy = function(req, res){
                         }
                     }
                 }
-                connection.query('SELECT group_concat(user.username , "@" , user.iduser, "@", user.avatar_pat) as usuarios,proyecto.*,etapa.token,evento.likes  FROM proyecto LEFT JOIN userproyecto ON userproyecto.idproyecto = proyecto.idproyecto LEFT JOIN user ON user.iduser = userproyecto.iduser LEFT JOIN etapa ON proyecto.idevento = etapa.idevento AND etapa.nro = proyecto.etapa LEFT JOIN evento ON evento.idevento = proyecto.idevento WHERE proyecto.idproyecto = ?',req.params.idproy,function(err,rows)
+                connection.query('SELECT group_concat(user.username , "@" , user.iduser, "@", user.avatar_pat) as usuarios,proyecto.*,etapa.token,evento.likes FROM proyecto LEFT JOIN userproyecto ON userproyecto.idproyecto = proyecto.idproyecto LEFT JOIN user ON user.iduser = userproyecto.iduser LEFT JOIN etapa ON proyecto.idevento = etapa.idevento AND etapa.nro = proyecto.etapa LEFT JOIN evento ON evento.idevento = proyecto.idevento WHERE proyecto.idproyecto = ?',req.params.idproy,function(err,rows)
                 {
+                    if(err)
+                        console.log("Error Selecting : %s ",err );
                     if(rows.length){
                         rows[0].usuarios = rows[0].usuarios.split(",");
                         for(var i = 0; i<rows[0].usuarios.length;i++){
