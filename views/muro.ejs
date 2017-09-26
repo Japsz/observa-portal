@@ -39,6 +39,17 @@
 
                                 <div class="blog-post-meta">
                                     <% switch(data[i].tipo){
+                                    case 0:%>
+                                    <span class="label label-light label-danger">Avance pendiente de aprobación</span>
+                                    <p class="pull-right"><%=f_gen%></p>
+                                </div>
+                                <div class="blog-post-content">
+                                    <h3><%= data[i].token[0]%></h3>
+                                    <p><%- data[i].texto1%></p>
+                                    <h3><%= data[i].token[1]%></h3>
+                                    <p><%- data[i].texto2%></p>
+                                    <%
+                                        break;
                                     case 1:%>
                                     <span class="label label-light label-primary">Post</span>
                                     <p class="pull-right"><%=f_gen%></p>
@@ -71,6 +82,28 @@
                                     <p><%- data[i].texto2%></p>
                                     <%
                                         break;
+                                    case 4:%>
+                                    <span class="label label-light label-success">Avance Aprobado</span>
+                                    <p class="pull-right"><%=f_gen%></p>
+                                </div>
+                                <div class="blog-post-content">
+                                    <h3><%= data[i].token[0]%></h3>
+                                    <p><%- data[i].texto1%></p>
+                                    <h3><%= data[i].token[1]%></h3>
+                                    <p><%- data[i].texto2%></p>
+                                    <%
+                                        break;
+                                    case 5:%>
+                                    <span class="label label-light label-danger">Avance Rechazado</span>
+                                    <p class="pull-right"><%=f_gen%></p>
+                                </div>
+                                <div class="blog-post-content">
+                                    <h3><%= data[i].token[0]%></h3>
+                                    <p><%- data[i].texto1%></p>
+                                    <h3><%= data[i].token[1]%></h3>
+                                    <p><%- data[i].texto2%></p>
+                                    <%
+                                        break;
                                     default:
                                         break;
                                     }%>
@@ -80,18 +113,44 @@
                                     </div>
                                     <div class="blog-post-share pull-right" style="display: flex">
                                         <% if(data[i].tipo == 3){%>
-                                        <a class="redit btn btn-primary" data-id="<%= data[i].idproyecto%>" data-toggle="modal" data-target="#aa" data-tipo="3" data-prim="<%= data[i].texto1%>" data-sec="<%= data[i].texto2%>"  href="#">
+                                        <a class="redit btn btn-primary" data-toggle="modal" data-target="#aa" data-tipo="3" data-prim="<%= data[i].texto1%>" data-sec="<%= data[i].texto2%>"  href="#">
                                             <i class="glyphicon glyphicon-edit"></i>
                                         </a>
                                         <%}%>
                                         <a class="comm btn btn-info" data-id="<%= data[i].idpostinterno%>" href="#">
                                             <i class="glyphicon glyphicon-comment"></i>
                                         </a>
-                                        <% if(data[i].tipo > 1){%>
+                                        <% if(data[i].tipo == 2 || data[i].tipo == 3){%>
                                         <input type="hidden" class="hidden" name="laiktoken" data-id="<%= data[i].idpostinterno%>" value="<%=data[i].laiks%>">
                                         <a class="laik btn btn-inverse" data-id="<%= data[i].idpostinterno%>" href="#">
+                                            <% if(data[i].laiks == "fin"){ %>
+                                            <i class="glyphicon glyphicon-ok"></i>
+                                            <% } else {%>
                                             <i class="glyphicon glyphicon-thumbs-up"></i> <%= data[i].lenlaik%> / <%= (gral.usuarios.length - gral.usuarios.length%2)/2 + 1%>
+                                            <%}%>
                                         </a>
+                                        <%}%>
+                                        <% if(data[i].tipo == 3 && data[i].laiks == "fin" && gral.gotlaik && gral.gotuser && gral.idcreador == usr.iduser){%>
+                                            <a class="btn btn-success sendprogress" href="#" data-id="<%=data[i].idpostinterno%>">Enviar a aprobación</a>
+                                            <script type="text/javascript">
+                                                $(document).on("click",".sendprogress",function(){
+                                                    var data = {idpost: $(this).data('id')};
+                                                    $.ajax({
+                                                        type: 'POST',
+                                                        data: JSON.stringify(data),
+                                                        contentType: 'application/json',
+                                                        url: '/progress',
+                                                        success: function(data) {
+                                                            if(data != "no"){
+                                                                like.html(data.html);
+                                                                like.removeClass("btn-success");
+                                                                like.removeClass("btn-inverse");
+                                                                like.addClass(data.newlaik);
+                                                            }
+                                                        }
+                                                    });
+                                                })
+                                            </script>
                                         <%}%>
 
                                     </div>
@@ -114,7 +173,7 @@
                     <% if(gral.media != "no"){ %>
                     <img src="<%= gral.media%>" width="auto" style="margin: auto;display: block;" class="img-responsive">
                     <% } %>
-                    <div class="panel-body">
+                    <div class="panel-body text-center">
                         <h4 class="text-center"><%= gral.titulo%></h4>
                         <h6 class="text-center"><%= gral.descripcion%></h6>
                         <br>
@@ -123,20 +182,15 @@
                         <div class="text-center" style="display: flex;margin: 10px"><img src="<%= gral.usuarios[j][2]%>"  class="img-responsive img-circle" style="margin: 0; height: 30px" width="30px"> <p style="margin-left: 10px"><%= gral.usuarios[j][0]%></p></div>
                         <%}%>
                         <br>
+                        <h5>Conseguir <%= gral.etapa*gral.likes %> Likes <span class="glyphicon <%if(gral.gotlaik){%>glyphicon-ok<%} else {%>glyphicon-remove<%}%>"></span></h5>
+                        <h5>Añadir un Integrante en esta etapa <span class="glyphicon <%if(gral.gotuser){%>glyphicon-ok<%} else {%>glyphicon-remove<%}%>"></span></h5>
+                        <br>
                         <a class="btn btn-success" href="/sol/get/<%= gral.idproyecto%>">Ver soluciones</a>
                     </div>
                 </div>
             </div><!-- /.sidebar-module -->
         </div><!-- /.blog-sidebar -->
 
-            <div id="next">
-            <nav>
-                <ul class="pager center-block">
-                    <input type="hidden" value="<% if(data.length){%><%= data[data.length-1].idpost%><%}%>" id="idpst">
-                    <li><a class="withripple strim" href="#">Más</a></li>
-                </ul>
-            </nav>
-        </div>
         <div class="modal fade" id="aa" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -159,6 +213,7 @@
                         </div>
                         <div class="modal-footer">
                             <input type="hidden" value="<%= gral.idproyecto%>" name="idproy">
+                            <input type="hidden" value="<%= gral.token%>" name="token">
                             <div class="form-group form-inline">
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
@@ -170,5 +225,40 @@
                 </div>
             </div>
         </div>
+        <script type="text/javascript">
+            $(function () {
+                $(document).on("click", ".postint", function() {
+                    var data;
+                    var token = "<%= gral.token%>".split("&amp;&amp;");
+                    $("#editor").val("");
+                    data = $(this).data('tipo');
+                    $(".modal-footer #tipo").val(data);
+                    if(data == 1){
+                        $(".t1").html("Comparte algo");
+                        $(".t2").html("");
+                        if(both){
+                            $("#editor2").jqte();
+                            both = false;
+                        }
+                    } else {
+                        $(".t1").html(token[0]);
+                        $(".t2").html(token[1]);
+                        if(!both){
+                            $("#editor2").jqte({
+                                color: false,
+                                source: false,
+                                sub: false,
+                                sup: false,
+                                strike: false,
+                                indent: false,
+                                format: false,
+                                outdent: false
+                            });
+                            both = true;
+                        }
+                    }
+                });
+            })
+        </script>
 
 <%- include layouts/proyect_footer.ejs %>

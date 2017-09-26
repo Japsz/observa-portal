@@ -5,9 +5,9 @@ exports.indx = function(req, res){
     if(req.session.isUserLogged){
         req.getConnection(function(err,connection){
 
-            connection.query('SELECT proyecto.*,user.username,user.avatar_pat as iconouser,GROUP_CONCAT(DISTINCT tags.tag ORDER BY tags.tag) AS tagz FROM' +
+            connection.query('SELECT proyecto.*,user.username,user.avatar_pat as iconouser,GROUP_CONCAT(DISTINCT tags.tag ORDER BY tags.tag) AS tagz, GROUP_CONCAT(DISTINCT proylike.iduser SEPARATOR "&&") as proylaik, COUNT(DISTINCT proylike.iduser) as lenlaik FROM' +
                 ' proyecto LEFT JOIN tagproyecto ON proyecto.idproyecto = tagproyecto.idproyecto LEFT JOIN tags ON tagproyecto.idtag = tags.idtag INNER JOIN user ON user.iduser = proyecto.idcreador' +
-                '  GROUP BY proyecto.idproyecto ORDER BY proyecto.actualizado DESC LIMIT 12',function(err,rows)
+                ' LEFT JOIN proylike ON proylike.idproyecto = proyecto.idproyecto GROUP BY proyecto.idproyecto ORDER BY proyecto.actualizado DESC LIMIT 12',function(err,rows)
             {
                 if(err)
                     console.log("Error Selecting : %s ",err );
@@ -99,7 +99,6 @@ exports.save = function(req,res){
     if(req.session.isUserLogged){
         req.getConnection(function(err,connection){
             var input = JSON.parse(JSON.stringify(req.body));
-            var idobserva = input.idobserva;
             var data = {
                 idcreador   : req.session.user.iduser,
                 titulo : input.tit,
@@ -107,45 +106,66 @@ exports.save = function(req,res){
                 problema: input.prob,
                 media: input.media
             };
-            connection.query("INSERT INTO proyecto SET ? ",data, function(err, rows)
-            {
+            connection.query("SELECT observatorio.idevento FROM observatorio LEFT JOIN ciudadano ON observatorio.idobservatorio = ciudadano.idobs WHERE ciudadano.iduser = ? GROUP BY observatorio.idevento LIMIT 1",req.session.user.iduser,function(err,rows){
+               data.idevento = rows[0].idevento;
+                connection.query("INSERT INTO proyecto SET ? ",data, function(err, rows)
+                {
 
-                if (err)
-                    console.log("Error inserting : %s ",err );
-                var postid = rows.insertId;
-                if(input.tags != ""){
-                    var tags = input.tags.replace(/\s/g,'').split(",");
-                    var aux = [];
-                    var query2 = "SELECT * FROM tags WHERE tag = ?";
-                    for(var k = 0 ; k < tags.length;k++){
-                        if(k >= 1){
-                            query2 += " OR tag = ?";
+                    if (err)
+                        console.log("Error inserting : %s ",err );
+                    var postid = rows.insertId;
+                    if(input.tags != ""){
+                        var tags = input.tags.replace(/\s/g,'').split(",");
+                        var aux = [];
+                        var query2 = "SELECT * FROM tags WHERE tag = ?";
+                        for(var k = 0 ; k < tags.length;k++){
+                            if(k >= 1){
+                                query2 += " OR tag = ?";
+                            }
+                            aux.push([tags[k]]);
                         }
-                        aux.push([tags[k]]);
-                    }
-                    connection.query("INSERT INTO tags (`tag`) VALUES ?",[aux], function(err, nada)
-                    {
-
-                        if (err)
-                            console.log("Error INSERTINg : %s ",err );
-
-                        connection.query(query2,tags, function(err, tags)
+                        connection.query("INSERT INTO tags (`tag`) VALUES ?",[aux], function(err, nada)
                         {
 
                             if (err)
-                                console.log("Error selecting : %s ",err );
-                            console.log(tags);
-                            var query ="INSERT INTO tagproyecto (`idtag`, `idproyecto`) VALUES ?";
-                            var list = [];
-                            for(var i = 0; i < tags.length;i++){
-                                aux =[tags[i].idtag,postid];
-                                list.push(aux);
-                            }
-                            console.log(input.cat);
-                            if(input.cat != ""){
-                                list.push([input.cat,postid]);
-                            }
-                            connection.query(query,[list], function(err, rows)
+                                console.log("Error INSERTINg : %s ",err );
+
+                            connection.query(query2,tags, function(err, tags)
+                            {
+
+                                if (err)
+                                    console.log("Error selecting : %s ",err );
+                                console.log(tags);
+                                var query ="INSERT INTO tagproyecto (`idtag`, `idproyecto`) VALUES ?";
+                                var list = [];
+                                for(var i = 0; i < tags.length;i++){
+                                    aux =[tags[i].idtag,postid];
+                                    list.push(aux);
+                                }
+                                console.log(input.cat);
+                                if(input.cat != ""){
+                                    list.push([input.cat,postid]);
+                                }
+                                connection.query(query,[list], function(err, rows)
+                                {
+
+                                    if (err)
+                                        console.log("Error inserting : %s ",err );
+                                    connection.query("INSERT INTO userproyecto SET ? ",[{iduser:req.session.user.iduser,idproyecto: postid,etapa: 0}], function(err, rows)
+                                    {
+
+                                        if (err)
+                                            console.log("Error inserting : %s ",err );
+                                        res.redirect('/lab');
+
+                                    });
+                                });
+
+                            });
+                        });
+                    } else {
+                        if(input.cat != ""){
+                            connection.query("INSERT INTO tagproyecto (`idtag`, `idproyecto`) VALUES ?",[[[input.cat,postid]]], function(err, rows)
                             {
 
                                 if (err)
@@ -158,17 +178,9 @@ exports.save = function(req,res){
                                     res.redirect('/lab');
 
                                 });
+
                             });
-
-                        });
-                    });
-                } else {
-                    if(input.cat != ""){
-                        connection.query("INSERT INTO tagproyecto (`idtag`, `idproyecto`) VALUES ?",[[[input.cat,postid]]], function(err, rows)
-                        {
-
-                            if (err)
-                                console.log("Error inserting : %s ",err );
+                        } else {
                             connection.query("INSERT INTO userproyecto SET ? ",[{iduser:req.session.user.iduser,idproyecto: postid,etapa: 0}], function(err, rows)
                             {
 
@@ -177,20 +189,11 @@ exports.save = function(req,res){
                                 res.redirect('/lab');
 
                             });
-
-                        });
-                    } else {
-                        connection.query("INSERT INTO userproyecto SET ? ",[{iduser:req.session.user.iduser,idproyecto: postid,etapa: 0}], function(err, rows)
-                        {
-
-                            if (err)
-                                console.log("Error inserting : %s ",err );
-                            res.redirect('/lab');
-
-                        });
+                        }
                     }
-                }
+                });
             });
+
         });
     }
 };

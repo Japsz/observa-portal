@@ -124,6 +124,9 @@ app.post('/post/edit/:idpost', posts.p_edit);
 // Proyectos
 
 app.get('/lab',proyect.indx);
+app.get('/mod_proys',admin.modproy);
+app.get('/mod/:idpost/:resp',admin.moderate_p);
+app.post('/laik_p',cdd.add_p_laik);
 app.post('/proy/add',proyect.save);
 app.get('/proy_cdd',proyect.myproy);
 app.get('/proy/get/:idproy',proyect.getproy);
@@ -133,6 +136,7 @@ app.get('/sol/get/:idproy',proyect.getsol);
 
 // Muro interno proyectos
 app.post('/postsol',intern.post_sol);
+app.post('/progress',intern.progress);
 app.post('/comment_stream',intern.getcomments);
 app.post('/intcomment/add', intern.save_comment);
 app.get('/intern/:idproy',intern.getproy);

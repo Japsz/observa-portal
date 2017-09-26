@@ -3,23 +3,23 @@ exports.getproy = function(req, res){
     if(req.session.isUserLogged){
         req.getConnection(function(err,connection){
 
-            connection.query('SELECT postinterno.*,user.username,user.avatar_pat as iconouser FROM postinterno inner JOIN user ON user.iduser = postinterno.iduser WHERE postinterno.idproyecto = ? GROUP BY postinterno.idpostinterno ORDER BY postinterno.fecha DESC',req.params.idproy,function(err,rows)
+            connection.query('SELECT postinterno.*,user.username,user.avatar_pat as iconouser FROM postinterno inner JOIN user ON user.iduser = postinterno.iduser WHERE postinterno.idproyecto = ? GROUP BY postinterno.idpostinterno ORDER BY postinterno.fecha DESC LIMIT 10',req.params.idproy,function(err,rows)
             {
                 if(err)
                     console.log("Error Selecting : %s ",err );
                 var psts = rows;
                 for(var j = 0; j<psts.length;j++){
 
-                    if(psts[j].tipo > 1){
+                    if(psts[j].tipo > 1 || psts[j].tipo == 0){
                         psts[j].token = psts[j].token.split("&&");
-                        if(psts[j].laiks && psts[j].laiks != ""){
+                        if(psts[j].laiks && psts[j].laiks != "" && psts[j].laiks != "fin"){
                             psts[j].lenlaik = psts[j].laiks.split("&&").length;
                         } else {
                             psts[j].lenlaik = 0;
                         }
                     }
                 }
-                connection.query('SELECT group_concat(user.username , "@" , user.iduser, "@", user.avatar_pat) as usuarios,proyecto.* FROM proyecto LEFT JOIN userproyecto ON userproyecto.idproyecto = proyecto.idproyecto LEFT JOIN user ON user.iduser = userproyecto.iduser WHERE proyecto.idproyecto = ?',req.params.idproy,function(err,rows)
+                connection.query('SELECT group_concat(user.username , "@" , user.iduser, "@", user.avatar_pat) as usuarios,proyecto.*,etapa.token,evento.likes  FROM proyecto LEFT JOIN userproyecto ON userproyecto.idproyecto = proyecto.idproyecto LEFT JOIN user ON user.iduser = userproyecto.iduser LEFT JOIN etapa ON proyecto.idevento = etapa.idevento AND etapa.nro = proyecto.etapa LEFT JOIN evento ON evento.idevento = proyecto.idevento WHERE proyecto.idproyecto = ?',req.params.idproy,function(err,rows)
                 {
                     if(rows.length){
                         rows[0].usuarios = rows[0].usuarios.split(",");
@@ -51,7 +51,7 @@ exports.intern_save = function(req, res){
             fecha: new Date(),
             texto1: input.texto1,
             texto2: input.texto2,
-            token: "Describa la situación y/o problema que aborda el proyecto (causas y consecuencias)&&Señale cómo cambiará o incidirá el proyecto en cambiar la situación y/o problema identificado"
+            token: input.token.replace("&amp;",'&')
         };
 
         req.getConnection(function(err,connection){
@@ -73,7 +73,7 @@ exports.post_sol = function(req, res){
             iduser: req.session.user.iduser,
             tipo : input.tipo,
             texto2: input.texto2,
-            fecha: new Date(),
+            fecha: new Date()
         };
         req.getConnection(function(err,connection){
             connection.query('SELECT GROUP_CONCAT(solucion.idsolucion, "&&", user.username, "&&", user.avatar_pat, "&&", solucion.fecha) as token,solucion.idproyecto, solucion.contenido FROM solucion INNER JOIN user ON solucion.iduser = user.iduser WHERE solucion.idsolucion = ? GROUP BY solucion.idsolucion LIMIT 1',[input.idsol],function(err,rows)
@@ -90,6 +90,22 @@ exports.post_sol = function(req, res){
                 });
                 //console.log(query.sql);
             });
+        });
+    } else res.redirect('/bad_login');
+};
+exports.progress  = function(req,res){
+    var input = JSON.parse(JSON.stringify(req.body));
+    if(req.session.isUserLogged){
+        req.getConnection(function(err,connection){
+
+            connection.query('UPDATE postinterno SET tipo = 0 WHERE idpostinterno = ?',input.idpost,function(err,rows)
+            {
+                if(err)
+                    console.log("Error updating : %s ",err );
+                res.send('si');
+                //console.log(query.sql);
+            });
+            //console.log(query.sql);
         });
     } else res.redirect('/bad_login');
 };

@@ -3,7 +3,7 @@
 
 <div class="container blog-content">
     <div class="row">
-        <h1 class="page-header">Proyectos<a class="btn btn-success btn-lg pull-right" href="#" data-toggle="modal" data-target="#create"> + <i class="fa fa-lightbulb-o"></i> Tengo una idea!</a></h1>
+        <h1 class="page-header">Proyectos<% if(usr.tipo == 3){%> <a class="btn btn-success btn-lg pull-right" href="#" data-toggle="modal" data-target="#create"> + <i class="fa fa-lightbulb-o"></i> Tengo una idea!</a><%}%></h1>
         <div class="col-sm-10 col-sm-offset-1 blog-main">
 
                 <div class="col-sm-4">
@@ -38,15 +38,16 @@
                                     </a>
                                     <p><%- data[i].descripcion%></p>
                                     <img src="<%= data[i].iconouser%>" width="30px" height="auto" style="margin: auto;display: block;" class="img-circle img-responsive pull-left">
-                                    <a class="blog-post-share pull-left text-right" href="#">
+                                    <a class="blog-post-share pull-left text-center" style="margin-left: 6px" href="#">
                                         <%= data[i].username%>
                                     </a>
                                     <div class="blog-post-share pull-right">
-                                        <a class="comm col-sm-2" data-id="<%= data[i].idproyecto%>" href="/proy/get/<%= data[i].idproyecto%>">
+                                        <input type="hidden" class="hidden" value="&<%= data[i].proylaik%>&" data-id="<%=data[i].idproyecto%>" name="proylaik">
+                                        <a class="comm btn btn-primary" data-id="<%= data[i].idproyecto%>" href="/proy/get/<%= data[i].idproyecto%>">
                                             <i class="glyphicon glyphicon-eye-open"></i>
                                         </a>
-                                        <a class="laik col-sm-2" data-id="<%= data[i].idproyecto%>" href="#">
-                                            <i class="glyphicon glyphicon-thumbs-up"></i>
+                                        <a class="laikp btn btn-inverse" data-id="<%= data[i].idproyecto%>" href="#">
+                                            <i class="glyphicon glyphicon-thumbs-up"></i> <%=data[i].lenlaik%>
                                         </a>
                                     </div>
                                 </div>
@@ -88,7 +89,6 @@
                                     <input type="file" name="filetoupload" onchange="upload(this)">
                                     <a class="input-group-btn btn btn-success">Sube una Portada de proyecto <i class="glyphicon glyphicon-upload"></i></a>
                                 </div>
-
                                 <input type="text" name="tit" id="tit" class="form-control" placeholder="Título del proyecto" required>
                                 <input type="textarea" maxlength="140" rows="2" name="prob" class="form-control" placeholder="Problema Base" required>
 
@@ -131,5 +131,46 @@
                 </div>
             </div>
         </div>
+        <script type="text/javascript">
+            $(function(){
+                $('.laikp').click(function(e){
+                    /*$.ajax({
+                     dataType: 'jsonp',
+                     data: "data=yeah",
+                     jsonp: 'callback',
+                     url: 'http://localhost:3000/endpoint?callback=?',
+                     success: function(data) {
+                     console.log('success');
+                     console.log(JSON.stringify(data));
+                     }
+                     });*/
+                    var data = {};
+                    data.idpost = $(this).data('id');
+                    var like = $(this);
+                    $.ajax({
+                        type: 'POST',
+                        data: JSON.stringify(data),
+                        contentType: 'application/json',
+                        url: '/laik_p',
+                        success: function(data) {
+                            if(data != "no"){
+                                like.html(data.html);
+                                like.removeClass("btn-success");
+                                like.removeClass("btn-inverse");
+                                like.addClass(data.newlaik);
+                            }
+                        }
+                    });
+                    e.preventDefault();
+                    /*$.ajax('http://localhost:3000/endpoint', {
+                     type: 'POST',
+                     data: JSON.stringify(data),
+                     contentType: 'application/json',
+                     success: function() { console.log('success');},
+                     error  : function() { console.log('error');}
+                     });*/
+                });
+            });
+        </script>
 
 <%- include layouts/proyect_footer.ejs %>

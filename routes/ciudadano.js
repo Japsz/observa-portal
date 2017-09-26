@@ -55,7 +55,7 @@ exports.intern_laik = function (req, res) {
     if(req.session.isUserLogged){
         var input = JSON.parse(JSON.stringify(req.body));
         req.getConnection(function (err, connection) {
-            connection.query("SELECT postinterno.laiks,COUNT(userproyecto.iduser) as cantint FROM postinterno INNER JOIN userproyecto ON postinterno.idproyecto = userproyecto.idproyecto WHERE postinterno.idpostinterno = ? GROUP BY postinterno.laiks",[input.idpost], function(err, rows)
+            connection.query("SELECT postinterno.laiks,COUNT(userproyecto.iduser) as cantint, postinterno.tipo,postinterno.token FROM postinterno INNER JOIN userproyecto ON postinterno.idproyecto = userproyecto.idproyecto WHERE postinterno.idpostinterno = ? GROUP BY postinterno.laiks",[input.idpost], function(err, rows)
             {
 
                 if (err)
@@ -64,7 +64,10 @@ exports.intern_laik = function (req, res) {
                 if(rows){
                     numint = rows[0].cantint;
                     if(rows[0].laiks){
-                        if(rows[0].laiks.indexOf("&" + req.session.user.iduser + "&") != -1){
+                        if(rows[0].laiks == "fin"){
+                            newlike = "fin";
+                            res.send({html: '<i class="glyphicon glyphicon-ok"></i>',newlaik: "btn-success",alert: "La votación ya fue completada"});
+                        } else if(rows[0].laiks.indexOf("&" + req.session.user.iduser + "&") != -1){
                             newlike =  rows[0].laiks.replace("&" + req.session.user.iduser + "&",'');
                             classname = "btn-inverse";
                         } else {
@@ -74,44 +77,100 @@ exports.intern_laik = function (req, res) {
                     } else {
                         newlike = "&" + req.session.user.iduser + "&";
                         classname = "btn-success";
-                        }
-                    connection.query("UPDATE postinterno SET laiks = ? WHERE idpostinterno = ?",[newlike,input.idpost], function(err, rows)
-                    {
-
-                        if (err)
-                            console.log("Error inserting : %s ",err );
-                        if(newlike == ""){
-                            totvot = 0;
+                    }
+                    var tip = rows[0].tipo;
+                    var tok = rows[0].token.split("&&");
+                    if(newlike == ""){
+                        totvot = 0;
+                    } else {
+                        totvot = newlike.split("&&").length;
+                    }
+                    if(totvot >= ((numint - numint%2)/2 + 1)){ // Votación completa
+                        if(tip == 2){
+                            connection.query("SELECT solucion.iduser,proyecto.etapa,solucion.idproyecto FROM solucion LEFT JOIN proyecto ON proyecto.idproyecto = solucion.idproyecto WHERE idsolucion = ? GROUP BY solucion.iduser",tok[0],function(err,rows){
+                                if (err)
+                                    console.log("Error inserting : %s ",err );
+                                var idproj = rows[0].idproyecto;
+                                connection.query("INSERT INTO userproyecto SET ? ",[{iduser:rows[0].iduser,idproyecto: rows[0].idproyecto,etapa: rows[0].etapa}],function(err,rows){
+                                    if (err)
+                                        console.log("Error inserting : %s ",err );
+                                    newlike = "fin";
+                                    connection.query("UPDATE postinterno SET laiks = ? WHERE idpostinterno = ?",[newlike,input.idpost], function(err, rows)
+                                    {
+                                        if (err)
+                                            console.log("Error updating : %s ",err );
+                                        connection.query("UPDATE proyecto SET gotuser = 1 WHERE idproyecto = ?",idproj, function(err,rows){
+                                            if (err)
+                                                console.log("Error updating : %s ",err );
+                                            res.send({html: '<i class="glyphicon glyphicon-ok"></i>',newlaik: "btn-success",alert: "El usuario fue agregado al proyecto"});
+                                        });
+                                    });
+                                });
+                            });
                         } else {
-                            totvot = newlike.split("&&").length;
+                            newlike = "fin";
+                            connection.query("UPDATE postinterno SET laiks = ? WHERE idpostinterno = ?",[newlike,input.idpost], function(err, rows)
+                            {
+                                if (err)
+                                    console.log("Error updating : %s ",err );
+                                res.send({html: '<i class="glyphicon glyphicon-ok"></i>',newlaik: "btn-success",alert: "El Avance está listo para ser enviado a aprobación"});
+                            });
                         }
-                        res.send({html: '<i class="glyphicon glyphicon-thumbs-up"></i>' + totvot + ' / ' + ((numint - numint%2)/2 + 1),newlaik: classname});
-                    });
+                    } else { // Votación Incompleta
+                        connection.query("UPDATE postinterno SET laiks = ? WHERE idpostinterno = ?",[newlike,input.idpost], function(err, rows)
+                        {
+                            if (err)
+                                console.log("Error updating : %s ",err );
+                            res.send({html: '<i class="glyphicon glyphicon-thumbs-up"></i>' + totvot + ' / ' + ((numint - numint%2)/2 + 1),newlaik: classname,alert: "no"});
+                        });
+                    }
+
                 } else
                     res.send("no");
             });
         });
     } else res.send("no");
 };
-exports.rm_laik_intern = function (req, res) {
+exports.add_p_laik = function (req, res) {
     if(req.session.isUserLogged){
         var input = JSON.parse(JSON.stringify(req.body));
         req.getConnection(function (err, connection) {
-            connection.query("DELETE FROM megusta WHERE idpost = ? AND iduser = ?",[input.idpost,req.session.user.iduser], function(err, rows)
+            connection.query("SELECT * FROM proylike WHERE idproyecto = ? AND iduser = ?",[input.idpost,req.session.user.iduser], function(err, rows)
             {
 
                 if (err)
-                    console.log("Error inserting : %s ",err );
-                connection.query("SELECT * FROM megusta WHERE idpost = ?",[input.idpost], function(err, rows)
-                {
+                    console.log("Error selecting : %s ",err );
+                if(rows.length){
+                    connection.query("DELETE FROM proylike WHERE idproyecto = ? AND iduser = ?",[input.idpost,req.session.user.iduser],function(err,rows){
+                        if (err)
+                            console.log("Error deleting : %s ",err );
+                        connection.query("SELECT COUNT(DISTINCT iduser) AS lenlaik FROM proylike WHERE idproyecto = ?",input.idpost,function(err,rows){
+                            if (err)
+                                console.log("Error selecting : %s ",err );
+                            res.send({html: '<i class="glyphicon glyphicon-thumbs-up"></i> ' + rows[0].lenlaik,newlaik: "btn-inverse"});
+                        });
 
-                    if (err)
-                        console.log("Error inserting : %s ",err );
+                    });
+                } else {
+                    connection.query("INSERT INTO proylike SET ?",{idproyecto: input.idpost, iduser: req.session.user.iduser},function(err,rows){
+                        if (err)
+                            console.log("Error inserting : %s ",err );
+                        connection.query("SELECT COUNT(DISTINCT proylike.iduser) AS lenlaik, evento.likes, proyecto.etapa FROM proylike LEFT JOIN proyecto ON proyecto.idproyecto = proylike.idproyecto LEFT JOIN evento ON proyecto.idevento = evento.idevento WHERE proylike.idproyecto = ? GROUP BY proyecto.etapa",input.idpost,function(err,rows){
+                            if (err)
+                                console.log("Error selecting : %s ",err );
+                            if(rows[0].lenlaik >= rows[0].etapa*rows[0].likes){
+                                var lenlaik = rows[0].lenlaik;
+                                connection.query("UPDATE proyecto SET gotlaik = 1 WHERE idproyecto = ?",input.idpost,function(err,rows){
+                                    if (err)
+                                        console.log("Error updating : %s ",err );
+                                    res.send({html: '<i class="glyphicon glyphicon-thumbs-up"></i> ' + lenlaik,newlaik: "btn-success"});
+                                });
+                            } else
+                            res.send({html: '<i class="glyphicon glyphicon-thumbs-up"></i> ' + rows[0].lenlaik,newlaik: "btn-success"});
+                        });
 
-                    res.send(rows.length.toString());
-
-                });
-
+                    });
+                }
             });
         });
     } else res.send("no");

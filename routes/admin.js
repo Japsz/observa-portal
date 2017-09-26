@@ -17,7 +17,54 @@ exports.list = function(req, res){
 		}
 		else res.redirect('/bad_login');  
 };
+exports.modproy = function(req,res){
+    if(req.session.isAdminLogged){
+        req.getConnection(function(err,connection){
+            connection.query('SELECT postinterno.*,proyecto.titulo,user.username,user.avatar_pat as iconouser FROM postinterno LEFT JOIN proyecto ON proyecto.idproyecto = postinterno.idproyecto LEFT JOIN user ON user.iduser = postinterno.iduser WHERE postinterno.tipo = 0 GROUP BY postinterno.idpostinterno',function(err,rows)
+            {
 
+                if(err)
+                    console.log("Error Selecting : %s ",err );
+                if(rows.length){
+                	for(var i = 0;i<rows.length;i++){
+                		rows[i].token = rows[i].token.split("&&");
+					}
+				}
+                res.render('admin/event/modproys',{page_title:"Stats",data:rows, usr:req.session.user});
+
+            });
+            //console.log(query.sql);
+        });
+    }
+    else res.redirect('/bad_login');
+};
+exports.moderate_p = function(req,res){
+    if(req.session.isAdminLogged){
+        req.getConnection(function(err,connection){
+        	if(req.params.resp == "si"){
+        		connection.query("UPDATE postinterno SET tipo = 4 WHERE idpostinterno = ?",req.params.idpost,function(err,rows){
+        			if(err) console.log("Error Updating : %s ",err);
+        			connection.query("UPDATE proyecto SET gotlaik = 0, gotuser = 0, etapa = (etapa + 1) WHERE idproyecto = (SELECT idproyecto FROM postinterno WHERE idpostinterno = ?)",req.params.idpost,function(err,rows){
+                        if(err) console.log("Error Updating : %s ",err);
+                        connection.query("UPDATE postinterno SET tipo = 5 WHERE idproyecto = (SELECT idproyecto FROM postinterno WHERE idpostinterno = ?) AND tipo = 0",req.params.idpost,function(err,rows){
+                            if(err) console.log("Error Updating : %s ",err);
+                            res.redirect("/mod_proys");
+						});
+					});
+				});
+			} else if(req.params.resp == "no"){
+        		connection.query("UPDATE postinterno SET tipo = 5 WHERE idpostinterno = ?",req.params.idpost,function(err,rows){
+                    if(err) console.log("Error Updating : %s ",err);
+					res.redirect("/mod_proys");
+				});
+			} else
+				res.redirect("/bad_login");
+            //console.log(query.sql);
+        });
+    }
+    else res.redirect('/bad_login');
+
+};
 //Vista agregar usuario.
 exports.add = function(req, res){
 	if(req.session.isAdminLogged){
