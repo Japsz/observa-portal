@@ -287,27 +287,7 @@
         data.tipo = $(this).data('tipo');
         $("#mform").attr('action','/post/edit/' + $(this).data('idpost'));
         $(".modal-footer #tipo").val($(this).data('tipo'));
-        switch(data.tipo) {
-            case 1:
-                $("#t_princ").val($(this).data('tit'));
-                $("#editor").val($(this).data('cont'));
-                $("#tag").val($(this).data('tags'));
-                break;
-            case 2:
-                $("#t_princ").val($(this).data('tit'));
-                $("#editor").val($(this).data('cont'));
-                break;
-            case 3:
-                $("#t_princ").val($(this).data('tit'));
-                $("#editor").val($(this).data('cont'));
-                break;
-            case 4:
-                $("#t_princ").val($(this).data('tit'));
-                $("#editor").val($(this).data('cont'));
-                break;
-            default:
-                status = "inactivo";
-        }
+        $("#tag").val("");
         if(parseInt(data.tipo) > 1){
             $(".modal-body #catego").removeClass("hidden");
             if(!quill){
@@ -339,24 +319,56 @@
             }
             quill = false;
         }
+        switch(data.tipo) {
+            case 1:
+                $("#t_princ").val($(this).data('tit'));
+                $("#editor").jqteVal($(this).data('cont'));
+                $("#tag").val($(this).data('tags'));
+                break;
+            case 2:
+                $("#t_princ").val($(this).data('tit'));
+                $("#editor").jqteVal($(this).data('cont'));
+                break;
+            case 3:
+                $("#t_princ").val($(this).data('tit'));
+                $("#editor").jqteVal($(this).data('cont'));
+                break;
+            case 4:
+                $("#t_princ").val($(this).data('tit'));
+                $("#editor").jqteVal($(this).data('cont'));
+                break;
+            default:
+                status = "inactivo";
+        }
     });
     $.material.init();
     $('body').materialScrollTop();
 
     $(function () {
-        $(".strim").click(function(e){
-            var data = {};
-            data.idpost = $("#idpst").val();
-            $.ajax({
-                type: 'POST',
-                data: JSON.stringify(data),
-                contentType: 'application/json',
-                url: '/post_stream',
-                success: function(data) {
-                    $("#psts").append(data);
-                    $("#idpst").val();
+        $(".blog-post-meta :input.hidden").each(function (j) {
+            var tagger = $(this).val();
+            var idpost = "#" + $(this).data('id');
+            tagger = tagger.split(",");
+            for(var i = 0; i < tagger.length;i++){
+                if(tagger[i] != "null") {
+                    tagger[i] = tagger [i].split("@");
+                    $(idpost + " .blog-post-meta").append('<a href="/tagbsq/' + tagger[i][1] + '" class="label label-light label-primary">' + tagger[i][0] + '</a> ');
+                    $(this).val("");
+                } else $(idpost + " .blog-post-meta").append('<span class="label label-light label-primary">idea</span> ');
+
+            }
+        });
+        $(".blog-post-share :input.laiktoken").each(function (j) {
+            var tagger = $(this).val();
+            var idpost = "#" + $(this).data('id');
+            tagger = tagger.split(",");
+            for(var i = 0; i < tagger.length;i++){
+                if(tagger[i] == <%= usr.iduser%>) {
+                    $(idpost + " .laik").removeClass("btn-inverse");
+                    $(idpost + " .laik").addClass("btn-success");
+                    $(this).val("");
                 }
-            });
+            }
         });
         $('.laik').click(function(e){
             /*$.ajax({
@@ -372,31 +384,20 @@
             var data = {};
             data.idpost = $(this).data('id');
             var like = $(this);
-            if(like.hasClass('laik')){
-                $.ajax({
-                    type: 'POST',
-                    data: JSON.stringify(data),
-                    contentType: 'application/json',
-                    url: '/send_laik',
-                    success: function(data) {
-                        like.html('<i class="glyphicon glyphicon-thumbs-up"></i>' + data);
-                        like.removeClass("laik");
-                        like.addClass("laiked");
+            $.ajax({
+                type: 'POST',
+                data: JSON.stringify(data),
+                contentType: 'application/json',
+                url: '/send_laik',
+                success: function(data) {
+                    if(data != "no"){
+                        like.html(data.html);
+                        like.removeClass("btn-inverse");
+                        like.removeClass("btn-success");
+                        like.addClass(data.newlaik);
                     }
-                });
-            } else {
-                $.ajax({
-                    type: 'POST',
-                    data: JSON.stringify(data),
-                    contentType: 'application/json',
-                    url: '/rm_laik',
-                    success: function(data) {
-                        like.html('<i class="glyphicon glyphicon-thumbs-up"></i>' + data);
-                        like.removeClass("laiked");
-                        like.addClass("laik");
-                    }
-                });
-            }
+                }
+            });
             e.preventDefault();
             /*$.ajax('http://localhost:3000/endpoint', {
              type: 'POST',
@@ -408,17 +409,7 @@
         });
 
     });
-    $(".blog-post-meta :input.hidden").each(function (j) {
-        var tagger = $(this).val();
-        var idpost = "#" + $(this).data('id');
-        tagger = tagger.split(",");
-        for(var i = 0; i < tagger.length;i++){
-            if(tagger[i] != "null") {
-                $(idpost + " .blog-post-meta").append('<span class="label label-light label-primary">' + tagger[i] + '</span> ');
-            } else $(idpost + " .blog-post-meta").append('<span class="label label-light label-primary">jeje</span> ');
 
-        }
-    });
     function upload(e){
 
         if (!e.files) {

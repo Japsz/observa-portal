@@ -113,10 +113,10 @@ app.post('/check_usr',cdd.check_usr);
 app.get('/indx', posts.indx);
 app.get('/post/:idpost', posts.getpost);
 app.post('/post/add', posts.save);
+app.post('/post_stream', posts.indx_stream);
 app.post('/tags/bsq',posts.b_tag);
 app.get('/tagbsq/:id',posts.get_cat);
 app.post('/send_laik',cdd.add_laik);
-app.post('/rm_laik',cdd.rm_laik);
 app.get('/usr_post',posts.usr_post);
 app.get('/post_obs',posts.post_obs);
 app.post('/post/edit/:idpost', posts.p_edit);
@@ -124,6 +124,7 @@ app.post('/post/edit/:idpost', posts.p_edit);
 // Proyectos
 
 app.get('/lab',proyect.indx);
+app.post('/proy_stream', proyect.proy_stream);
 app.get('/mod_proys',admin.modproy);
 app.get('/mod/:idpost/:resp',admin.moderate_p);
 app.post('/laik_p',cdd.add_p_laik);

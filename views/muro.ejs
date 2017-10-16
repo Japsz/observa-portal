@@ -112,7 +112,7 @@
                                         <h5 style="margin-left: 10px"><%= data[i].username%></h5>
                                     </div>
                                     <div class="blog-post-share pull-right" style="display: flex">
-                                        <% if(data[i].tipo == 3){%>
+                                        <% if(data[i].tipo == 3 || data[i].tipo == 5){%>
                                         <a class="redit btn btn-primary" data-toggle="modal" data-target="#aa" data-tipo="3" data-prim="<%= data[i].texto1%>" data-sec="<%= data[i].texto2%>"  href="#">
                                             <i class="glyphicon glyphicon-edit"></i>
                                         </a>
@@ -227,13 +227,14 @@
         </div>
         <script type="text/javascript">
             $(function () {
+                var token = "<%= gral.token%>".split("&amp;&amp;");
                 $(document).on("click", ".postint", function() {
                     var data;
-                    var token = "<%= gral.token%>".split("&amp;&amp;");
-                    $("#editor").val("");
+                    $("#editor").jqteVal("");
                     data = $(this).data('tipo');
                     $(".modal-footer #tipo").val(data);
                     if(data == 1){
+                        $("#myModalLabel").html("Post Escrito");
                         $(".t1").html("Comparte algo");
                         $(".t2").html("");
                         if(both){
@@ -241,6 +242,7 @@
                             both = false;
                         }
                     } else {
+                        $("#myModalLabel").html("Pre-avance de etapa");
                         $(".t1").html(token[0]);
                         $(".t2").html(token[1]);
                         if(!both){
@@ -257,6 +259,19 @@
                             both = true;
                         }
                     }
+                });
+                $(".redit").click(function(e){
+                    $("#myModalLabel").html("Repostear avance");
+                    var data = $(this).data('tipo');
+                    $(".modal-footer #tipo").val(data);
+                    $(".t1").html(token[0]);
+                    $(".t2").html(token[1]);
+                    $("#editor").jqteVal($(this).data('prim'));
+                    if(!both){
+                        $("#editor2").jqte();
+                        both = true;
+                    }
+                    $("#editor2").jqteVal($(this).data('sec'));
                 });
             })
         </script>

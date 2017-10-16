@@ -34,14 +34,16 @@
     var f_gen;
     for(var i = 0;i<data.length;i++){
         f_gen = new Date(data[i].fecha);
-        f_gen = f_gen.toLocaleString(); %>
+        f_gen = f_gen.toLocaleString();
+        if(data[i].tipo < 5){%>
                     <section class="blog-post" id="<%= data[i].idpost %>">
-                        <div class="panel panel-default">
+                        <div class="panel panel-danger">
                             <% if(data[i].tipo == 3){%>
                             <img src="<%= data[i].principal%>" style="margin: auto;display: block;" width="auto" class="img-responsive">
                             <%} else if(data[i].tipo == 4){%>
                             <iframe width="100%" height="372" src="https://www.youtube.com/embed/<%= data[i].principal%>?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen=""></iframe>
                             <%}%>
+
                             <div class="panel-body">
                                 <div class="blog-post-content">
                                     <%if(data[i].tipo == 2){%>
@@ -57,10 +59,27 @@
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                     </section>
-<%
+            <%} else {%>
+                    <section class="blog-post" id="<%= data[i].idpost%>">
+                        <div class="alert alert-success" role="alert" style="display: flex ">
+                            <div  style="display: flex">
+                                <img src="<%= data[i].iconouser%>" style="margin: 0;height: 30px" width="30px" class="img-circle img-responsive">
+                                <h5 style="margin-left: 10px"><%= data[i].username%></h5>
+                            </div>
+                            <div class="cont" style="width: 70%;text-align: center">
+                                <p style="padding-left: 20%;padding-right: 20%;padding-top: 8px"><strong><%= data[i].principal%></strong></p>
+                                <div class="well" style="background-color: greenyellow;margin-top: 20px;color: #000;">
+                                <%- data[i].contenido%>
+                                </div>
+                            </div>
+                            <div class="blog-post-date" style="display: flex">
+                                <p><%=f_gen%></p>
+                            </div>
+                        </div>
+                    </section>
+<%          }
     }
 } else {%>
 <p> No hay Actualizaciones</p>
@@ -99,11 +118,15 @@
 
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h2 class="modal-title" id="myModalLabel">Crear Actualización</h2>
+                        <h2 class="modal-title" id="myModalLabel">Crear Actualización </h2>
+                        <h4>Comparte algo para que aparezca en la portada del proyecto</h4>
                     </div>
                     <form action="/act/add" method="post" id="mform">
                         <div class="modal-body">
                             <div id="preview"></div>
+                            <div class="sub-header">
+
+                            </div>
                             <div class="form-group">
                                 <input type="text" name="tit" id="t_princ" class="form-control" placeholder="" required>
                                 <div class="input-group hidden" id="fail">

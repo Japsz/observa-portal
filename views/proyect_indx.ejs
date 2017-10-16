@@ -6,17 +6,20 @@
         <h1 class="page-header">Proyectos<% if(usr.tipo == 3){%> <a class="btn btn-success btn-lg pull-right" href="#" data-toggle="modal" data-target="#create"> + <i class="fa fa-lightbulb-o"></i> Tengo una idea!</a><%}%></h1>
         <div class="col-sm-10 col-sm-offset-1 blog-main">
 
-                <div class="col-sm-4">
+                <div class="col-sm-4" id="uno">
 <% if(data.length) {
     var f_gen;
+    var sep = data.length%3;
+    sep = data.length - sep;
+    sep = sep/3;
 
     for(var i = 0;i<data.length;i++){
         f_gen = new Date(data[i].actualizado);
         f_gen = f_gen.toLocaleString();
-        if(i>0 && i%3 == 0){
+        if(i == sep || i == 2*sep){
         %>
                 </div>
-                <div class="col-sm-4">
+                <div class="col-sm-4" id="<%if(i < 2*sep){%>dos<%}else{%>tres<%}%>">
         <%
         }
 
@@ -34,7 +37,7 @@
                                 <div class="blog-post-content">
                                     <a href="/proy/get/<%= data[i].idproyecto%>">
                                         <h2 class="blog-post-title"><%= data[i].titulo%></h2>
-                                        <h4><%= data[i].problema%></h3>
+                                        <h4><%= data[i].problema%></h4>
                                     </a>
                                     <p><%- data[i].descripcion%></p>
                                     <img src="<%= data[i].iconouser%>" width="30px" height="auto" style="margin: auto;display: block;" class="img-circle img-responsive pull-left">
@@ -62,20 +65,18 @@
 <% } %>
 
                 </div>
-
         </div><!-- /.blog-main -->
         <div id="next">
             <nav>
                 <ul class="pager center-block">
-                    <input type="hidden" value="<% if(data.length){%><%= data[data.length-1].idpost%><%}%>" id="idpst">
-                    <li><a class="withripple strim" href="#">Más</a></li>
+                    <input type="hidden" value="<% if(data.length){%><%= data[data.length-1].actualizado%><%}%>" data-strim="proys" id="idpst">
+                     <li><a class="withripple strim" href="#">Más</a></li>
                 </ul>
             </nav>
         </div>
         <div class="modal fade" id="create" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                         <h2 class="modal-title" id="myModalLabel">Crear Proyecto</h2>
@@ -170,6 +171,27 @@
                      error  : function() { console.log('error');}
                      });*/
                 });
+                $(".strim").click(function(e){
+                    var data = {};
+                    data.idpost = $("#idpst").val();
+                    $.ajax({
+                        type: 'POST',
+                        data: JSON.stringify(data),
+                        contentType: 'application/json',
+                        url: '/proy_stream',
+                        success: function(data) {
+                            $("#uno").append(data.html.uno);
+                            $("#dos").append(data.html.dos);
+                            $("#tres").append(data.html.tres);
+                            if(data.newval != "nada"){
+                                $("#idpst").val(data.newval);
+                            } else {
+                                $("#next").html("");
+                            }
+                        }
+                    });
+                });
+
             });
         </script>
 

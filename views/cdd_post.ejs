@@ -5,7 +5,7 @@
 
         <div class="col-sm-8 blog-main">
             <div class="row">
-                <div class="col-sm-12">
+                <div class="col-sm-12" id="psts">
 <% if(data.length) {
     var f_gen,estado;
     for(var i = 0;i<data.length;i++){
@@ -22,120 +22,94 @@
                 estado = "<a class='btn btn-danger'>Rechazado</a><a class='btn btn-warning edit' data-toggle='modal' data-target='#aa' data-tipo='" + data[i].tipo
                         + "' data-tit='" + data[i].t_principal + "' data-cont='" + data[i].contenido + "' data-tags='" + data[i].tags + "' data-idpost = '" + data[i].idpost + "'><i class='glyphicon glyphicon-wrench'></i></a>";
                 break;
-        }
-        switch(data[i].tipo) {
-            case 1:
-                %><section class="blog-post" id="<%= data[i].idpost %>">
+        }%><section class="blog-post" id="<%= data[i].idpost %>">
                         <div class="panel panel-default">
                             <div class="panel-body">
+                                <%if(data[i].tipo == 3){%>
+                                <img src="<%= data[i].t_principal%>" style="margin: auto;display: block;" width="auto" class="img-responsive">
+                                <%} else if(data[i].tipo == 4){%>
+                                <iframe width="100%" height="372" src="https://www.youtube.com/embed/<%= data[i].t_principal%>?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen=""></iframe>
+                                <%}%>
                                 <div class="blog-post-meta">
-                                    <input class="hidden" value="<%= data[i].tags%>" data-id="<%= data[i].idpost%>">
+                                    <input class="hidden" value="<%= data[i].tagz%>" data-id="<%= data[i].idpost%>">
                                     <p class="blog-post-date pull-right"><%= f_gen%></p>
                                 </div>
                                 <div class="blog-post-content">
+                                    <%
+                                    switch(data[i].tipo) {
+                                    case 1:
+                                    %>
+                                    <a href="/post/<%= data[i].idpost%>">
+                                        <h2 class="blog-post-title"><%= data[i].t_principal%></h2>
+                                    </a><%
+                                        break;
+                                    case 2:%>
                                     <a href="/post/<%= data[i].idpost%>">
                                         <h2 class="blog-post-title"><%= data[i].t_principal%></h2>
                                     </a>
-                                    <a class="blog-post-share pull-left" href="#">
-                                        Creado por: <%= data[i].username%>
-                                    </a>
+                                    <p><%- data[i].contenido%></p>
+                                    <%
+                                        break;
+                                    default:%>
+                                    <p><%- data[i].contenido%></p>
+                                    <%  break;
+                                    }%>
+                                    <div class="blog-post-share pull-left" style="display: flex">
+                                        <img src="<%= data[i].iconouser%>" style="margin: 0;height: 30px" width="30px" class="img-circle img-responsive">
+                                        <h5 style="margin-left: 10px"><%= data[i].username%></h5>
+                                    </div>
+                                    <div class="blog-post-share pull-right">
+                                        <%- estado%>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section><%
+                    }
 
-                                    <div class="blog-post-share pull-right">
-                                        <%- estado%>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section><%
-                break;
-            case 2:
-                %><section class="blog-post" id="<%= data[i].idpost%>">
-                        <div class="panel panel-default">
-                            <div class="panel-body">
-                                <div class="blog-post-meta">
-                                    <input class="hidden" value="<%= data[i].tagz %>" data-id="<%= data[i].idpost%>">
-                                    <p class="blog-post-date pull-right"><%= f_gen%></p>
-                                </div>
-                                <div class="blog-post-content">
-                                    <a href="/post/<%= data[i].idpost%>">
-                                        <h2 class="blog-post-title"><%= data[i].t_principal%></h2>
-                                    </a>
-                                    <p><%- data[i].contenido%></p>
-                                    <a class="blog-post-share pull-left" href="#">
-                                        Creado por: <%= data[i].username%>
-                                    </a>
-                                    <div class="blog-post-share pull-right">
-                                        <%- estado%>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section><%
-                break;
-            case 3:
-                %><section class="blog-post" id="<%= data[i].idpost %>">
-                        <div class="panel panel-default">
-                            <img src="<%= data[i].t_principal%>" style="margin: auto;display: block;" width="auto" class="img-responsive">
-                            <div class="panel-body">
-                                <div class="blog-post-meta">
-                                    <input class="hidden" value="<%= data[i].tagz%>" data-id="<%= data[i].idpost%>">
-                                    <p class="blog-post-date pull-right"><%= f_gen%></p>
-                                </div>
-                                <div class="blog-post-content">
-                                    <p><%- data[i].contenido%></p>
-                                    <a class="blog-post-share pull-left" href="#">
-                                        Creado por: <%= data[i].username%>
-                                    </a>
-                                    <div class="blog-post-share pull-right">
-                                        <%- estado%>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section><%
-                break;
-            case 4:
-                %><section class="blog-post" id="<%= data[i].idpost %>">
-                        <div class="panel panel-default">
-                            <iframe width="100%" height="372" src="https://www.youtube.com/embed/<%= data[i].t_principal%>?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen=""></iframe>
-                            <div class="panel-body">
-                                <div class="blog-post-meta">
-                                    <input class="hidden" value="<%= data[i].tagz%>" data-id="<%= data[i].idpost%>">
-                                    <p class="blog-post-date pull-right"><%= f_gen%></p>
-                                </div>
-                                <div class="blog-post-content">
-                                    <p ><%- data[i].contenido%></p>
-                                    <a class="blog-post-share pull-left" href="#">
-                                        Creado por: <%= data[i].username%>
-                                    </a>
-                                    <div class="blog-post-share pull-right">
-                                        <%- estado%>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-<%
-                break;
-            default:
-                status = "inactivo";
-        }
-    }
-} else {%>
+                    } else {%>
 <p> No hay posts</p>
-<% } %>
-                    <div id="next">
-                        <nav>
-                            <ul class="pager">
-                                <input type="hidden" value="<% if(data.length){%><%= data[data.length-1].idpost%><%}%>" id="idpst">
-                                <li><a class="withripple strim" href="#">Más</a></li>
-                            </ul>
-                        </nav>
-                    </div>
+<% }%>
+
                 </div>
+                <%if(data.length == 6){%>
+
+                <div id="next">
+                    <nav>
+                        <ul class="pager">
+                            <input type="hidden" value="<% if(data.length){%><%= data[data.length-1].fecha%><%}%>" data-strim="<%= pat%>" data-helper="<%= helper%>" id="idpst">
+                            <li><a class="withripple strim" href="#">Más</a></li>
+                        </ul>
+                    </nav>
+                </div>
+                <%}%>
             </div>
 
         </div><!-- /.blog-main -->
+        <script type="text/javascript">
+            $(function(){
+                $(".strim").click(function(e){
+                    var data = {};
+                    data.idpost = $("#idpst").val();
+                    data.strim = $("#idpst").data("strim");
+                    data.helper = $("#idpst").data("helper");
+                    $.ajax({
+                        type: 'POST',
+                        data: JSON.stringify(data),
+                        contentType: 'application/json',
+                        url: '/post_stream',
+                        success: function(data) {
+                            $("#psts").append(data.html);
+                            if(data.newval != "nada"){
+                                $("#idpst").val(data.newval);
+                            } else {
+                                $("#next").html("");
+                            }
+                        }
+                    });
+                });
+            });
+        </script>
 
 
 <%- include layouts/cdd_footer.ejs %>

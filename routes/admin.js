@@ -48,7 +48,24 @@ exports.moderate_p = function(req,res){
                         if(err) console.log("Error Updating : %s ",err);
                         connection.query("UPDATE postinterno SET tipo = 5 WHERE idproyecto = (SELECT idproyecto FROM postinterno WHERE idpostinterno = ?) AND tipo = 0",req.params.idpost,function(err,rows){
                             if(err) console.log("Error Updating : %s ",err);
-                            res.redirect("/mod_proys");
+                            connection.query("SELECT * FROM postinterno WHERE idpostinterno = ?",req.params.idpost,function(err,rows){
+                                if(err) console.log("Error SELECTING : %s ",err);
+								if(rows.length){
+                                    var newuser_act = {
+                                        iduser: rows[0].iduser,
+                                        idproyecto: rows[0].idproyecto,
+                                        tipo : 5,
+                                        principal : "El proyecto avanzó de etapa!",
+                                        contenido: '<h4>' + rows[0].token.split("&&")[0] + '</h4>' + rows[0].texto1 +'<hr style="border-top-color: black; margin-top: 20px"><h4>' + rows[0].token.split("&&")[1] + '</h4>' + rows[0].texto2,
+                                        fecha: new Date()
+                                    };
+                                    connection.query("INSERT INTO actualizacion SET ?",newuser_act,function (err,rows){
+                                        if(err) console.log("Error INSERTING : %s ",err);
+                                        res.redirect("/mod_proys");
+									});
+
+                                }
+							});
 						});
 					});
 				});

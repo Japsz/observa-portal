@@ -87,10 +87,12 @@ exports.intern_laik = function (req, res) {
                     }
                     if(totvot >= ((numint - numint%2)/2 + 1)){ // Votación completa
                         if(tip == 2){
-                            connection.query("SELECT solucion.iduser,proyecto.etapa,solucion.idproyecto FROM solucion LEFT JOIN proyecto ON proyecto.idproyecto = solucion.idproyecto WHERE idsolucion = ? GROUP BY solucion.iduser",tok[0],function(err,rows){
+                            connection.query("SELECT solucion.iduser,proyecto.etapa,solucion.idproyecto,solucion.contenido FROM solucion LEFT JOIN proyecto ON proyecto.idproyecto = solucion.idproyecto WHERE idsolucion = ? GROUP BY solucion.iduser",tok[0],function(err,rows){
                                 if (err)
                                     console.log("Error inserting : %s ",err );
                                 var idproj = rows[0].idproyecto;
+                                var iduser = rows[0].iduser;
+                                var cont = rows[0].contenido;
                                 connection.query("INSERT INTO userproyecto SET ? ",[{iduser:rows[0].iduser,idproyecto: rows[0].idproyecto,etapa: rows[0].etapa}],function(err,rows){
                                     if (err)
                                         console.log("Error inserting : %s ",err );
@@ -102,7 +104,20 @@ exports.intern_laik = function (req, res) {
                                         connection.query("UPDATE proyecto SET gotuser = 1 WHERE idproyecto = ?",idproj, function(err,rows){
                                             if (err)
                                                 console.log("Error updating : %s ",err );
-                                            res.send({html: '<i class="glyphicon glyphicon-ok"></i>',newlaik: "btn-success",alert: "El usuario fue agregado al proyecto"});
+                                            var newuser_act = {
+                                                iduser: iduser,
+                                                idproyecto: idproj,
+                                                tipo : 5,
+                                                principal : "Se unió al proyecto!",
+                                                contenido: cont,
+                                                fecha: new Date()
+                                            };
+                                            connection.query("INSERT INTO actualizacion SET ?",newuser_act,function(err, actid){
+                                                if (err)
+                                                    console.log("Error insert actualizacion: %s", err);
+
+                                                res.send({html: '<i class="glyphicon glyphicon-ok"></i>',newlaik: "btn-success",alert: "El usuario fue agregado al proyecto"});
+                                            });
                                         });
                                     });
                                 });
@@ -155,15 +170,15 @@ exports.add_p_laik = function (req, res) {
                     connection.query("INSERT INTO proylike SET ?",{idproyecto: input.idpost, iduser: req.session.user.iduser},function(err,rows){
                         if (err)
                             console.log("Error inserting : %s ",err );
-                        connection.query("SELECT COUNT(DISTINCT proylike.iduser) AS lenlaik, evento.likes, proyecto.etapa FROM proylike LEFT JOIN proyecto ON proyecto.idproyecto = proylike.idproyecto LEFT JOIN evento ON proyecto.idevento = evento.idevento WHERE proylike.idproyecto = ? GROUP BY proyecto.etapa",input.idpost,function(err,rows){
+                        connection.query("SELECT COUNT(DISTINCT proylike.iduser) AS lenlaik,proyecto.gotlaik,proyecto.idcreador, evento.likes, proyecto.etapa FROM proylike LEFT JOIN proyecto ON proyecto.idproyecto = proylike.idproyecto LEFT JOIN evento ON proyecto.idevento = evento.idevento WHERE proylike.idproyecto = ? GROUP BY proyecto.etapa",input.idpost,function(err,rows){
                             if (err)
                                 console.log("Error selecting : %s ",err );
-                            if(rows[0].lenlaik >= rows[0].etapa*rows[0].likes){
-                                var lenlaik = rows[0].lenlaik;
+                            if(rows[0].lenlaik >= rows[0].etapa*rows[0].likes && rows[0].gotlaik == 0){
+                                var proyobj = rows[0];
                                 connection.query("UPDATE proyecto SET gotlaik = 1 WHERE idproyecto = ?",input.idpost,function(err,rows){
                                     if (err)
                                         console.log("Error updating : %s ",err );
-                                    res.send({html: '<i class="glyphicon glyphicon-thumbs-up"></i> ' + lenlaik,newlaik: "btn-success"});
+                                        res.send({html: '<i class="glyphicon glyphicon-thumbs-up"></i> ' + proyobj.lenlaik,newlaik: "btn-success"});
                                 });
                             } else
                             res.send({html: '<i class="glyphicon glyphicon-thumbs-up"></i> ' + rows[0].lenlaik,newlaik: "btn-success"});
@@ -179,44 +194,34 @@ exports.add_laik = function (req, res) {
     if(req.session.isUserLogged){
         var input = JSON.parse(JSON.stringify(req.body));
         req.getConnection(function (err, connection) {
-            connection.query("INSERT INTO megusta (`iduser`, `idpost`) VALUES ?",[[[req.session.user.iduser,input.idpost]]], function(err, rows)
+            connection.query("SELECT * FROM megusta WHERE idpost = ? AND iduser = ?",[input.idpost,req.session.user.iduser], function(err, rows)
             {
 
                 if (err)
-                    console.log("Error inserting : %s ",err );
-                connection.query("SELECT * FROM megusta WHERE idpost = ?",[input.idpost], function(err, rows)
-                {
+                    console.log("Error selecting : %s ",err );
+                if(rows.length){
+                    connection.query("DELETE FROM megusta WHERE idpost = ? AND iduser = ?",[input.idpost,req.session.user.iduser],function(err,rows){
+                        if (err)
+                            console.log("Error deleting : %s ",err );
+                        connection.query("SELECT COUNT(DISTINCT iduser) AS lenlaik FROM megusta WHERE idpost = ?",input.idpost,function(err,rows){
+                            if (err)
+                                console.log("Error selecting : %s ",err );
+                            res.send({html: '<i class="glyphicon glyphicon-thumbs-up"></i> ' + rows[0].lenlaik,newlaik: "btn-inverse"});
+                        });
 
-                    if (err)
-                        console.log("Error inserting : %s ",err );
-                    var len = rows.length;
-                    res.send(len.toString());
+                    });
+                } else {
+                    connection.query("INSERT INTO megusta SET ?",{idpost: input.idpost, iduser: req.session.user.iduser},function(err,rows){
+                        if (err)
+                            console.log("Error inserting : %s ",err );
+                        connection.query("SELECT COUNT(DISTINCT megusta.iduser) AS lenlaik FROM megusta WHERE idpost = ? ",input.idpost,function(err,rows){
+                            if (err)
+                                console.log("Error selecting : %s ",err );
+                            res.send({html: '<i class="glyphicon glyphicon-thumbs-up"></i> ' + rows[0].lenlaik,newlaik: "btn-success"});
+                        });
 
-                });
-
-            });
-        });
-    } else res.send("no");
-};
-exports.rm_laik = function (req, res) {
-    if(req.session.isUserLogged){
-        var input = JSON.parse(JSON.stringify(req.body));
-        req.getConnection(function (err, connection) {
-            connection.query("DELETE FROM megusta WHERE idpost = ? AND iduser = ?",[input.idpost,req.session.user.iduser], function(err, rows)
-            {
-
-                if (err)
-                    console.log("Error inserting : %s ",err );
-                connection.query("SELECT * FROM megusta WHERE idpost = ?",[input.idpost], function(err, rows)
-                {
-
-                    if (err)
-                        console.log("Error inserting : %s ",err );
-
-                    res.send(rows.length.toString());
-
-                });
-
+                    });
+                }
             });
         });
     } else res.send("no");
@@ -247,7 +252,7 @@ exports.save_edit = function(req, res){
             tipo : req.session.user.tipo,
             nombre : input.name,
             apellido : input.ape,
-            fnac : input.fnac,
+                    fnac : input.fnac,
             gender : input.gend,
             correo : input.correo
         };

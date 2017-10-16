@@ -89,8 +89,6 @@
         var laiktoken = $(this).val();
         var idpost = "#" + $(this).data('id');
         if(laiktoken.indexOf("&"+ <%=usr.iduser%> +"&") != -1 || laiktoken == "fin"){
-            $(idpost + " .laik").removeClass("btn-inverse");
-            $(idpost + " .laik").addClass("btn-success");
             $(idpost + " .laikp").removeClass("btn-inverse");
             $(idpost + " .laikp").addClass("btn-success");
         }
@@ -173,18 +171,7 @@
              error  : function() { console.log('error');}
              });*/
         });
-        $(".redit").click(function(e){
-            var data = $(this).data('tipo');
-            $(".modal-footer #tipo").val(data);
-            $(".t1").html("Describa la situación y/o problema que aborda el proyecto (causas y consecuencias).")
-            $(".t2").html("Señale cómo cambiará o incidirá el proyecto en cambiar la situación y/o problema identificado.")
-            $("#editor").val($(this).data('prim'));
-            if(!both){
-                $("#editor2").jqte();
-                both = true;
-            }
-            $("#editor2").val($(this).data('sec'));
-        });
+
     });
     function upload(e){
 

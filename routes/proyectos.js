@@ -5,9 +5,11 @@ exports.indx = function(req, res){
     if(req.session.isUserLogged){
         req.getConnection(function(err,connection){
 
-            connection.query('SELECT proyecto.*,user.username,user.avatar_pat as iconouser,GROUP_CONCAT(DISTINCT tags.tag ORDER BY tags.tag) AS tagz, GROUP_CONCAT(DISTINCT proylike.iduser SEPARATOR "&&") as proylaik, COUNT(DISTINCT proylike.iduser) as lenlaik FROM' +
-                ' proyecto LEFT JOIN tagproyecto ON proyecto.idproyecto = tagproyecto.idproyecto LEFT JOIN tags ON tagproyecto.idtag = tags.idtag INNER JOIN user ON user.iduser = proyecto.idcreador' +
-                ' LEFT JOIN proylike ON proylike.idproyecto = proyecto.idproyecto GROUP BY proyecto.idproyecto ORDER BY proyecto.actualizado DESC LIMIT 12',function(err,rows)
+            connection.query('SELECT proyecto.*,user.username,user.avatar_pat as iconouser,GROUP_CONCAT(DISTINCT tags.tag ORDER BY tags.tag) AS tagz,' +
+                ' GROUP_CONCAT(DISTINCT proylike.iduser SEPARATOR "&&") as proylaik, COUNT(DISTINCT proylike.iduser) as lenlaik FROM' +
+                ' proyecto LEFT JOIN tagproyecto ON proyecto.idproyecto = tagproyecto.idproyecto LEFT JOIN tags ON tagproyecto.idtag = tags.idtag' +
+                ' INNER JOIN user ON user.iduser = proyecto.idcreador LEFT JOIN proylike ON proylike.idproyecto = proyecto.idproyecto' +
+                ' GROUP BY proyecto.idproyecto ORDER BY proyecto.actualizado DESC LIMIT 12',function(err,rows)
             {
                 if(err)
                     console.log("Error Selecting : %s ",err );
@@ -18,13 +20,58 @@ exports.indx = function(req, res){
         });
     } else res.redirect('/bad_login');
 };
+exports.proy_stream = function(req,res){
+  if(req.session.isUserLogged){
+      var input = JSON.parse(JSON.stringify(req.body));
+      var htmlobj = {};
+      req.getConnection(function(err,connection){
+
+          connection.query('SELECT proyecto.*,user.username,user.avatar_pat as iconouser,GROUP_CONCAT(DISTINCT tags.tag ORDER BY tags.tag) AS tagz,' +
+              ' GROUP_CONCAT(DISTINCT proylike.iduser SEPARATOR "&&") as proylaik, COUNT(DISTINCT proylike.iduser) as lenlaik FROM' +
+              ' proyecto LEFT JOIN tagproyecto ON proyecto.idproyecto = tagproyecto.idproyecto LEFT JOIN tags ON tagproyecto.idtag = tags.idtag' +
+              ' INNER JOIN user ON user.iduser = proyecto.idcreador LEFT JOIN proylike ON proylike.idproyecto = proyecto.idproyecto' +
+              ' WHERE proyecto.actualizado < ? GROUP BY proyecto.idproyecto ORDER BY proyecto.actualizado DESC LIMIT 9',[new Date(input.idpost)],function(err,rows)
+          {
+              if(err)
+                  console.log("Error Selecting : %s ",err );
+              if(rows.length){
+                  var sep = rows.length - rows.length%3;
+                  var tot = rows.length;
+                  sep = sep/3;
+                  if(sep == 0){
+                      sep = 1;
+                  }
+                  res.render('proy_stream',{data:rows.slice(0,sep), usr:req.session.user,sep:"u"},function (err,html) {
+                      if(err) console.log("Error rendering: %s",err);
+                      htmlobj.uno = html;
+                      res.render('proy_stream',{data:rows.slice(sep,2*sep), usr:req.session.user,sep:"d"},function (err,html) {
+                          if(err) console.log("Error rendering: %s",err);
+                          htmlobj.dos = html;
+                          res.render('proy_stream',{data:rows.slice(2*sep,tot), usr:req.session.user,sep:"t"},function (err,html) {
+                              if(err) console.log("Error rendering: %s",err);
+                              htmlobj.tres = html;
+                              res.send({html: htmlobj, newval: rows[rows.length - 1].actualizado});
+                          });
+                      });
+                  });
+              } else {
+                  res.send({html: "<p>No hay Mas Proyectos</p>", newval: "nada"});
+              }
+
+
+              //console.log(query.sql);
+          });
+      });
+  }
+};
 exports.myproy = function(req, res){
     if(req.session.isUserLogged){
         req.getConnection(function(err,connection){
 
             connection.query('SELECT proyecto.*,GROUP_CONCAT(DISTINCT tags.tag ORDER BY tags.tag) AS tagz FROM' +
-                ' proyecto LEFT JOIN tagproyecto ON proyecto.idproyecto = tagproyecto.idproyecto LEFT JOIN tags ON tagproyecto.idtag = tags.idtag LEFT JOIN userproyecto ON proyecto.idproyecto = userproyecto.idproyecto' +
-                ' LEFT JOIN user ON user.iduser = userproyecto.iduser WHERE user.iduser = ? GROUP BY proyecto.idproyecto ORDER BY proyecto.actualizado DESC',req.session.user.iduser,function(err,rows)
+                ' proyecto LEFT JOIN tagproyecto ON proyecto.idproyecto = tagproyecto.idproyecto LEFT JOIN tags ON tagproyecto.idtag = tags.idtag' +
+                ' LEFT JOIN userproyecto ON proyecto.idproyecto = userproyecto.idproyecto LEFT JOIN user ON user.iduser = userproyecto.iduser' +
+                ' WHERE user.iduser = ? GROUP BY proyecto.idproyecto ORDER BY proyecto.actualizado DESC',req.session.user.iduser,function(err,rows)
             {
                 if(err)
                     console.log("Error Selecting : %s ",err );
@@ -40,12 +87,15 @@ exports.getsol = function(req, res){
     if(req.session.isUserLogged){
         req.getConnection(function(err,connection){
 
-            connection.query('SELECT solucion.*,user.username,user.avatar_pat as iconouser FROM solucion LEFT JOIN user ON user.iduser = solucion.iduser WHERE solucion.idproyecto = ? GROUP BY solucion.idsolucion ORDER BY solucion.fecha DESC',req.params.idproy,function(err,rows)
+            connection.query('SELECT solucion.*,user.username,user.avatar_pat as iconouser FROM solucion LEFT JOIN user ON user.iduser = solucion.iduser' +
+                ' WHERE solucion.idproyecto = ? GROUP BY solucion.idsolucion ORDER BY solucion.fecha DESC',req.params.idproy,function(err,rows)
             {
                 if(err)
                     console.log("Error Selecting : %s ",err );
                 var acts = rows;
-                connection.query('SELECT group_concat(user.username , "@" , user.iduser, "@", user.avatar_pat) as usuarios,proyecto.* FROM proyecto LEFT JOIN userproyecto ON userproyecto.idproyecto = proyecto.idproyecto LEFT JOIN user ON user.iduser = userproyecto.iduser WHERE proyecto.idproyecto = ?',req.params.idproy,function(err,rows)
+                connection.query('SELECT group_concat(user.username , "@" , user.iduser, "@", user.avatar_pat) as usuarios,proyecto.*,' +
+                    'etapa.token FROM proyecto LEFT JOIN userproyecto ON userproyecto.idproyecto = proyecto.idproyecto LEFT JOIN user ON user.iduser = userproyecto.iduser' +
+                    ' LEFT JOIN etapa ON etapa.idevento = proyecto.idevento AND etapa.nro = proyecto.etapa WHERE proyecto.idproyecto = ?',req.params.idproy,function(err,rows)
                 {
                     if(rows.length){
                         rows[0].usuarios = rows[0].usuarios.split(",");
