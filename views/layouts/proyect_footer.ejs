@@ -89,6 +89,8 @@
         var laiktoken = $(this).val();
         var idpost = "#" + $(this).data('id');
         if(laiktoken.indexOf("&"+ <%=usr.iduser%> +"&") != -1 || laiktoken == "fin"){
+            $(idpost + " .laik").removeClass("btn-inverse");
+            $(idpost + " .laik").addClass("btn-success");
             $(idpost + " .laikp").removeClass("btn-inverse");
             $(idpost + " .laikp").addClass("btn-success");
         }
