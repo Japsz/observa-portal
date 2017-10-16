@@ -1,5 +1,5 @@
 <% var key = new Date().toLocaleString();
-key = key.replace(/\:|\ /gm,"")%>
+key = key.replace(/\:|\ |\,|\//gm,"")%>
 <div id="<%= key%>">
     <% if(data.length) {
         var f_gen;
