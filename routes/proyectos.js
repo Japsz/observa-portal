@@ -95,7 +95,7 @@ exports.getsol = function(req, res){
                 var acts = rows;
                 connection.query('SELECT group_concat(user.username , "@" , user.iduser, "@", user.avatar_pat) as usuarios,proyecto.*,' +
                     'etapa.token FROM proyecto LEFT JOIN userproyecto ON userproyecto.idproyecto = proyecto.idproyecto LEFT JOIN user ON user.iduser = userproyecto.iduser' +
-                    ' LEFT JOIN etapa ON etapa.idevento = proyecto.idevento AND etapa.nro = proyecto.etapa WHERE proyecto.idproyecto = ?',req.params.idproy,function(err,rows)
+                    ' LEFT JOIN etapa ON etapa.idevento = proyecto.idevento AND etapa.nro = proyecto.etapa WHERE proyecto.idproyecto = ? GROUP BY proyecto.idproyecto',req.params.idproy,function(err,rows)
                 {
                     if(err)
                         console.log("Error Selecting : %s ",err );
