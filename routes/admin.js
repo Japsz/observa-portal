@@ -3,7 +3,7 @@ exports.list = function(req, res){
 	if(req.session.isAdminLogged){
 		req.getConnection(function(err,connection){
 					 
-						connection.query('SELECT * FROM user',function(err,rows)
+						connection.query('SELECT * FROM user WHERE tipo != 3',function(err,rows)
 						{
 								
 								if(err)

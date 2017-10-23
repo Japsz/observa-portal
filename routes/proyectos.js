@@ -38,6 +38,7 @@ exports.proy_stream = function(req,res){
                   var sep = rows.length - rows.length%3;
                   var tot = rows.length;
                   sep = sep/3;
+                  sep += 1;
                   if(sep == 0){
                       sep = 1;
                   }
@@ -156,6 +157,7 @@ exports.save = function(req,res){
                 titulo : input.tit,
                 descripcion: input.testo,
                 problema: input.prob,
+                idobservatorio: req.session.idobs[0].idobservatorio,
                 media: input.media
             };
             connection.query("SELECT observatorio.idevento FROM observatorio LEFT JOIN ciudadano ON observatorio.idobservatorio = ciudadano.idobs WHERE ciudadano.iduser = ? GROUP BY observatorio.idevento LIMIT 1",req.session.user.iduser,function(err,rows){

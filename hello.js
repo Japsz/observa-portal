@@ -74,6 +74,7 @@ app.post('/instit_edit', observ.inst_edit);
 app.get('/add_inst', observ.add_inst);
 app.post('/inst/add', observ.save);
 app.get('/obs/:id', observ.obs_list);
+app.get('/show_obs/:idobs', observ.admin_obs);
 app.post('/obs/add', observ.obs_save);
 
 // Eventos

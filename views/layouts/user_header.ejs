@@ -35,6 +35,25 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
     <style>
+        .strimload {
+            border: 12px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 12px solid #009688;
+            width: 50px;
+            height: 50px;
+            -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
+        }
+
+        @-webkit-keyframes spin {
+            0% { -webkit-transform: rotate(0deg); }
+            100% { -webkit-transform: rotate(360deg); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
         img {
             margin: auto;
             display: block;
@@ -74,6 +93,9 @@
                 <%}%>
                 <li >
                     <a href="/usr_post">Mis Posts</a>
+                </li>
+                <li>
+                    <a href="/lab">Lab de Ideas</a>
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">

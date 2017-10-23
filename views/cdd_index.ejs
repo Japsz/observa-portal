@@ -83,47 +83,52 @@
                             </div>
                         </div>
                     </section><%
-    }
-} else {%>
-<p> No hay posts</p>
-<% } %>
-                </div>
+                }%>
                 <% if(data.length == 6){%>
-                <div id="next">
-                    <nav>
-                        <ul class="pager">
-                            <input type="hidden" value="<% if(data.length){%><%= data[data.length-1].fecha%><%}%>" data-strim="<%= stream%>" data-helper="<%=helper%>" id="idpst">
-                            <li><a class="withripple strim" href="#">Más</a></li>
-                        </ul>
-                    </nav>
-                </div>
+                <input type="hidden" value="<% if(data.length){%><%= data[data.length-1].fecha%><%}%>" data-strim="<%= stream%>" data-helper="<%=helper%>" id="idpst">
                 <%}%>
-            </div>
+                <script type="text/javascript">
+                    var loading = false;
+                    var fin = <% if(data.length < 6){%>true<%} else {%>false<%}%>;
+                    $(window).scroll(function() {
+                        console.log(loading);
+                        if($(window).scrollTop() + $(window).height() > $(document).height() - 100 && !loading && !fin)  {
+                            loading = true;
+                            $("#loader").removeClass("hidden");
+                            var data = {};
+                            data.idpost = $("#idpst").val();
+                            data.strim = $("#idpst").data("strim");
+                            data.helper = $("#idpst").data("helper");
+                            $.ajax({
+                                type: 'POST',
+                                data: JSON.stringify(data),
+                                contentType: 'application/json',
+                                url: '/post_stream',
+                                success: function(data) {
+                                    $("#psts").append(data.html);
+                                    $("#loader").addClass("hidden");
+                                    loading = false;
+                                    if(data.newval != "nada"){
+                                        $("#idpst").val(data.newval);
+                                    } else {
+                                        fin = true;
+                                        $("#next").html("");
+                                    }
+                                }
+                            });
 
-        </div><!-- /.blog-main -->
-        <script type="text/javascript">
-            $(function(){
-                $(".strim").click(function(e){
-                    var data = {};
-                    data.idpost = $("#idpst").val();
-                    data.strim = $("#idpst").data("strim");
-                    data.helper = $("#idpst").data("helper");
-                    $.ajax({
-                        type: 'POST',
-                        data: JSON.stringify(data),
-                        contentType: 'application/json',
-                        url: '/post_stream',
-                        success: function(data) {
-                            $("#psts").append(data.html);
-                            if(data.newval != "nada"){
-                                $("#idpst").val(data.newval);
-                            } else {
-                                $("#next").html("");
-                            }
                         }
                     });
-                });
-            });
-            </script>
+                </script>
+                <%
+                } else {%>
+                <p> No hay posts</p>
+            <% } %>
+                </div>
+            </div>
+            <div class="strimload" id="loader" style="margin-left: 50%;margin-bottom: 20px"></div>
+
+        </div><!-- /.blog-main -->
+
 
 <%- include layouts/cdd_footer.ejs %>

@@ -27,13 +27,41 @@ exports.list = function(req, res){
     }
     else res.redirect('/bad_login');
 };
+//Vista detalle observatorio.
+exports.admin_obs = function(req, res){
+    if(req.session.isAdminLogged){
+        req.getConnection(function(err,connection){
+
+            var query = connection.query('SELECT * FROM observatorio WHERE idobservatorio = ?',req.params.idobs,function(err,obs)
+            {
+                if(err)
+                    console.log("Error Selecting : %s ",err );
+                connection.query("SELECT user.*,COUNT(post.idpost) AS posts FROM user LEFT JOIN ciudadano ON ciudadano.iduser = user.iduser LEFT JOIN post ON post.iduser = user.iduser" +
+                    " WHERE ciudadano.idobs = ? GROUP BY user.iduser",req.params.idobs,function(err,users){
+                    if(err)
+                        console.log("Error Selecting : %s ",err );
+                    connection.query("SELECT proyecto.*,user.username,evento.nombre, COUNT(userproyecto.iduser) AS ints FROM proyecto LEFT JOIN user ON user.iduser = proyecto.idcreador" +
+                        " LEFT JOIN evento ON proyecto.idevento = evento.idevento LEFT JOIN userproyecto ON userproyecto.idproyecto = proyecto.idproyecto WHERE proyecto.idobservatorio = ? GROUP BY proyecto.idproyecto",req.params.idobs,function(err,proyects){
+                        if(err)
+                            console.log("Error Selecting : %s ",err );
+                        res.render('admin/obs/admin_obs',{page_title:"Observatorios",obs:obs[0], usr:req.session.user,users: users,proyects: proyects});
+                    });
+
+                });
+
+            });
+            //console.log(query.sql);
+        });
+    }
+    else res.redirect('/bad_login');
+};
 exports.obs_list = function(req, res){
     if(req.session.isAdminLogged){
         req.getConnection(function(err,connection){
 
-            connection.query('SELECT observatorio.*,user.correo FROM observatorio LEFT JOIN user ON observatorio.idmonitor = user.iduser WHERE idinst = ?',req.params.id,function(err,rows)
+            connection.query('SELECT observatorio.*,user.correo,COUNT(proyecto.idproyecto) AS proyectos, COUNT(ciudadano.iduser) AS cdds FROM observatorio LEFT JOIN user ON observatorio.idmonitor = user.iduser' +
+                ' LEFT JOIN proyecto ON proyecto.idobservatorio = observatorio.idobservatorio LEFT JOIN ciudadano ON ciudadano.idobs = observatorio.idobservatorio WHERE observatorio.idinst = ? GROUP BY observatorio.idobservatorio',req.params.id,function(err,rows)
             {
-
                 if(err)
                     console.log("Error Selecting : %s ",err );
 
