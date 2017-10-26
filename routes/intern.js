@@ -34,9 +34,13 @@ exports.getproy = function(req, res){
                                 int = true;
                             }
                         }
-                        if(int)
-                        res.render("muro",{data :psts,gral : rows[0], usr:req.session.user});
-                        else res.redirect('/bad_login');
+                        connection.query("SELECT GROUP_CONCAT(etapa.nombre ORDER BY etapa.nro ASC) as etapas FROM proyecto RIGHT JOIN etapa ON proyecto.idevento = etapa.idevento WHERE proyecto.idproyecto = ? GROUP BY proyecto.idproyecto",req.params.idproy,function(err,etapas){
+                            if(err)
+                                console.log("Error Selecting : %s ",err );
+                            if(int)
+                                res.render("muro",{data :psts,gral : rows[0], usr:req.session.user,etapas: etapas[0].etapas.split(",")});
+                            else res.redirect('/bad_login');
+                        });
                     }
 
                 });

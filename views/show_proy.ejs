@@ -3,6 +3,30 @@
 
 <div class="container blog-content">
     <div class="row">
+        <div class="steps"style="margin-bottom: 20px;">
+            <ul class="steps-container">
+                <% var etapa_w = 100/(gral.etapas.length +1);
+
+                for(var i = 0;i<gral.etapas.length;i++){
+                %>
+                <li style="width:<%= etapa_w%>%;" <% if(i+1 <= gral.etapa){%>class="activated"<%}%>>
+                    <div class="step">
+                        <div class="step-image"><span></span></div>
+                        <div class="step-current">Etapa <%= i+1%></div>
+                        <div class="step-description"><%= gral.etapas[i]%></div>
+                    </div>
+                </li>
+                <%}%>
+                <li style="width:<%= etapa_w%>%;" <% if(gral.etapa > gral.etapas.length){%>class="activated"<%}%>>
+                    <div class="step">
+                        <div class="step-image"><span></span></div>
+                        <div class="step-current">Etapa <%= i+1%></div>
+                        <div class="step-description">Fin!</div>
+                    </div>
+                </li>
+            </ul>
+            <div class="step-bar" style="width: <%= etapa_w*gral.etapa%>%;"></div>
+        </div>
         <div class="col-sm-8 blog-main">
             <h3 class="page-header">Últimas actualizaciones</h3>
             <div class="row">
@@ -59,16 +83,9 @@ if(data[i].tipo < 5){%>
                     <%          }
     }
 } else {%>
-<p> No hay posts</p>
+<p> No hay Actualizaciones</p>
 <% } %>
-                    <div id="next">
-                        <nav>
-                            <ul class="pager">
-                                <input type="hidden" value="<% if(data.length){%><%= data[data.length-1].idpost%><%}%>" id="idpst">
-                                <li><a class="withripple strim" href="#">Más</a></li>
-                            </ul>
-                        </nav>
-                    </div>
+
                 </div>
             </div>
 
@@ -89,7 +106,9 @@ if(data[i].tipo < 5){%>
                         <div class="text-center" style="display: flex;margin: 10px"><img src="<%= gral.usuarios[j][2]%>"  class="img-responsive img-circle" style="margin: 0; height: 30px" width="30px"> <p style="margin-left: 10px"><%= gral.usuarios[j][0]%></p></div>
                         <%}%>
                         <br>
+                        <% if(gral.etapa <= gral.etapas.length){%>
                         <a class="btn btn-success" href="/sol/get/<%= gral.idproyecto%>">Ver soluciones</a>
+                        <%}%>
                     </div>
                 </div>
             </div><!-- /.sidebar-module -->

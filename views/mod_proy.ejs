@@ -9,13 +9,37 @@
 </style>
 
 <div class="container blog-content">
-    <h3 class="page-header">Actualizaciones</h3>
-    <ol class="breadcrumb">
-        <li><a href="/proy_cdd">Mis Proyectos</a></li>
-        <li class="active"><%= gral.titulo%></li>
-    </ol>
+    <div class="steps" style="margin-bottom: 20px;">
+        <ul class="steps-container">
+            <% var etapa_w = 100/(gral.etapas.length + 1);
+
+            for(var i = 0;i<gral.etapas.length;i++){
+            %>
+            <li style="width:<%= etapa_w%>%;" <% if(i+1 <= gral.etapa){%>class="activated"<%}%>>
+                <div class="step">
+                    <div class="step-image"><span></span></div>
+                    <div class="step-current">Etapa <%= i+1%></div>
+                    <div class="step-description"><%= gral.etapas[i]%></div>
+                </div>
+            </li>
+            <%}%>
+            <li style="width:<%= etapa_w%>%;" <% if(gral.etapa > gral.etapas.length){%>class="activated"<%}%>>
+                <div class="step">
+                    <div class="step-image"><span></span></div>
+                    <div class="step-current">Etapa <%= i+1%></div>
+                    <div class="step-description">Fin!</div>
+                </div>
+            </li>
+        </ul>
+        <div class="step-bar" style="width: <%= etapa_w*gral.etapa%>%;"></div>
+    </div>
     <div class="row">
         <div class="col-sm-8 blog-main">
+            <h3 class="page-header">Actualizaciones</h3>
+            <ol class="breadcrumb">
+                <li><a href="/proy_cdd">Mis Proyectos</a></li>
+                <li class="active"><%= gral.titulo%></li>
+            </ol>
             <ul class="menu boxed clearfix modalpost" aria-hidden="true">
                 <li><img src="/assets/img/isov_iso.png" height="84px" height="auto"></li>
                 <li>
@@ -105,7 +129,9 @@
                         <div class="text-center" style="display: flex;margin: 10px"><img src="<%= gral.usuarios[j][2]%>"  class="img-responsive img-circle" style="margin: 0; height: 30px" width="30px"> <p style="margin-left: 10px"><%= gral.usuarios[j][0]%></p></div>
                         <%}%>
                         <br>
+                        <% if(gral.etapa <= gral.etapas.length){%>
                         <a class="btn btn-success" href="/sol/get/<%= gral.idproyecto%>">Ver soluciones</a>
+                        <%}%>
                         <a class="btn btn-primary" href="/intern/<%=gral.idproyecto%>">Muro Interno</a>
                     </div>
                 </div>

@@ -1,5 +1,18 @@
 <%- include ../../layouts/admin_header.ejs %>
-<h2 class="page-header">Evento: <%= evnt.nombre%><a class="btn btn-warning pull-right nobs"  href="#" data-idinst="<%= evnt.idevento%>" ><span class="glyphicon glyphicon-wrench"  aria-hidden="true"></span></a> </h2>
+<h2 class="page-header">Evento: <%= evnt.nombre%> <a class="btn btn-info nobs" style="margin-left: 10px" data-toggle="collapse" href="#info" data-idinst="<%= evnt.idevento%>" ><span class="glyphicon glyphicon-info-sign"  aria-hidden="true"></span></a> </h2>
+<div class="collapse panel-collapse" id="info">
+    <h3 style="margin:5px">Etapas</h3>
+    <ol>
+    <% for(var i = 0;i<evnt.info.length;i++){%>
+        <li>Nombre: <%= evnt.info[i][0]%>
+            <ul class="list-group">
+                <li class="list-group-items">P1: <%= evnt.info[i][1]%></li>
+                <li class="list-group-items">P2: <%= evnt.info[i][2]%></li>
+            </ul>
+        </li>
+    <%}%>
+    </ol>
+</div>
 <div class="row">
     <h2>Observatorios participantes</h2>
     <div class="table table-responsive">

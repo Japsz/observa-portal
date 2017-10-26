@@ -22,9 +22,11 @@
             <ul class="menu boxed clearfix modalpost" aria-hidden="true">
                 <li><img src="/assets/img/isov_iso.png" height="84px" height="auto"></li>
                 <li><a href="#" data-toggle="modal" data-target="#aa" data-tipo="1" class="postint"><i class="menu-icon menu-icon-5"></i>Escrito</a></li>
+                <% if(gral.etapa <= etapas.length){%>
                 <li>
                     <a class="postint" href="#" data-toggle="modal" data-target="#aa" data-tipo="3"><i class="menu-icon menu-icon-6"></i>Avance</a>
                 </li>
+                <%}%>
             </ul>
             <div class="row">
                 <div class="col-sm-12">
@@ -111,9 +113,11 @@
                                         <img src="<%= data[i].iconouser%>" style="margin: 0;height: 30px" width="30px" class="img-circle img-responsive">
                                         <h5 style="margin-left: 10px"><%= data[i].username%></h5>
                                     </div>
+                                    <% if(gral.etapa <= etapas.length){%>
+
                                     <div class="blog-post-share pull-right" style="display: flex">
                                         <% if(data[i].tipo == 3 || data[i].tipo == 5){%>
-                                        <a class="redit btn btn-primary" data-toggle="modal" data-target="#aa" data-tipo="3" data-prim="<%= data[i].texto1%>" data-sec="<%= data[i].texto2%>"  href="#">
+                                        <a class="redit btn btn-primary hidden" data-toggle="modal" data-target="#aa" data-tipo="3" data-prim="<%= data[i].texto1%>" data-sec="<%= data[i].texto2%>"  href="#">
                                             <i class="glyphicon glyphicon-edit"></i>
                                         </a>
                                         <%}%>
@@ -134,18 +138,18 @@
                                             <a class="btn btn-success sendprogress" href="#" data-id="<%=data[i].idpostinterno%>">Enviar a aprobación</a>
                                             <script type="text/javascript">
                                                 $(document).on("click",".sendprogress",function(){
-                                                    var data = {idpost: $(this).data('id')};
+                                                    var id = $(this).data("id");
+                                                    var data = {idpost: $(this).data("id")};
                                                     $.ajax({
-                                                        type: 'POST',
+                                                        type: "POST",
                                                         data: JSON.stringify(data),
-                                                        contentType: 'application/json',
-                                                        url: '/progress',
+                                                        contentType: "application/json",
+                                                        url: "/progress",
                                                         success: function(data) {
                                                             if(data != "no"){
-                                                                like.html(data.html);
-                                                                like.removeClass("btn-success");
-                                                                like.removeClass("btn-inverse");
-                                                                like.addClass(data.newlaik);
+                                                                $("#" + id + " .laik").addClass("hidden");
+                                                                $("#" + id + " .sendprogress").addClass("hidden");
+                                                                $("#" + id + " .blog-post-meta").html('<span class="label label-light label-danger">Avance pendiente de aprobación</span><p class="pull-right"><%= f_gen %></p>');
                                                             }
                                                         }
                                                     });
@@ -154,6 +158,7 @@
                                         <%}%>
 
                                     </div>
+                                    <%}%>
                                 </div>
                             </div>
                             <div class="panel-footer blog-comments hidden">
@@ -173,7 +178,7 @@
                     <% if(gral.media != "no"){ %>
                     <img src="<%= gral.media%>" width="auto" style="margin: auto;display: block;" class="img-responsive">
                     <% } %>
-                    <div class="panel-body text-center">
+                    <div class="panel-body text-center" id="proyinfo">
                         <h4 class="text-center"><%= gral.titulo%></h4>
                         <h6 class="text-center"><%= gral.descripcion%></h6>
                         <br>
@@ -182,10 +187,12 @@
                         <div class="text-center" style="display: flex;margin: 10px"><img src="<%= gral.usuarios[j][2]%>"  class="img-responsive img-circle" style="margin: 0; height: 30px" width="30px"> <p style="margin-left: 10px"><%= gral.usuarios[j][0]%></p></div>
                         <%}%>
                         <br>
+                        <% if(gral.etapa <= etapas.length){%>
                         <h5>Conseguir <%= gral.etapa*gral.likes %> Likes <span class="glyphicon <%if(gral.gotlaik){%>glyphicon-ok<%} else {%>glyphicon-remove<%}%>"></span></h5>
                         <h5>Añadir un Integrante en esta etapa <span class="glyphicon <%if(gral.gotuser){%>glyphicon-ok<%} else {%>glyphicon-remove<%}%>"></span></h5>
                         <br>
                         <a class="btn btn-success" href="/sol/get/<%= gral.idproyecto%>">Ver soluciones</a>
+                        <%}%>
                     </div>
                 </div>
             </div><!-- /.sidebar-module -->

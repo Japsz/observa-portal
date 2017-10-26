@@ -120,18 +120,24 @@ exports.getsol = function(req, res){
 };
 exports.getproy = function(req, res){
     var int = "show_proy";
+
     if(req.session.isUserLogged){
         req.getConnection(function(err,connection){
 
-            connection.query('SELECT actualizacion.*,user.username,user.avatar_pat as iconouser FROM actualizacion LEFT JOIN user ON user.iduser = actualizacion.iduser WHERE actualizacion.idproyecto = ? GROUP BY actualizacion.idactualizacion ORDER BY actualizacion.fecha DESC',req.params.idproy,function(err,rows)
+            connection.query('SELECT actualizacion.*,user.username,user.avatar_pat as iconouser FROM actualizacion LEFT JOIN user ON user.iduser = actualizacion.iduser WHERE actualizacion.idproyecto = ?' +
+                ' GROUP BY actualizacion.idactualizacion ORDER BY actualizacion.fecha DESC',req.params.idproy,function(err,rows)
             {
                 if(err)
                     console.log("Error Selecting : %s ",err );
                 var acts = rows;
-                connection.query('SELECT group_concat(user.username , "@" , user.iduser, "@", user.avatar_pat) as usuarios,proyecto.* FROM proyecto LEFT JOIN userproyecto ON userproyecto.idproyecto = proyecto.idproyecto LEFT JOIN user ON user.iduser = userproyecto.iduser WHERE proyecto.idproyecto = ?',req.params.idproy,function(err,rows)
+                connection.query('SELECT group_concat(DISTINCT user.username , "@" , user.iduser, "@", user.avatar_pat) as usuarios,proyecto.*,GROUP_CONCAT(DISTINCT etapa.nombre ORDER BY etapa.nro ASC) as etapas FROM proyecto LEFT JOIN userproyecto ON userproyecto.idproyecto = proyecto.idproyecto' +
+                    ' LEFT JOIN user ON user.iduser = userproyecto.iduser LEFT JOIN etapa ON etapa.idevento = proyecto.idevento WHERE proyecto.idproyecto = ? GROUP BY proyecto.idproyecto',req.params.idproy,function(err,rows)
                 {
+                    if(err)
+                        console.log("Error Selecting : %s ",err );
                     if(rows.length){
                         rows[0].usuarios = rows[0].usuarios.split(",");
+                        rows[0].etapas = rows[0].etapas.split(",");
                         for(var i = 0; i<rows[0].usuarios.length;i++){
                             rows[0].usuarios[i] = rows[0].usuarios[i].split("@");
                             if(rows[0].usuarios[i][1] == req.session.user.iduser){
@@ -148,6 +154,29 @@ exports.getproy = function(req, res){
         });
     } else res.redirect('/bad_login');
 };
+exports.render_proyinfo = function(req,res){
+    if(req.session.isUserLogged){
+        var input = JSON.parse(JSON.stringify(req.body));
+
+        req.getConnection(function(err,connection){
+                connection.query('SELECT group_concat(DISTINCT user.username , "@" , user.iduser, "@", user.avatar_pat) as usuarios,proyecto.*,evento.likes FROM postinterno RIGHT JOIN proyecto ON postinterno.idproyecto = proyecto.idproyecto' +
+                    ' LEFT JOIN userproyecto ON userproyecto.idproyecto = proyecto.idproyecto LEFT JOIN user ON user.iduser = userproyecto.iduser LEFT JOIN evento ON proyecto.idevento = evento.idevento WHERE postinterno.idpostinterno = ? GROUP BY proyecto.idproyecto',input.idpost,function(err,rows)
+                {
+                    if(err)
+                        console.log("Error Selecting : %s ",err );
+                    if(rows.length){
+                        rows[0].usuarios = rows[0].usuarios.split(",");
+                        for(var i = 0; i<rows[0].usuarios.length;i++){
+                            rows[0].usuarios[i] = rows[0].usuarios[i].split("@");
+                        }
+                        res.render("proyinfo",{gral : rows[0]});
+                    }
+
+                });
+        });
+    } else res.redirect('/bad_login');
+
+}
 exports.save = function(req,res){
     if(req.session.isUserLogged){
         req.getConnection(function(err,connection){

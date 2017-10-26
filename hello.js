@@ -76,8 +76,10 @@ app.post('/inst/add', observ.save);
 app.get('/obs/:id', observ.obs_list);
 app.get('/show_obs/:idobs', observ.admin_obs);
 app.post('/obs/add', observ.obs_save);
-
+app.post("/csv_cdd",admin.g_csv_cdd);
+app.post("/csv_proy",admin.g_csv_proy);
 // Eventos
+
 app.get('/event', event.list);
 app.get('/add_event', event.add_evnt);
 app.post('/evnt/add', event.save);
@@ -86,6 +88,7 @@ app.post('/obs_stream', event.obstream);
 app.post('/addto_evnt', event.addto_evnt);
 
 // Monitor y Moderador
+
 app.get('/obs_monit', monitor.obs_monit);
 app.get('/obs_usr/:idobs', monitor.get_obs);
 app.post('/add_cdd', monitor.save_cdd);
@@ -126,8 +129,9 @@ app.post('/post/edit/:idpost', posts.p_edit);
 
 app.get('/lab',proyect.indx);
 app.post('/proy_stream', proyect.proy_stream);
+app.post('/render_proyinfo', proyect.render_proyinfo);
 app.get('/mod_proys',admin.modproy);
-app.get('/mod/:idpost/:resp',admin.moderate_p);
+app.post('/mod',admin.moderate_p);
 app.post('/laik_p',cdd.add_p_laik);
 app.post('/proy/add',proyect.save);
 app.get('/proy_cdd',proyect.myproy);
@@ -137,6 +141,7 @@ app.post('/sol/add',proyect.sol_save);
 app.get('/sol/get/:idproy',proyect.getsol);
 
 // Muro interno proyectos
+
 app.post('/postsol',intern.post_sol);
 app.post('/progress',intern.progress);
 app.post('/comment_stream',intern.getcomments);
@@ -163,6 +168,7 @@ app.post('/admin_login_handler', users.admin_login_handler);
 app.post('/user_login_handler', users.user_login_handler);
 
 // file ajax
+
 app.post('/subir_pic', function (req,res) {
     var formidable = require('formidable');
     var fs = require('fs');

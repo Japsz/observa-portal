@@ -24,6 +24,7 @@ exports.list = function(req, res){
     }
     else res.redirect('/bad_login');
 };
+//Vista Detalle evento
 exports.obs_list = function(req, res){
     if(req.session.isAdminLogged){
         req.getConnection(function(err,connection){
@@ -34,12 +35,18 @@ exports.obs_list = function(req, res){
                 if(err)
                     console.log("Error Selecting : %s ",err );
 
-                connection.query('SELECT * FROM evento WHERE idevento = ?',req.params.id,function(err,insts)
+                connection.query('SELECT evento.*,GROUP_CONCAT(etapa.nombre,"&&",etapa.token) as info FROM evento LEFT JOIN etapa ON etapa.idevento = evento.idevento WHERE evento.idevento = ? GROUP BY evento.idevento',req.params.id,function(err,insts)
                 {
                     if(err)
                         console.log("Error Selecting : %s ",err );
-
-                    res.render('admin/event/event_obs',{page_title:"Observatorios",data:rows,evnt:insts[0], usr:req.session.user});
+                    if(insts.length){
+                        var list = [];
+                        for(var i = 0;i<insts[0].info.split(",").length;i++){
+                            list.push(insts[0].info.split(",")[i].split("&&"));
+                        }
+                        insts[0].info = list;
+                        res.render('admin/event/event_obs',{page_title:"Observatorios",data:rows,evnt:insts[0], usr:req.session.user});
+                    } else res.redirect("/bad_login");
 
                 });
 
@@ -72,7 +79,7 @@ exports.obstream = function(req, res){
     else res.redirect('/bad_login');
 
 };
-// Logica agregar institucion y monitor principal.
+// Logica agregar evento.
 exports.save = function(req,res){
     if(req.session.isAdminLogged){
         var input = JSON.parse(JSON.stringify(req.body));

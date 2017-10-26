@@ -131,7 +131,6 @@
                 success: function(data) {
                     $("#"+like.data('id') + " .panel-footer").html(data);
                     $("#"+like.data('id') + " .panel-footer").removeClass("hidden");
-                    $("#"+like.data('id') + " .panel-footer").slideDown(4000);
                     like.html('<i class="glyphicon glyphicon-refresh"></i>');
                 }
             });
@@ -161,6 +160,11 @@
                         like.removeClass("btn-success");
                         like.removeClass("btn-inverse");
                         like.addClass(data.newlaik);
+                        if(data.alert == "newuser"){
+                            loadinfo(like.data('id'));
+                        } else if(data.alert == "rdy"){
+                            location.reload();
+                        }
                     }
                 }
             });
@@ -175,6 +179,18 @@
         });
 
     });
+    function loadinfo(idpost){
+        var data ={idpost: idpost}
+        $.ajax({
+            type: 'POST',
+            data: JSON.stringify(data),
+            contentType: 'application/json',
+            url: '/render_proyinfo',
+            success: function(data){
+                $("#proyinfo").html(data);
+            }
+        });
+    }
     function upload(e){
 
         if (!e.files) {

@@ -55,7 +55,8 @@ exports.intern_laik = function (req, res) {
     if(req.session.isUserLogged){
         var input = JSON.parse(JSON.stringify(req.body));
         req.getConnection(function (err, connection) {
-            connection.query("SELECT postinterno.laiks,COUNT(userproyecto.iduser) as cantint, postinterno.tipo,postinterno.token FROM postinterno INNER JOIN userproyecto ON postinterno.idproyecto = userproyecto.idproyecto WHERE postinterno.idpostinterno = ? GROUP BY postinterno.laiks",[input.idpost], function(err, rows)
+            connection.query("SELECT postinterno.laiks,COUNT(userproyecto.iduser) as cantint, postinterno.tipo,postinterno.token,proyecto.idcreador FROM postinterno INNER JOIN userproyecto ON postinterno.idproyecto = userproyecto.idproyecto" +
+                " LEFT JOIN proyecto ON proyecto.idproyecto = postinterno.idproyecto WHERE postinterno.idpostinterno = ? GROUP BY postinterno.laiks",[input.idpost], function(err, rows)
             {
 
                 if (err)
@@ -66,7 +67,11 @@ exports.intern_laik = function (req, res) {
                     if(rows[0].laiks){
                         if(rows[0].laiks == "fin"){
                             newlike = "fin";
-                            res.send({html: '<i class="glyphicon glyphicon-ok"></i>',newlaik: "btn-success",alert: "La votación ya fue completada"});
+                            var alert = "fin";
+                            if(rows[0].idcreador == req.session.user.iduser){
+                                alert = "rdy";
+                            }
+                            res.send({html: '<i class="glyphicon glyphicon-ok"></i>',newlaik: "btn-success",alert: alert});
                         } else if(rows[0].laiks.indexOf("&" + req.session.user.iduser + "&") != -1){
                             newlike =  rows[0].laiks.replace("&" + req.session.user.iduser + "&",'');
                             classname = "btn-inverse";
@@ -80,6 +85,7 @@ exports.intern_laik = function (req, res) {
                     }
                     var tip = rows[0].tipo;
                     var tok = rows[0].token.split("&&");
+                    var creador = rows[0].idcreador;
                     if(newlike == ""){
                         totvot = 0;
                     } else {
@@ -87,39 +93,60 @@ exports.intern_laik = function (req, res) {
                     }
                     if(totvot >= ((numint - numint%2)/2 + 1)){ // Votación completa
                         if(tip == 2){
-                            connection.query("SELECT solucion.iduser,proyecto.etapa,solucion.idproyecto,solucion.contenido FROM solucion LEFT JOIN proyecto ON proyecto.idproyecto = solucion.idproyecto WHERE idsolucion = ? GROUP BY solucion.iduser",tok[0],function(err,rows){
+                            connection.query("SELECT solucion.iduser,proyecto.titulo,proyecto.etapa,solucion.idproyecto,solucion.contenido,user.correo FROM solucion LEFT JOIN proyecto ON proyecto.idproyecto = solucion.idproyecto" +
+                                " LEFT JOIN user ON user.iduser = solucion.iduser WHERE idsolucion = ? GROUP BY solucion.iduser",tok[0],function(err,rows){
                                 if (err)
                                     console.log("Error inserting : %s ",err );
                                 var idproj = rows[0].idproyecto;
                                 var iduser = rows[0].iduser;
                                 var cont = rows[0].contenido;
+                                var dats = rows[0];
                                 connection.query("INSERT INTO userproyecto SET ? ",[{iduser:rows[0].iduser,idproyecto: rows[0].idproyecto,etapa: rows[0].etapa}],function(err,rows){
-                                    if (err)
+                                    if (err) {
                                         console.log("Error inserting : %s ",err );
-                                    newlike = "fin";
-                                    connection.query("UPDATE postinterno SET laiks = ? WHERE idpostinterno = ?",[newlike,input.idpost], function(err, rows)
-                                    {
-                                        if (err)
-                                            console.log("Error updating : %s ",err );
-                                        connection.query("UPDATE proyecto SET gotuser = 1 WHERE idproyecto = ?",idproj, function(err,rows){
+                                        connection.query("UPDATE postinterno SET laiks = ? WHERE idpostinterno = ?",["fin",input.idpost],function(err,rows){
+                                            if (err)
+                                                console.log("Error inserting : %s ",err );
+                                            res.send({html: '<i class="glyphicon glyphicon-ok"></i>',newlaik: "btn-success",alert: "sameuser"});
+                                        });
+                                    } else {
+                                        newlike = "fin";
+                                        connection.query("UPDATE postinterno SET laiks = ? WHERE idpostinterno = ?",[newlike,input.idpost], function(err, rows)
+                                        {
                                             if (err)
                                                 console.log("Error updating : %s ",err );
-                                            var newuser_act = {
-                                                iduser: iduser,
-                                                idproyecto: idproj,
-                                                tipo : 5,
-                                                principal : "Se unió al proyecto!",
-                                                contenido: cont,
-                                                fecha: new Date()
-                                            };
-                                            connection.query("INSERT INTO actualizacion SET ?",newuser_act,function(err, actid){
+                                            connection.query("UPDATE proyecto SET gotuser = 1 WHERE idproyecto = ?",idproj, function(err,rows){
                                                 if (err)
-                                                    console.log("Error insert actualizacion: %s", err);
+                                                    console.log("Error updating : %s ",err );
+                                                var newuser_act = {
+                                                    iduser: iduser,
+                                                    idproyecto: idproj,
+                                                    tipo : 5,
+                                                    principal : "Se unió al proyecto!",
+                                                    contenido: cont,
+                                                    fecha: new Date()
+                                                };
+                                                connection.query("INSERT INTO actualizacion SET ?",newuser_act,function(err, actid){
+                                                    if (err)
+                                                        console.log("Error insert actualizacion: %s", err);
+                                                    res.send({html: '<i class="glyphicon glyphicon-ok"></i>',newlaik: "btn-success",alert: "newuser"});
+                                                });
+                                                res.mailer.send('mail_newuser', {
+                                                    to: dats.correo, // REQUIRED. This can be a comma delimited string just like a normal email to field.
+                                                    subject: 'Fuiste agregado a un proyecto!', // REQUIRED.
+                                                    data: dats
+                                                }, function (err) {
+                                                    if (err) {
+                                                        // handle error
+                                                        console.log(err);
+                                                        res.send('There was an error sending the email');
+                                                        return;
+                                                    }
+                                                });
 
-                                                res.send({html: '<i class="glyphicon glyphicon-ok"></i>',newlaik: "btn-success",alert: "El usuario fue agregado al proyecto"});
                                             });
                                         });
-                                    });
+                                    }
                                 });
                             });
                         } else {
@@ -128,7 +155,10 @@ exports.intern_laik = function (req, res) {
                             {
                                 if (err)
                                     console.log("Error updating : %s ",err );
-                                res.send({html: '<i class="glyphicon glyphicon-ok"></i>',newlaik: "btn-success",alert: "El Avance está listo para ser enviado a aprobación"});
+                                if(req.session.user.iduser == creador){
+                                    newlike = "rdy";
+                                }
+                                res.send({html: '<i class="glyphicon glyphicon-ok"></i>',newlaik: "btn-success",alert: newlike});
                             });
                         }
                     } else { // Votación Incompleta
