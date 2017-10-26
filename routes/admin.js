@@ -283,7 +283,7 @@ exports.g_csv_proy = function(req,res){
         var fs = require('fs');
         req.getConnection(function (err, connection) {
 
-            var query = connection.query("SELECT user.*,COUNT(DISTINCT post.idpost) AS posts,COUNT(megusta.idpost) as likes,COUNT(proyecto.idproyecto) AS proys,COUNT(userproyecto.idproyecto) AS inproys FROM ciudadano" +
+            var query = connection.query("SELECT user.*,COUNT(post.idpost) AS posts,COUNT(megusta.idpost) as likes,COUNT(proyecto.idproyecto) AS proys,COUNT(userproyecto.idproyecto) AS inproys FROM ciudadano" +
                 " LEFT JOIN user ON user.iduser = ciudadano.iduser LEFT JOIN post ON post.iduser = user.iduser LEFT JOIN megusta ON megusta.iduser = user.iduser" +
                 " LEFT JOIN proyecto ON proyecto.idcreador = user.iduser LEFT JOIN userproyecto ON userproyecto.iduser = user.iduser WHERE ciudadano.idobs = ? GROUP BY user.iduser ORDER BY user.apellido ASC",input.idobs, function(err, rows)
             {
