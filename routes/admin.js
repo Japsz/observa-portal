@@ -296,9 +296,10 @@ exports.g_csv_proy = function(req,res){
                 f_gen = f_gen.replace(/\:/g,'');
                 f_gen = f_gen.replace(/\//g,'');
                 f_gen = f_gen.replace(/\,/g,'');
+                var pat = '/home/proyecta/observa-portal/public/csvs/obs_' + input.idobs +'_hasta_~_' + f_gen + '.csv';
                 if(rows.length){
                     // 'C:/Users/Go Jump/Desktop/'
-                    writer.pipe(fs.createWriteStream('/home/proyecta/observa-portal/public/csvs/obs' + input.idobs +' hasta ~ ' + f_gen + '.csv'));
+                    writer.pipe(fs.createWriteStream(pat));
                     for (var i = 0; i <rows.length; i++) {
                         if(typeof rows[i].correo == "string"){
                             correo = rows[i].correo;
@@ -320,7 +321,7 @@ exports.g_csv_proy = function(req,res){
                     }
                     writer.end();
                 }
-                res.send('/csvs/obs' + input.idobs +' hasta ~ ' + f_gen + '.csv');
+                res.send('/csvs/obs_' + input.idobs +'_hasta_~_' + f_gen + '.csv');
             });
 
             // console.log(query.sql); get raw query
