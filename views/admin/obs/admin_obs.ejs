@@ -10,7 +10,7 @@
                 type: 'POST',
                 data: JSON.stringify(data),
                 contentType: 'application/json',
-                url: '/csv_' + $(this).data(tipo),
+                url: '/csv_' + $(this).data('tipo'),
                 success: function(data) {
                     yo.attr("href",data);
                     yo.attr("download","<%=obs.nom%> hasta ~ " + new Date().toLocaleDateString());
