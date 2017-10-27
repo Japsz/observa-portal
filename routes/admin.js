@@ -285,7 +285,7 @@ exports.g_csv_proy = function(req,res){
 
             var query = connection.query("SELECT proyecto.*,COUNT(actualizacion.idactualizacion) AS nacts,COUNT(proylike.iduser) as likes,COUNT(postinterno.idpostinterno) AS postinterns,evento.etapas,user.username,COUNT(userproyecto.iduser) AS inproys FROM proyecto" +
                 " LEFT JOIN user ON user.iduser = proyecto.idcreador LEFT JOIN postinterno ON postinterno.idproyecto = proyecto.idproyecto LEFT JOIN proylike ON proylike.idproyecto = proyecto.idproyecto" +
-                " LEFT JOIN actualizacion.idproyecto = proyecto.idproyecto ON actualizacion.idproyecto = proyecto.idproyecto LEFT JOIN userproyecto ON userproyecto.idproyecto = proyecto.idproyecto LEFT JOIN evento ON evento.idevento = proyecto.idevento WHERE proyecto.idobservatorio = ? GROUP BY proyecto.idproyecto ORDER BY proyecto.creacion ASC",input.idobs, function(err, rows)
+                " LEFT JOIN actualizacion ON actualizacion.idproyecto = proyecto.idproyecto LEFT JOIN userproyecto ON userproyecto.idproyecto = proyecto.idproyecto LEFT JOIN evento ON evento.idevento = proyecto.idevento WHERE proyecto.idobservatorio = ? GROUP BY proyecto.idproyecto ORDER BY proyecto.creacion ASC",input.idobs, function(err, rows)
             {
 
                 if (err)
