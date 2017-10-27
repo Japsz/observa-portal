@@ -306,7 +306,7 @@ exports.g_csv_proy = function(req,res){
                             rows[i].etapa = "Fin";
                         }
                         fnac = new Date(rows[i].creacion).toLocaleDateString();
-                        writer.write([rows[i].titulo, rows[i].problema, rows[i].fnac,rows[i].etapa, rows[i].username,rows[i].likes,rows[i].nacts,rows[i].postinterns,rows[i].inproys]);
+                        writer.write([rows[i].titulo, rows[i].problema, rows[i].descripcion,fnac,rows[i].etapa, rows[i].username,rows[i].likes,rows[i].nacts,rows[i].postinterns,rows[i].inproys]);
                     }
                     writer.end();
                 }
