@@ -228,7 +228,7 @@ exports.g_csv_cdd = function(req,res){
         var fs = require('fs');
         req.getConnection(function (err, connection) {
 
-            var query = connection.query("SELECT user.*,COUNT(DSTINCT post.idpost) AS posts,COUNT(megusta.idpost) as likes,COUNT(proyecto.idproyecto) AS proys,COUNT(userproyecto.idproyecto) AS inproys FROM ciudadano" +
+            var query = connection.query("SELECT user.*,COUNT(DISTINCT post.idpost) AS posts,COUNT(megusta.idpost) as likes,COUNT(proyecto.idproyecto) AS proys,COUNT(userproyecto.idproyecto) AS inproys FROM ciudadano" +
 				" LEFT JOIN user ON user.iduser = ciudadano.iduser LEFT JOIN post ON post.iduser = user.iduser LEFT JOIN megusta ON megusta.iduser = user.iduser" +
 				" LEFT JOIN proyecto ON proyecto.idcreador = user.iduser LEFT JOIN userproyecto ON userproyecto.iduser = user.iduser WHERE ciudadano.idobs = ? GROUP BY user.iduser ORDER BY user.apellido ASC",input.idobs, function(err, rows)
             {
@@ -283,7 +283,7 @@ exports.g_csv_proy = function(req,res){
         var fs = require('fs');
         req.getConnection(function (err, connection) {
 
-            var query = connection.query("SELECT user.*,COUNT(post.idpost) AS posts,COUNT(megusta.idpost) as likes,COUNT(proyecto.idproyecto) AS proys,COUNT(userproyecto.idproyecto) AS inproys FROM ciudadano" +
+            var query = connection.query("SELECT user.*,COUNT(post.idpost) AS nposts,COUNT(megusta.idpost) as likes,COUNT(proyecto.idproyecto) AS proys,COUNT(userproyecto.idproyecto) AS inproys FROM ciudadano" +
                 " LEFT JOIN user ON user.iduser = ciudadano.iduser LEFT JOIN post ON post.iduser = user.iduser LEFT JOIN megusta ON megusta.iduser = user.iduser" +
                 " LEFT JOIN proyecto ON proyecto.idcreador = user.iduser LEFT JOIN userproyecto ON userproyecto.iduser = user.iduser WHERE ciudadano.idobs = ? GROUP BY user.iduser ORDER BY user.apellido ASC",input.idobs, function(err, rows)
             {
@@ -317,7 +317,7 @@ exports.g_csv_proy = function(req,res){
                             default:
                                 rows[i].gender = "Otro";
                         }
-                        writer.write([rows[i].username, rows[i].nombre, rows[i].apellido,fnac, correo,rows[i].gender,rows[0].posts,rows[0].likes,rows[0].proys,rows[0].inproys]);
+                        writer.write([rows[i].username, rows[i].nombre, rows[i].apellido,fnac, correo,rows[i].gender,rows[0].nposts,rows[0].likes,rows[0].proys,rows[0].inproys]);
                     }
                     writer.end();
                 }
