@@ -120,7 +120,6 @@ exports.inst_edit = function(req,res){
                 direccion : input.direccion,
                 avatar_pat : "/assets/img/placeholder.png"
             };
-            console.log(input);
             connection.query("UPDATE institucion SET ? WHERE idinstitucion = ?",[inst_data,input.id], function(err, rows)
             {
 

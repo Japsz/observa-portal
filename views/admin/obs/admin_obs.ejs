@@ -2,29 +2,6 @@
 <h2 class="page-header">Observatorio: <%= obs.nom%> <a class="btn btn-info pull-right" href="/obs/<%= obs.idinst %>">Volver</a></h2>
 <div class="row">
     <h2>Ciudadanos <a class="btn btn-info pull-right getcsv" data-tipo="cdd" data-id="<%= obs.idobservatorio%>" href="#"><i class="fa fa-download"></i> Generar csv</a></h2>
-    <script type="text/javascript">
-        $(".getcsv").click(function(e){
-            var yo = $(this);
-            data = { idobs : $(this).data('id')};
-            $.ajax({
-                type: 'POST',
-                data: JSON.stringify(data),
-                contentType: 'application/json',
-                url: '/csv_' + $(this).data('tipo'),
-                success: function(data) {
-                    yo.attr("href",data);
-                    yo.attr("download","<%=obs.nom%> hasta ~ " + new Date().toLocaleDateString());
-                    yo.removeClass("btn-info");
-                    yo.removeClass("getcsv");
-                    yo.addClass("btn-success");
-                    yo.html("<i class='fa fa-download'></i> Descargar csv");
-                    console.log(data);
-                }
-            });
-
-        });
-    </script>
-
     <form method="get" id="csvget">
         <input type="hidden" name="">
     </form>
@@ -64,7 +41,7 @@
     </div>
 </div>
 <div class="row">
-    <h2 class="page-header">Proyectos</h2>
+    <h2 class="page-header">Proyectos <a class="btn btn-info pull-right getcsv" data-tipo="proy" data-id="<%= obs.idobservatorio%>" href="#"><i class="fa fa-download"></i> Generar csv</a></h2>
 
     <div class="table-responsive">
         <table class="table">
@@ -99,4 +76,27 @@
         </table>
     </div>
 </div>
+<script type="text/javascript">
+    $(".getcsv").click(function(e){
+        var yo = $(this);
+        data = { idobs : $(this).data('id')};
+        $.ajax({
+            type: 'POST',
+            data: JSON.stringify(data),
+            contentType: 'application/json',
+            url: '/csv_' + $(this).data('tipo'),
+            success: function(data) {
+                yo.attr("href",data);
+                yo.attr("download","<%=obs.nom%>" + yo.data('tipo') + " hasta ~ " + new Date().toLocaleDateString() + ".csv");
+                yo.removeClass("btn-info");
+                yo.removeClass("getcsv");
+                yo.addClass("btn-success");
+                yo.html("<i class='fa fa-download'></i> Descargar csv");
+                console.log(data);
+            }
+        });
+
+    });
+</script>
+
 <%- include ../../layouts/footer.ejs %>
