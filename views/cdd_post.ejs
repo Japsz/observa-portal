@@ -20,7 +20,7 @@
                 break;
             case 3:
                 estado = "<a class='btn btn-danger'>Rechazado</a><a class='btn btn-warning edit' data-toggle='modal' data-target='#aa' data-tipo='" + data[i].tipo
-                        + "' data-tit='" + data[i].t_principal + "' data-cont='" + data[i].contenido + "' data-tags='" + data[i].tags + "' data-idpost = '" + data[i].idpost + "'><i class='glyphicon glyphicon-wrench'></i></a>";
+                        + "' data-tit='" + data[i].t_principal + "' data-cont='" + data[i].contenido + "' data-tags='" + data[i].tags + "' data-idpost = '" + data[i].idpost + "'><i class='glyphicon glyphicon-wrench'></i> Reeditar</a>";
                 break;
         }%><section class="blog-post" id="<%= data[i].idpost %>">
                         <div class="panel panel-default">
@@ -68,6 +68,7 @@
                     }%>
                     <%if(data.length == 6){%>
                     <input type="hidden" value="<% if(data.length){%><%= data[data.length-1].fecha%><%}%>" data-strim="<%= pat%>" data-helper="<%= helper%>" id="idpst">
+                    <div class="strimload" id="loader" style="margin-left: 50%;margin-bottom: 20px"></div>
                     <%}%>
                     <script type="text/javascript">
                         var loading = false;
@@ -106,7 +107,9 @@
 
                 </div>
             </div>
+            <% if(data.length == 6){%>
             <div class="strimload" id="loader" style="margin-left: 50%;margin-bottom: 20px"></div>
+            <%}%>
 
         </div><!-- /.blog-main -->
 

@@ -228,7 +228,7 @@ exports.g_csv_cdd = function(req,res){
         var fs = require('fs');
         req.getConnection(function (err, connection) {
 
-            var query = connection.query("SELECT user.*,COUNT(DISTINCT post.idpost) AS posts,COUNT(megusta.idpost) as likes,COUNT(proyecto.idproyecto) AS proys,COUNT(userproyecto.idproyecto) AS inproys FROM ciudadano" +
+            var query = connection.query("SELECT user.*,COUNT(DISTINCT post.idpost) AS posts,COUNT(DISTINCT megusta.idpost) as likes,COUNT(DISTINCT proyecto.idproyecto) AS proys,COUNT(DISTINCT userproyecto.idproyecto) AS inproys FROM ciudadano" +
 				" LEFT JOIN user ON user.iduser = ciudadano.iduser LEFT JOIN post ON post.iduser = user.iduser LEFT JOIN megusta ON megusta.iduser = user.iduser" +
 				" LEFT JOIN proyecto ON proyecto.idcreador = user.iduser LEFT JOIN userproyecto ON userproyecto.iduser = user.iduser WHERE ciudadano.idobs = ? GROUP BY user.iduser ORDER BY user.apellido ASC",input.idobs, function(err, rows)
             {
@@ -283,7 +283,7 @@ exports.g_csv_proy = function(req,res){
         var fs = require('fs');
         req.getConnection(function (err, connection) {
 
-            var query = connection.query("SELECT proyecto.*,COUNT(actualizacion.idactualizacion) AS nacts,COUNT(proylike.iduser) as likes,COUNT(postinterno.idpostinterno) AS postinterns,evento.etapas,user.username,COUNT(userproyecto.iduser) AS inproys FROM proyecto" +
+            var query = connection.query("SELECT proyecto.*,COUNT(DISTINCT actualizacion.idactualizacion) AS nacts,COUNT(DISTINCT proylike.iduser) as likes,COUNT(DISTINCT postinterno.idpostinterno) AS postinterns,evento.etapas,user.username,COUNT(DISTINCT userproyecto.iduser) AS inproys FROM proyecto" +
                 " LEFT JOIN user ON user.iduser = proyecto.idcreador LEFT JOIN postinterno ON postinterno.idproyecto = proyecto.idproyecto LEFT JOIN proylike ON proylike.idproyecto = proyecto.idproyecto" +
                 " LEFT JOIN actualizacion ON actualizacion.idproyecto = proyecto.idproyecto LEFT JOIN userproyecto ON userproyecto.idproyecto = proyecto.idproyecto LEFT JOIN evento ON evento.idevento = proyecto.idevento WHERE proyecto.idobservatorio = ? GROUP BY proyecto.idproyecto ORDER BY proyecto.creacion ASC",input.idobs, function(err, rows)
             {

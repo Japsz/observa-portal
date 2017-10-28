@@ -15,7 +15,7 @@ key = key.replace(/\:|\ |\,|\//gm,"")%>
                     break;
                 case 3:
                     estado = "<a class='btn btn-danger'>Rechazado</a><a class='btn btn-warning edit' data-toggle='modal' data-target='#aa' data-tipo='" + data[i].tipo
-                            + "' data-tit='" + data[i].t_principal + "' data-cont='" + data[i].contenido + "' data-tags='" + data[i].tags + "' data-idpost = '" + data[i].idpost + "'><i class='glyphicon glyphicon-wrench'></i></a>";
+                            + "' data-tit='" + data[i].t_principal + "' data-cont='" + data[i].contenido + "' data-tags='" + data[i].tags + "' data-idpost = '" + data[i].idpost + "'><i class='glyphicon glyphicon-wrench'></i> Reeditar</a>";
                     break;
             }
     %><section class="blog-post" id="<%= data[i].idpost %>">
