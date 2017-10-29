@@ -47,6 +47,9 @@ exports.indx_stream = function(req, res){
                 wher = "AND post.iduser = ? GROUP BY post.idpost ORDER BY post.fecha DESC LIMIT 6";
                 render = "my";
                 break;
+            case "archives":
+                wher = 'AND post.fecha > ? AND post.estado = 2 GROUP BY post.idpost ORDER BY post.fecha DESC LIMIT 6';
+                break;
             default:
                 wher = 'AND post.estado = 2 GROUP BY post.idpost ORDER BY post.fecha DESC LIMIT 6';
                 break;
@@ -72,6 +75,7 @@ exports.indx_stream = function(req, res){
         });
     } else res.redirect('/bad_login');
 };
+// Ver post entero
 exports.getpost = function(req, res){
     if(req.session.isUserLogged){
         req.getConnection(function(err,connection){
@@ -197,6 +201,24 @@ exports.save = function(req,res){
     }
     else res.redirect('/bad_login');
 };
+// buscar por fecha
+exports.b_fecha = function(req, res){
+
+    req.getConnection(function(err,connection){
+        var input = JSON.parse(JSON.stringify(req.body));
+        connection.query('SELECT post.*, GROUP_CONCAT(DISTINCT megusta.iduser) as laiktoken,user.avatar_pat AS iconouser,user.username,GROUP_CONCAT(DISTINCT tags.tag,"@", tags.idtag ORDER BY tags.tag) AS tagz, COUNT(DISTINCT megusta.iduser) as likes FROM' +
+            ' post LEFT JOIN tagpost ON post.idpost = tagpost.idpost LEFT JOIN tags ON tagpost.idtag = tags.idtag INNER JOIN user ON user.iduser = post.iduser' +
+            ' LEFT JOIN megusta ON megusta.idpost = post.idpost WHERE post.fecha < ? AND post.fecha > ?  AND post.estado = 2 GROUP BY post.idpost ORDER BY post.fecha DESC LIMIT 6',[input.hasta,input.desde],function(err,rows)
+        {
+            if(err)
+                console.log("Error Selecting : %s ",err );
+            res.render('cdd_index',{data:rows,usr:req.session.user, obs: req.session.idobs, stream: "archives", helper: input.desde});
+
+            //console.log(query.sql);
+        });
+    });
+
+};// Buscar por tag
 exports.b_tag = function(req, res){
 
     req.getConnection(function(err,connection){

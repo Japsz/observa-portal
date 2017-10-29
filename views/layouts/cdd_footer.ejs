@@ -1,4 +1,4 @@
-<div class="col-sm-3 col-sm-offset-1 blog-sidebar">
+<div class="col-sm-4 blog-sidebar">
 
     <div class="sidebar-module">
         <form action="/tags/bsq" method="POST">
@@ -72,25 +72,12 @@
         <div class="panel panel-default">
             <div class="panel-body">
                 <h4>Archivos</h4>
-                <form>
-                    <select name="mes" class="form-control">
-                        <option value="1">Enero</option>
-                        <option value="2">Febrero</option>
-                        <option value="3">Marzo</option>
-                        <option value="4">Abril</option>
-                        <option value="5">Mayo</option>
-                        <option value="6">Junio</option>
-                        <option value="7">Julio</option>
-                        <option value="8">Agosto</option>
-                        <option value="9">Septiembre</option>
-                        <option value="10">Octubre</option>
-                        <option value="11">Noviembre</option>
-                        <option value="12">Diciembre</option>
-                    </select>
-                    <select name="ano" class="form-control">
-                        <option value="2017"></option>
-                        <option value="2018"></option>
-                    </select>
+                <form action="/b_fecha" method="POST">
+                    <label>Desde:</label>
+                    <input type="date" name="desde" class="form-control">
+                    <label>Hasta:</label>
+                    <input type="date" name="hasta" class="form-control">
+                    <button type="submit" class="btn btn-success">Buscar</button>
                 </form>
 
             </div>

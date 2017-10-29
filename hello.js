@@ -78,6 +78,7 @@ app.get('/show_obs/:idobs', observ.admin_obs);
 app.post('/obs/add', observ.obs_save);
 app.post("/csv_cdd",admin.g_csv_cdd);
 app.post("/csv_proy",admin.g_csv_proy);
+
 // Eventos
 
 app.get('/event', event.list);
@@ -115,6 +116,7 @@ app.post('/check_usr',cdd.check_usr);
 //Posts
 
 app.get('/indx', posts.indx);
+app.post('/b_fecha', posts.b_fecha);
 app.get('/post/:idpost', posts.getpost);
 app.post('/post/add', posts.save);
 app.post('/post_stream', posts.indx_stream);
