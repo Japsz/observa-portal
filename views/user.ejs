@@ -62,7 +62,7 @@
                                 <h4 style="margin:10px" class="list-group-item-heading">Observatorios de <%=data[i].username%>:</h4>
                                 <%
                                 for(var j = 0;j<data[i].obsinfo.length;j++){%>
-                                <a href="/show_obs/<%=data[i].obsinfo[j][0]%>"><li class="list-group-item"><strong><%=data[i].obsinfo[j][1]%></strong><small><%=data[i].obsinfo[j][2]%></small></li></a>
+                                <a href="/show_obs/<%=data[i].obsinfo[j][0]%>"><li class="list-group-item"><strong><%=data[i].obsinfo[j][1]%></strong>  (<small><%=data[i].obsinfo[j][2]%></small>)</li></a>
                                 <%}%>
                             </ul>
                             <%}%>

@@ -29,6 +29,8 @@
                                         <input type="text" class="form-control" name="name" value="<% if(data.nombre){%><%= data.nombre%><%}%>" required>
                                         <label for="ape">Apellido</label>
                                         <input type="text" class="form-control" name="ape" value="<% if(data.apellido){%><%= data.apellido%><%}%>" required>
+                                        <label for="comuna">Comuna</label>
+                                        <input type="text" class="form-control" name="comuna" value="<% if(data.comuna){%><%= data.comuna%><%}%>" required>
                                         <label for="fnac">Fecha de Nacimiento</label>
                                         <input type="date" class="form-control" name="fnac" value="<% if(data.fnac){%><%= new Date(data.fnac).toLocaleDateString()%><%}%>" required>
                                         <label for="gend">Género</label>

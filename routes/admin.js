@@ -224,13 +224,14 @@ exports.g_csv_cdd = function(req,res){
     if(req.session.isAdminLogged){
         var input = JSON.parse(JSON.stringify(req.body));
         var csvWriter = require('csv-write-stream');
-			var writer = csvWriter({ headers: ["Usuario", "Nombre", "Apellido", "FdeNac", "correo","genero","N de posts","Likes dados", "Proyectos creados","Proyectos en que participa"]});
+			var writer = csvWriter({ headers: ["Usuario", "Nombre", "Apellido", "FdeNac","Comuna", "correo","genero","N de posts","Likes dados", "Proyectos creados","Proyectos en que participa"]});
         var fs = require('fs');
         req.getConnection(function (err, connection) {
 
-            var query = connection.query("SELECT user.*,COUNT(DISTINCT post.idpost) AS posts,COUNT(DISTINCT megusta.idpost) as likes,COUNT(DISTINCT proyecto.idproyecto) AS proys,COUNT(DISTINCT userproyecto.idproyecto) AS inproys FROM ciudadano" +
-				" LEFT JOIN user ON user.iduser = ciudadano.iduser LEFT JOIN post ON post.iduser = user.iduser LEFT JOIN megusta ON megusta.iduser = user.iduser" +
-				" LEFT JOIN proyecto ON proyecto.idcreador = user.iduser LEFT JOIN userproyecto ON userproyecto.iduser = user.iduser WHERE ciudadano.idobs = ? GROUP BY user.iduser ORDER BY user.apellido ASC",input.idobs, function(err, rows)
+            connection.query("SELECT user.*,COUNT(DISTINCT post.idpost) AS posts,COUNT(DISTINCT megusta.idpost) as likes,COUNT(DISTINCT proyecto.idproyecto) AS proys,COUNT(DISTINCT userproyecto.idproyecto) AS inproys FROM user LEFT JOIN ciudadano ON ciudadano.iduser = user.iduser" +
+                " LEFT JOIN post ON post.iduser = user.iduser LEFT JOIN megusta ON megusta.iduser = user.iduser" +
+                " LEFT JOIN proyecto ON proyecto.idcreador = user.iduser LEFT JOIN userproyecto ON userproyecto.iduser = user.iduser" +
+                " WHERE ciudadano.idobs = ? GROUP BY user.iduser",input.idobs, function(err, rows)
             {
 
                 if (err)
@@ -243,7 +244,7 @@ exports.g_csv_cdd = function(req,res){
                 f_gen = f_gen.replace(/\,/g,'');
                 if(rows.length){
                     // 'C:/Users/Go Jump/Desktop/'
-                    writer.pipe(fs.createWriteStream('/home/proyecta/observa-portal/public/csvs/obscdd' + input.idobs +' hasta ~ ' + f_gen + '.csv'));
+                    writer.pipe(fs.createWriteStream('public/csvs/obscdd' + input.idobs +' hasta ~ ' + f_gen + '.csv'));
                     for (var i = 0; i <rows.length; i++) {
                         if(typeof rows[i].correo == "string"){
                             correo = rows[i].correo;
@@ -252,16 +253,16 @@ exports.g_csv_cdd = function(req,res){
                         }
                         fnac = new Date(rows[i].fnac).toLocaleDateString();
                         switch(rows[i].gender) {
-                            case 1:
+                            case "1":
                                 rows[i].gender = "F";
                                 break;
-                            case 0:
-                                rows[i].gender = "F";
+                            case "0":
+                                rows[i].gender = "M";
                                 break;
                             default:
                                 rows[i].gender = "Otro";
                         }
-                        writer.write([rows[i].username, rows[i].nombre, rows[i].apellido,fnac, correo,rows[i].gender,rows[0].posts,rows[0].likes,rows[0].proys,rows[0].inproys]);
+                        writer.write([rows[i].username, rows[i].nombre, rows[i].apellido,fnac,rows[i].comuna, correo,rows[i].gender,rows[i].posts,rows[i].likes,rows[i].proys,rows[i].inproys]);
                     }
                     writer.end();
                 }
@@ -279,11 +280,12 @@ exports.g_csv_proy = function(req,res){
     if(req.session.isAdminLogged){
         var input = JSON.parse(JSON.stringify(req.body));
         var csvWriter = require('csv-write-stream');
-        var writer = csvWriter({ headers: ["Titulo", "Problema", "descripcion", "Fecha creacion", "etapa","Usuario creador","N° Likes","N° actualizaciones","N de post en el muro interno", "N° integrantes"]});
+        var writer = csvWriter({ headers: ["Titulo", "Problema", "descripcion", "Fecha creacion", "etapa","Usuario creador","N Likes","N actualizaciones","N de post en el muro interno", "N integrantes","Tags"]});
         var fs = require('fs');
         req.getConnection(function (err, connection) {
 
-            var query = connection.query("SELECT proyecto.*,COUNT(DISTINCT actualizacion.idactualizacion) AS nacts,COUNT(DISTINCT proylike.iduser) as likes,COUNT(DISTINCT postinterno.idpostinterno) AS postinterns,evento.etapas,user.username,COUNT(DISTINCT userproyecto.iduser) AS inproys FROM proyecto" +
+            var query = connection.query("SELECT proyecto.*,COUNT(DISTINCT actualizacion.idactualizacion) AS nacts,COUNT(DISTINCT proylike.iduser) as likes,COUNT(DISTINCT postinterno.idpostinterno) AS postinterns,evento.etapas,user.username,COUNT(DISTINCT userproyecto.iduser) AS inproys," +
+                "GROUP_CONCAT(DISTINCT tags.tag SEPARATOR ' ') as nomtags FROM proyecto LEFT JOIN tagproyecto ON tagproyecto.idproyecto = proyecto.idproyecto LEFT JOIN tags ON tags.idtag = tagproyecto.idtag" +
                 " LEFT JOIN user ON user.iduser = proyecto.idcreador LEFT JOIN postinterno ON postinterno.idproyecto = proyecto.idproyecto LEFT JOIN proylike ON proylike.idproyecto = proyecto.idproyecto" +
                 " LEFT JOIN actualizacion ON actualizacion.idproyecto = proyecto.idproyecto LEFT JOIN userproyecto ON userproyecto.idproyecto = proyecto.idproyecto LEFT JOIN evento ON evento.idevento = proyecto.idevento WHERE proyecto.idobservatorio = ? GROUP BY proyecto.idproyecto ORDER BY proyecto.creacion ASC",input.idobs, function(err, rows)
             {
@@ -297,7 +299,7 @@ exports.g_csv_proy = function(req,res){
                 f_gen = f_gen.replace(/\//g,'');
                 f_gen = f_gen.replace(/\,/g,'');
                 console.log(req.path);
-                var pat = '/home/proyecta/observa-portal/public/csvs/obspry_' + input.idobs +'_hasta_~_' + f_gen + '.csv';
+                var pat = 'public/csvs/obspry_' + input.idobs +'_hasta_~_' + f_gen + '.csv';
                 if(rows.length){
                     // 'C:/Users/Go Jump/Desktop/'
                     writer.pipe(fs.createWriteStream(pat));
@@ -306,7 +308,7 @@ exports.g_csv_proy = function(req,res){
                             rows[i].etapa = "Fin";
                         }
                         fnac = new Date(rows[i].creacion).toLocaleDateString();
-                        writer.write([rows[i].titulo, rows[i].problema, rows[i].descripcion,fnac,rows[i].etapa, rows[i].username,rows[i].likes,rows[i].nacts,rows[i].postinterns,rows[i].inproys]);
+                        writer.write([rows[i].titulo, rows[i].problema, rows[i].descripcion,fnac,rows[i].etapa, rows[i].username,rows[i].likes,rows[i].nacts,rows[i].postinterns,rows[i].inproys,rows[i].nomtags]);
                     }
                     writer.end();
                 }

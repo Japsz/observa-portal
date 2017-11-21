@@ -282,9 +282,10 @@ exports.save_edit = function(req, res){
             tipo : req.session.user.tipo,
             nombre : input.name,
             apellido : input.ape,
-                    fnac : input.fnac,
+            fnac : input.fnac,
             gender : input.gend,
-            correo : input.correo
+            correo : input.correo,
+            comuna : input.comuna
         };
         req.getConnection(function(err,connection){
 
@@ -329,7 +330,8 @@ exports.save_edit_f = function(req, res){
             apellido : input.ape,
             fnac : input.fnac,
             gender : input.gend,
-            correo : input.correo
+            correo : input.correo,
+            comuna : input.comuna
         };
         req.getConnection(function(err,connection){
 
