@@ -1,5 +1,4 @@
-
-exports.save_comment = function (req,res) {
+exports.save_comment_single = function (req,res) {
     if(req.session.isUserLogged){
         var input = JSON.parse(JSON.stringify(req.body));
         input.iduser = req.session.user.iduser;
@@ -9,6 +8,21 @@ exports.save_comment = function (req,res) {
                 if(err)
                     console.log("Error Selecting : %s ",err );
                 res.redirect("/post/" + input.idpost);
+                //console.log(query.sql);
+            });
+        });
+    } else res.redirect('/bad_login');
+};
+exports.save_comment = function (req,res) {
+    if(req.session.isUserLogged){
+        var input = JSON.parse(JSON.stringify(req.body));
+        input.iduser = req.session.user.iduser;
+        req.getConnection(function(err,connection){
+            connection.query('INSERT INTO comentario SET ? ',[input],function(err,rows)
+            {
+                if(err)
+                    console.log("Error Selecting : %s ",err );
+                res.redirect(307,"/pstcomment_stream");
                 //console.log(query.sql);
             });
         });

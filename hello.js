@@ -110,6 +110,7 @@ app.get('/cdd_edit',cdd.edit);
 app.get('/cdd_cedit',cdd.commitedit);
 app.get('/f_login',cdd.edit_f);
 app.post('/cdd/edit_f', cdd.save_edit_f);
+app.post('/comment/add_s', cdd.save_comment_single);
 app.post('/comment/add', cdd.save_comment);
 app.post('/check_usr',cdd.check_usr);
 
@@ -119,6 +120,7 @@ app.get('/indx', posts.indx);
 app.post('/b_fecha', posts.b_fecha);
 app.get('/post/:idpost', posts.getpost);
 app.post('/post/add', posts.save);
+app.post('/pstcomment_stream',posts.getcomments);
 app.post('/post_stream', posts.indx_stream);
 app.post('/tags/bsq',posts.b_tag);
 app.get('/tagbsq/:id',posts.get_cat);

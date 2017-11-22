@@ -3,7 +3,6 @@
     <div class="row">
 
         <div class="col-sm-8 blog-main">
-            <div class="row">
                 <div class="col-sm-12">
                     <% if(typeof data != 'undefined') {
                         var f_gen;
@@ -98,46 +97,55 @@
                     } else {%>
                     <p> No hay posts</p>
                     <% } %>
+                    <style type="text/css">
+                        .is-empty{
+                            margin:0;
+                        }
+                    </style>
                     <section class="blog-comments">
                         <div class="panel panel-default">
                             <div class="panel-body">
-                                <h2 class="blog-post-title">Comentarios</h2>
-                                <div class="blog-post-content">
-                                    <form action="/comment/add" method="post">
-                                        <div class="form-inline">
-                                            <div class="btn-group btn-group-justified">
-                                                <img class="img-responsive img-circle pull-left" width="60px" height="auto" src="<%= usr.avatar_pat%>">
-                                                <textarea class="form-control pull-right" rows="2" cols="60" placeholder="Introduce tu comentario aquí" name="texto" type="text"></textarea>
+                                <% var key = new Date().toLocaleString();
+                                key = key.replace(/\:|\ |\/|\,/gm,"")%>
+                                <div id="<%= key%>">
+                                    <h2 class="blog-post-title">Comentarios</h2>
+                                    <form id="cmntform" action="/comment/add_s" method="POST">
+                                        <div class="well" style="display: flex;margin:auto;height:150px;">
+                                            <div style="width: 20%; padding-left: 10px; padding-top: 10px;"><img class="img-responsive img-circle" style="display: block;width:60px;margin:0;margin-right:10px" src="<%= usr.avatar_pat%>"></div>
+                                            <div style="width:60%; margin: 0;padding-top: 10px; padding-left: 3px; height: 140px;">
+                                                <textarea class="form-control" placeholder="Introduce tu comentario aquí" name="texto" type="text" id="commtxt" ></textarea>
                                             </div>
-                                            <button class="btn btn-primary pull-right" type="submit" name="idpost" value="<%= data.idpost%>">Enviar</button>
+                                            <button class="btn btn-primary send_comm" type="submit" name="idpost" style="height: auto; margin-left: 10px" value="<%= data.idpost%>">Enviar</button>
                                         </div>
                                     </form>
                                     <hr>
                                     <% if(comments.length) {
                                         var f_gen;
-                                        for(var i = 0; i < comments.length; i++){
+                                    for(var i = 0; i < comments.length; i++){
                                         f_gen = new Date(comments[i].fecha);
                                         f_gen = f_gen.toLocaleString();
                                     %>
-                                    <div class="row">
-                                        <img class="img-responsive img-circle pull-left" width="60px" height="auto" src="<%= comments[i].avatar_pat%>">
-                                        <a href="#">  <%= comments[i].username%></a>
-                                        <p><%= comments[i].texto%></p>
-                                        <p class="pull-right" href="#"><%= f_gen%></p>
+                                    <div class="well" style="display: flex;margin:auto;height:150px">
+                                        <div style="width: 20%;display: table">
+                                            <img class="img-circle img-responsive" style="margin-top: 0;margin-left:0;display:block" width="60px" height="auto" src="<%= comments[i].avatar_pat%>">
+                                            <h4 style="padding-left: 20px;padding-top: 10px;font-size: larger"><%= comments[i].username%></h4>
+                                        </div>
+                                        <p class="text-center" style="width:60%;margin-top: 40px;font-size: large"><%= comments[i].texto%></p>
+                                        <p  style="width:20%"><%= f_gen%></p>
                                     </div>
                                     <hr>
                                     <%  }
                                     } else {
                                     %>
-                                    <p>No hay comentarios</p>
+                                    <div class="well">
+                                        <h4>No hay comentarios aún, Se el primero!</h4>
+                                    </div>
                                     <% }%>
                                 </div>
+                                </div>
                             </div>
-                        </div>
                     </section>
                 </div>
-            </div>
-
-        </div><!-- /.blog-main -->
+            </div><!-- /.blog-main -->
 
 <%- include layouts/cdd_footer.ejs %>

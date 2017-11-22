@@ -372,6 +372,21 @@
                 }
             }
         });
+        $(".comm").click(function (e) {
+            var data = {};
+            data.idpost = $(this).data('id');
+            var like = $(this);
+            $.ajax({
+                type: 'POST',
+                data: JSON.stringify(data),
+                contentType: 'application/json',
+                url: '/pstcomment_stream',
+                success: function(data) {
+                    $("#"+like.data('id') + " .panel-footer").html(data);
+                    $("#"+like.data('id') + " .panel-footer").toggle("collapse");
+                }
+            });
+        });
         $('.laik').click(function(e){
             /*$.ajax({
              dataType: 'jsonp',

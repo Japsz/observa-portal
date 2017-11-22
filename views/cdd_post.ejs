@@ -68,7 +68,6 @@
                     }%>
                     <%if(data.length == 6){%>
                     <input type="hidden" value="<% if(data.length){%><%= data[data.length-1].fecha%><%}%>" data-strim="<%= pat%>" data-helper="<%= helper%>" id="idpst">
-                    <div class="strimload" id="loader" style="margin-left: 50%;margin-bottom: 20px"></div>
                     <%}%>
                     <script type="text/javascript">
                         var loading = false;
@@ -77,6 +76,7 @@
                             console.log(loading);
                             if($(window).scrollTop() + $(window).height() > $(document).height() - 100 && !loading && !fin)  {
                                 loading = true;
+                                $("#loader").removeClass("hidden");
                                 var data = {};
                                 data.idpost = $("#idpst").val();
                                 data.strim = $("#idpst").data("strim");
@@ -88,6 +88,8 @@
                                     url: '/post_stream',
                                     success: function(data) {
                                         $("#psts").append(data.html);
+                                        $("#loader").addClass("hidden");
+
                                         loading = false;
                                         if(data.newval != "nada"){
                                             $("#idpst").val(data.newval);

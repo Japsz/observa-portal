@@ -103,6 +103,25 @@ exports.getpost = function(req, res){
         });
     } else res.redirect('/bad_login');
 };
+exports.getcomments = function(req, res){
+    var input = JSON.parse(JSON.stringify(req.body));
+    if(req.session.isUserLogged){
+        req.getConnection(function(err,connection){
+
+            connection.query('SELECT comentario.*,user.username,user.avatar_pat FROM comentario INNER JOIN user ON user.iduser = comentario.iduser' +
+                ' WHERE comentario.idpost  = ? GROUP BY comentario.idcomentario',input.idpost,function(err,rows)
+            {
+                if(err)
+                    console.log("Error Selecting : %s ",err );
+
+                res.render('cmnt_stream',{data:input.idpost,usr:req.session.user,comments : rows});
+
+                //console.log(query.sql);
+            });
+            //console.log(query.sql);
+        });
+    } else res.redirect('/bad_login');
+};
 // Logica agregar post.
 //    Estados
 // 1 : pendiente
