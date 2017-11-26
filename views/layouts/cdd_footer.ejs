@@ -139,12 +139,11 @@
 <div class="modal fade" id="aa" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h2 class="modal-title" id="myModalLabel">Crear Post</h2>
             </div>
-            <form action="/post/add" method="post" id="mform">
+            <form id="mform">
                 <div class="modal-body">
                     <div id="preview"></div>
                     <div class="form-group">
@@ -194,13 +193,12 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-
+                    <input type="hidden"  id="tipo" name="tipo" value="">
                     <div class="form-group form-inline">
-
                         <input type='text' class='form-control' name='tags' id="tag" value="" placeholder="tags (Ej: tag1, tag2, tag3)">
                         <div class="btn-group">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                            <button type="submit" id="tipo" name="tipo" value=""  class="btn btn-primary">+ Post</button>
+                            <button type="submit" class="btn btn-primary mform">+ Post</button>
                         </div>
                     </div>
                 </div>
@@ -346,7 +344,31 @@
     $.material.init();
     $('body').materialScrollTop();
 
+
     $(function () {
+        $(".mform").click( function(e){
+            e.preventDefault();
+            $(this).attr('disabled',true);
+            var formArray = $("#mform").serializeArray();
+            var returnArray = {};
+            for (var i = 0; i < formArray.length; i++){
+                returnArray[formArray[i]['name']] = formArray[i]['value'];
+            }
+            returnArray.tipo = $("#tipo").val();
+            $.ajax({
+                url: "/post/add",
+                type: 'POST',
+                data: returnArray,
+                success: function(data){
+                    if(data != "no"){
+                        $("#aa .modal-body").html("<div class='alert alert-success'><strong>Bien!</strong> tu post fue enviado a moderación</div>");
+                        setTimeout(function(){
+                            window.location.href = "/usr_post";
+                        },2000);
+                    }
+                }
+            });
+        });
         $(".blog-post-meta :input.hidden").each(function (j) {
             var tagger = $(this).val();
             var idpost = "#" + $(this).data('id');

@@ -296,7 +296,7 @@ exports.save_edit = function(req, res){
             tipo : req.session.user.tipo,
             nombre : input.name,
             apellido : input.ape,
-            fnac : input.fnac,
+            fnac : new Date(input.fnac),
             gender : input.gend,
             correo : input.correo,
             comuna : input.comuna

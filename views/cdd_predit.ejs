@@ -28,11 +28,10 @@
                                     <p><% if(data.comuna){%><%= data.comuna%><%}%></p>
                                     <label for="fnac">Fecha de Nacimiento</label>
                                     <p><% if(data.fnac){%><%= new Date(data.fnac).toLocaleDateString()%><%}%></p>
-                                    <label for="gend">Género</label>
+                                    <label for="gend">Sexo</label>
                                     <% switch(data.gender){
                                         case "0":%><p>M</p><%break;
                                         case "1":%><p>F</p><%break;
-                                        case "2":%><p>Otro</p><%break;
                                         default:%><p>No se encuentra</p><%
                                     }%>
                                 </div>

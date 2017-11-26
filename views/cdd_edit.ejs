@@ -33,11 +33,10 @@
                                         <input type="text" class="form-control" name="comuna" value="<% if(data.comuna){%><%= data.comuna%><%}%>" required>
                                         <label for="fnac">Fecha de Nacimiento</label>
                                         <input type="date" class="form-control" name="fnac" value="<% if(data.fnac){%><%= new Date(data.fnac).toLocaleDateString()%><%}%>" required>
-                                        <label for="gend">Género</label>
+                                        <label for="gend">Sexo</label>
                                         <select class="form-control" name="gend">
                                             <option value="1" <% if(data.gender == 1){%>selected<%}%>>F</option>
-                                            <option value="0"<% if(data.gender == 0){%>selected<%}%>>M</option>
-                                            <option value="2"<% if(data.gender == 2){%>selected<%}%>>Otro</option>
+                                            <option value="0" <% if(data.gender == 0){%>selected<%}%>>M</option>
                                         </select>
                                         <div class="form-group form-inline pull-right">
                                             <a type="submit" class="form-control btn btn-danger">Cancelar</a>

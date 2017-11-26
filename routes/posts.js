@@ -192,7 +192,7 @@ exports.save = function(req,res){
 
                                     if (err)
                                         console.log("Error inserting : %s ",err );
-                                    res.redirect('/indx');
+                                    res.send("si");
 
                                 });
 
@@ -206,11 +206,11 @@ exports.save = function(req,res){
                             if (err)
                                 console.log("Error inserting : %s ",err );
 
-                            res.redirect('/indx');
+                            res.send("si");
 
                         });
                     } else
-                    res.redirect('/indx');
+                    res.send("si");
                 }
             });
 
@@ -218,7 +218,7 @@ exports.save = function(req,res){
 
         });
     }
-    else res.redirect('/bad_login');
+    else res.send("no");
 };
 // buscar por fecha
 exports.b_fecha = function(req, res){
