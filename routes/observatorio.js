@@ -90,9 +90,10 @@ exports.save = function(req,res){
                 correo : input.correo,
                 fono : input.fono,
                 nom   : input.nom,
+                comuna : input.comuna,
+                direccion : input.direccion,
                 avatar_pat : "/assets/img/placeholder.png"
             };
-
             connection.query("INSERT INTO institucion SET ? ",inst_data, function(err, rows)
             {
 

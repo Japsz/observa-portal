@@ -1,5 +1,5 @@
 <%- include layouts/admin_header.ejs %>
-    <h2 class="page-header">Instituciones <a class="btn btn-info pull-right" href="/add_inst"> + <span class="glyphicon glyphicon-education"  aria-hidden="true"></span> Nuevo</a> </h2>
+    <h2 class="page-header">Instituciones <a class="btn btn-info pull-right" data-toggle="modal" href="#newinst"> + <span class="glyphicon glyphicon-education"  aria-hidden="true"></span> Nuevo</a> </h2>
     <div class="row placeholders">
         <%
         if(data.length){
@@ -29,7 +29,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Crear Observatorio</h4>
+                <h4 class="modal-title" id="myModalLabel">Editar Institución</h4>
             </div>
             <form action="/instit_edit" method="POST">
                 <div class="modal-body">
@@ -48,6 +48,36 @@
                     <div class="btn-group">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                         <button type="submit" id="continue" name="id" value="" class="btn btn-primary">Modificar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="newinst" tabindex="-1" role="dialog" >
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Crear Institución</h4>
+            </div>
+            <form action="/inst/add" method="POST">
+                <div class="modal-body">
+                    <label for="nom">Nombre Institución</label>
+                    <input type="text" class="form-control" name="nom" required>
+                    <label for="nom">Correo Contacto</label>
+                    <input type="text" class="form-control" name="correo" required>
+                    <label for="nom">Teléfono de contacto</label>
+                    <input type="text" class="form-control" name="fono" required>
+                    <label>Comuna</label>
+                    <input type="text" name="comuna" class="form-control" >
+                    <label>Direccion</label>
+                    <input type="text" name="direccion" class="form-control" >
+                </div>
+                <div class="modal-footer">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Crear</button>
                     </div>
                 </div>
             </form>

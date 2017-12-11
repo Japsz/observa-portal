@@ -362,6 +362,7 @@
                 success: function(data){
                     if(data != "no"){
                         $("#aa .modal-body").html("<div class='alert alert-success'><strong>Bien!</strong> tu post fue enviado a moderación</div>");
+                        $("#aa .modal-footer").html("");
                         setTimeout(function(){
                             window.location.href = "/usr_post";
                         },2000);
