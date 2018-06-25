@@ -133,7 +133,8 @@ exports.save = function(req,res){
         var idobserva = input.idobserva;
         req.getConnection(function (err, connection) {
             if(input.tipo == "4"){
-                input.tit = input.tit.split("=")[1];
+                var embed = require("embed-video");
+                input.tit = embed(input.tit,{attr:{width:"100%",height:536}});
             } else if (input.tipo == "1" && input.tags == "") input.tags = "idea";
             var data = {
                 estado : 1,

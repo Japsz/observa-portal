@@ -24,7 +24,7 @@ key = key.replace(/\:|\ |\,|\//gm,"")%>
             <%if(data[i].tipo == 3){%>
             <img src="<%= data[i].t_principal%>" style="margin: auto;display: block;" width="auto" class="img-responsive">
             <%} else if(data[i].tipo == 4){%>
-            <iframe width="100%" height="372" src="https://www.youtube.com/embed/<%= data[i].t_principal%>?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen=""></iframe>
+            <%- data[i].t_principal%>
             <%}%>
             <div class="blog-post-meta">
                 <input class="hidden" value="<%= data[i].tagz%>" data-id="<%= data[i].idpost%>">

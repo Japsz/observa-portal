@@ -17,7 +17,7 @@
 
         <tr id="<%= data[i].idpost%>">
             <td><%=(i+1)%></td>
-            <td><%=data[i].t_principal%></td>
+            <td><%if(data[i].tipo == "4"){%><%- data[i].t_principal%><%} else {%><%=data[i].t_principal%><%}%></td>
             <td><%=data[i].username%></td>
             <td><%=data[i].tagz%></td>
             <td>
