@@ -130,7 +130,6 @@ exports.getcomments = function(req, res){
 exports.save = function(req,res){
     if(req.session.isUserLogged){
         var input = JSON.parse(JSON.stringify(req.body));
-        var idobserva = input.idobserva;
         req.getConnection(function (err, connection) {
             if(input.tipo == "4"){
                 var embed = require("embed-video");
@@ -141,14 +140,16 @@ exports.save = function(req,res){
                 tipo   : input.tipo,
                 iduser   : req.session.user.iduser,
                 t_principal : input.tit,
-                tags : input.tags.replace(/\s/g,''),
-                idobs : idobserva
+                tags : input.tags.replace(/\s/g,'')
             };
             if(parseInt(input.tipo) > 1 && input.texto != ""){
                 data.contenido = input.texto;
             }
             if(req.session.user.tipo == 1){
                 data.estado = 2;
+            }
+            if(input.idobserva != 'no'){
+                data.idobs = input.idobserva;
             }
             connection.query("INSERT INTO post SET ? ",data, function(err, rows)
             {
