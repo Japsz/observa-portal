@@ -41,15 +41,12 @@ exports.user_login_handler = function(req, res){
             console.log("Error Selecting : %s ",err );
           connection.query(query,[username,password],function(err,users)
           {
+              if(err)
+                  console.log("Error Selecting : %s ",err );
           	  if(users.length == 0 || users[0].tipo == 4){
           	  	console.log('Invalid Username or Password.');
           	  	res.redirect('/bad_login');
-          	  }
-
-              if(err)
-                  console.log("Error Selecting : %s ",err );
-              
-              if(users.length == 1){
+          	  } else if(users.length == 1){
                   req.session.user = users[0];
                   var nom = users[0].nombre;
 
