@@ -25,7 +25,7 @@
         }%><section class="blog-post" id="<%= data[i].idpost %>">
                         <div class="panel panel-default">
                             <div class="panel-body">
-                                <%if(data[i].tipo == 3){%>
+                                <% if(data[i].tipo == 3){%>
                                 <img src="<%= data[i].t_principal%>" style="margin: auto;display: block;" width="auto" class="img-responsive">
                                 <%} else if(data[i].tipo == 4){%>
                                 <%- data[i].t_principal%>
@@ -60,8 +60,10 @@
                                     </div>
                                     <div class="blog-post-share pull-right">
                                         <%- estado%>
+                                        <a onclick="preliminar(<%= data[i].idpost%>)" class="btn btn-danger"><i class="fa fa-remove"></i></a>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                     </section><%
@@ -114,6 +116,5 @@
             <%}%>
 
         </div><!-- /.blog-main -->
-
 
 <%- include layouts/cdd_footer.ejs %>

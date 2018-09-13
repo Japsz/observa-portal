@@ -251,7 +251,7 @@ exports.del_comment = function (req,res) {
     if(req.session.isUserLogged && req.session.user.tipo == 2){
         var input = JSON.parse(JSON.stringify(req.body));
         req.getConnection(function(err,connection){
-            connection.query('SELECT comentario.*,user.correo FROM comentario INNER JOIN user ON user.iduser = comentario.iduser WHERE idcomentario = ?',[input.idcomentario],function(err,rows)
+            connection.query('SELECT comentario.*,user.correo,user.nombre FROM comentario INNER JOIN user ON user.iduser = comentario.iduser WHERE idcomentario = ?',[input.idcomentario],function(err,rows)
             {
                 if(err) {
                     console.log("Error Deleting : %s ",err );
@@ -266,7 +266,7 @@ exports.del_comment = function (req,res) {
                             to: comment.correo, // REQUIRED. This can be a comma delimited string just like a normal email to field.
                             subject: 'Un comentario tuyo fue eliminado', // REQUIRED.
                             comm: comment, // All additional properties are also passed to the template as local variables.
-                            razon: input.razon
+                            razon: input.razon,
                         }, function (err) {
                             if (err) {
                                 // handle error

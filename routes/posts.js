@@ -322,13 +322,24 @@ exports.usr_post = function(req, res){
 exports.rm_post = function (req, res) {
     if(req.session.isUserLogged){
         req.getConnection(function (err, connection) {
-            connection.query("DELETE FROM post WHERE idpost = ? AND iduser = ?",[req.params.idpost,req.session.user.iduser], function(err, rows)
-            {
-
+            connection.query("DELETE FROM tagpost WHERE idpost = ?",req.params.idpost,function(err,rows){
                 if (err)
-                    console.log("Error inserting : %s ",err );
-                res.redirect("/indx");
+                    console.log("Error deleting : %s ",err );
+                connection.query("DELETE FROM megusta WHERE idpost = ?",req.params.idpost,function(err,rows){
+                    if (err)
+                        console.log("Error deleting : %s ",err );
+                    connection.query("DELETE FROM comentario WHERE idpost = ?",req.params.idpost,function(err,rows){
+                        if (err)
+                            console.log("Error deleting : %s ",err );
+                        connection.query("DELETE FROM post WHERE idpost = ? AND iduser = ?",[req.params.idpost,req.session.user.iduser], function(err, rows)
+                        {
+                            if (err)
+                                console.log("Error inserting : %s ",err );
+                            res.redirect("/usr_post");
+                        });
+                    });
 
+                });
             });
         });
     } else res.send("no");

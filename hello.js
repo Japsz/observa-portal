@@ -78,7 +78,6 @@ app.get('/show_obs/:idobs', observ.admin_obs);
 app.post('/obs/add', observ.obs_save);
 app.post("/csv_cdd",admin.g_csv_cdd);
 app.post("/csv_proy",admin.g_csv_proy);
-
 // Eventos
 
 app.get('/event', event.list);
@@ -122,6 +121,7 @@ app.get('/post/:idpost', posts.getpost);
 app.post('/post/add', posts.save);
 app.post('/pstcomment_stream',posts.getcomments);
 app.post('/post_stream', posts.indx_stream);
+app.get('/delete_pst/:idpost', posts.rm_post);
 app.post('/tags/bsq',posts.b_tag);
 app.get('/tagbsq/:id',posts.get_cat);
 app.post('/send_laik',cdd.add_laik);
@@ -182,7 +182,6 @@ app.post('/subir_pic', function (req,res) {
     f_gen = f_gen.replace(/\//g,'');
     f_gen = f_gen.replace(/\,/g,'');
     f_gen = f_gen + req.session.user.iduser.toString() + ".jpg";
-    console.log("fecha: " + f_gen);
     var form = new formidable.IncomingForm();
     form.parse(req, function (err, fields, files) {
         if(err) console.log("error file: %s",err);

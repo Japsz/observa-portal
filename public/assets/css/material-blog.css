@@ -147,6 +147,7 @@ a:focus {
   padding: 4px 12px;
   border-radius: 16px;
   font-weight: 400;
+  margin-bottom: 20px;
   -webkit-transition: all 0.15s ease;
   transition: all 0.15s ease;
 }
@@ -333,8 +334,10 @@ a:focus {
   margin-bottom: 0;
 }
 
-.sidebar-module .categories li {
-  margin: 12px auto;
+.categories a {
+  display: inline-block;
+  margin-bottom: 3px;
+  margin-top: 3px;
 }
 
 /***********************************************
@@ -469,7 +472,6 @@ a:focus {
 .navbar .navbar-wrapper {
   padding-top: 180px;
 }
-
 .navbar-image {
   content: '';
   position: absolute;
