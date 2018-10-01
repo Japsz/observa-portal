@@ -1,4 +1,4 @@
-<%- include layouts/admin_header.ejs %>
+<%- include ../../layouts/admin_header.ejs %>
 <h2 class="page-header">Observatorios de: <%= inst.nom%><a class="btn btn-info pull-right nobs"  data-toggle="modal" data-target="#obs" data-idinst="<%= inst.idinstitucion%>" > + <span class="glyphicon glyphicon-eye-open"  aria-hidden="true"></span></a> </h2>
 <div class="row placeholders">
     <%
@@ -50,14 +50,12 @@
                     <input type="text" name="nom" class="form-control" required>
                     <label>Máximo de Integrantes</label>
                     <input type="text" name="maxim" class="form-control" required>
-                    <label>Monitor</label>
-                    <input type="text" id="mailkeyup" name="corr" class="form-control">
-                    <div id="monids" class="radio"></div>
                 </div>
                 <div class="modal-footer">
                     <div class="btn-group">
+
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                        <button type="submit" id="continue" name="id" value="" class="btn btn-primary" disabled>Modificar</button>
+                        <button type="submit" id="continue" name="id" value="" class="btn btn-primary">Modificar</button>
                     </div>
                 </div>
             </form>
@@ -72,7 +70,7 @@
             $(".modal-footer #continue").val(instid);
         });
         $("#mailkeyup").keyup( function() {
-            data = { corr : $(this).val()};
+            data = { corr : $(this).val(),obs: $(this).data("obs")};
             $("#continue").attr("disabled", true);
             if(data.corr.length >= 2){
                 $.ajax({
@@ -92,4 +90,4 @@
         $("#continue").attr("disabled", false);
     };
 </script>
-<%- include layouts/footer.ejs %>
+<%- include ../../layouts/footer.ejs %>

@@ -1,10 +1,7 @@
-/**
- * Created by benja on 13-06-2017.
- */
 //Vista agregar inst.
 exports.add_inst = function(req, res){
     if(req.session.isAdminLogged){
-        res.render('add_inst',{page_title:"Agregar Institución"});
+        res.render('admin/obs/add_inst',{page_title:"Agregar Institución"});
     }
     else res.redirect('/bad_login');
 };
@@ -13,13 +10,15 @@ exports.list = function(req, res){
     if(req.session.isAdminLogged){
         req.getConnection(function(err,connection){
 
-            var query = connection.query('SELECT * FROM institucion',function(err,rows)
+            connection.query('SELECT institucion.*,' +
+                'GROUP_CONCAT(observatorio.idobservatorio,"@@",observatorio.nom,"@@",observatorio.max,"@@",observatorio.estado) AS obs_token FROM institucion' +
+                ' LEFT JOIN observatorio ON observatorio.idinst = institucion.idinstitucion GROUP BY institucion.idinstitucion',function(err,rows)
             {
 
                 if(err)
                     console.log("Error Selecting : %s ",err );
-
-                res.render('instit_list',{page_title:"Instituciones",data:rows, usr:req.session.user});
+                console.log(rows);
+                res.render('admin/obs/instit_list',{page_title:"Instituciones",data:rows, usr:req.session.user});
 
             });
             //console.log(query.sql);
@@ -59,7 +58,7 @@ exports.obs_list = function(req, res){
     if(req.session.isAdminLogged){
         req.getConnection(function(err,connection){
 
-            connection.query('SELECT observatorio.*,user.correo,COUNT(proyecto.idproyecto) AS proyectos, COUNT(ciudadano.iduser) AS cdds FROM observatorio LEFT JOIN user ON observatorio.idmonitor = user.iduser' +
+            connection.query('SELECT observatorio.*,user.correo,COUNT(proyecto.idproyecto) AS proyectos, COUNT(ciudadano.iduser) AS cdds FROM observatorio LEFT JOIN monitor ON monitor.idobservatorio = observatorio.idobservatorio LEFT JOIN user ON monitor.idmonitor = user.iduser' +
                 ' LEFT JOIN proyecto ON proyecto.idobservatorio = observatorio.idobservatorio LEFT JOIN ciudadano ON ciudadano.idobs = observatorio.idobservatorio WHERE observatorio.idinst = ? GROUP BY observatorio.idobservatorio',req.params.id,function(err,rows)
             {
                 if(err)
@@ -70,7 +69,7 @@ exports.obs_list = function(req, res){
                     if(err)
                         console.log("Error Selecting : %s ",err );
 
-                    res.render('obs_list',{page_title:"Observatorios",data:rows,inst:insts[0], usr:req.session.user});
+                    res.render('admin/obs/obs_list',{page_title:"Observatorios",data:rows,inst:insts[0], usr:req.session.user});
 
                 });
 
@@ -108,6 +107,7 @@ exports.save = function(req,res){
     }
     else res.redirect('/bad_login');
 };
+//Lógica editar institucion
 exports.inst_edit = function(req,res){
     if(req.session.isAdminLogged){
         var input = JSON.parse(JSON.stringify(req.body));
@@ -137,8 +137,8 @@ exports.inst_edit = function(req,res){
 };
 // Logica agregar observatorio.
 // Estado:
-//      1 - Inactivo
-//      2 - Activo
+//      1 - Activo
+//      2 - Inactivo
 //      3 - Archivado
 exports.obs_save = function(req,res){
     if(req.session.isAdminLogged){
@@ -150,8 +150,7 @@ exports.obs_save = function(req,res){
                 nom   : input.nom,
                 avatar_pat : "/assets/img/placeholder.png",
                 max : input.maxim,
-                idinst : input.id,
-                idmonitor : input.idmonit
+                idinst : input.id
             };
 
             connection.query("INSERT INTO observatorio SET ? ",data, function(err, rows)
@@ -160,10 +159,44 @@ exports.obs_save = function(req,res){
                 if (err)
                     console.log("Error inserting : %s ",err );
 
-                res.redirect('/obs/' + input.id);
+                res.redirect('/show_obs/' + rows.insertId);
 
             });
             // console.log(query.sql); get raw query
+        });
+    }
+    else res.redirect('/bad_login');
+};
+// Lógica Archivar Observatorio
+exports.obs_archive = function(req, res){
+    if(req.session.isAdminLogged){
+        req.getConnection(function(err,connection){
+            connection.query('DELETE FROM monitor WHERE idobservatorio = ?',req.params.id,function(err,rows)
+            {
+                if(err)
+                    console.log("Error Deleting : %s ",err );
+
+                connection.query('UPDATE user SET tipo = 4 WHERE iduser IN (SELECT iduser FROM ciudadano WHERE idobs = ?)',req.params.id,function(err,insts)
+                {
+                    if(err)
+                        console.log("Error Updating : %s ",err );
+
+                    connection.query('UPDATE observatorio SET estado = 3 WHERE idobservatorio = ?',req.params.id,function(err,insts)
+                    {
+                        if(err)
+                            console.log("Error Selecting : %s ",err );
+                        connection.query('DELETE FROM ciudadano WHERE idobs = ?',req.params.id,function(err,insts)
+                        {
+                            if(err)
+                                console.log("Error Selecting : %s ",err );
+
+                            res.redirect("/instit");
+                        });
+                    });
+                });
+
+            });
+            //console.log(query.sql);
         });
     }
     else res.redirect('/bad_login');

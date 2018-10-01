@@ -1,5 +1,5 @@
 <%- include ../../layouts/admin_header.ejs %>
-<h2 class="page-header">Observatorio: <%= obs.nom%> <a class="btn btn-info pull-right" href="/obs/<%= obs.idinst %>">Volver</a></h2>
+<h2 class="page-header">Observatorio: <%= obs.nom%> <a class="btn btn-info pull-right" href="/instit">Volver</a></h2>
 <div class="row">
     <h2>Ciudadanos <a class="btn btn-info pull-right getcsv" data-tipo="cdd" data-id="<%= obs.idobservatorio%>" href="#"><i class="fa fa-download"></i> Generar csv</a></h2>
     <form method="get" id="csvget">

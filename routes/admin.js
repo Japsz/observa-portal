@@ -3,9 +3,12 @@ exports.list = function(req, res){
 	if(req.session.isAdminLogged){
 		req.getConnection(function(err,connection){
 					 
-						connection.query('SELECT user.*,GROUP_CONCAT(observatorio.idobservatorio,"&&",observatorio.nom,"&&",institucion.nom) as obsinfo FROM user LEFT JOIN observatorio ON observatorio.idmonitor = user.iduser' +
-							' LEFT JOIN institucion ON observatorio.idinst = institucion.idinstitucion WHERE user.tipo <= 2 GROUP BY user.iduser',function(err,monits)
-						{
+						connection.query('SELECT user.*,GROUP_CONCAT(observatorio.idobservatorio,"&&",observatorio.nom,"&&",institucion.nom) as obsinfo FROM user ' +
+                            ' LEFT JOIN monitor ON monitor.idmonitor = user.iduser' +
+                            ' LEFT JOIN observatorio ON monitor.idobservatorio = observatorio.idobservatorio' +
+                            ' LEFT JOIN institucion ON institucion.idinstitucion = observatorio.idinst' +
+                            ' WHERE user.tipo <= 2 GROUP BY user.iduser',function(err,monits)
+                            {
 								
 								if(err)
 										console.log("Error Selecting : %s ",err );

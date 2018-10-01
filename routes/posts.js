@@ -11,7 +11,7 @@ exports.indx = function(req, res){
             {
                 if(err)
                     console.log("Error Selecting : %s ",err );
-                res.render('cdd_index',{data :rows, usr:req.session.user, obs: req.session.idobs,stream: "indx",helper: ""});
+                res.render('posts/cdd_index',{data :rows, usr:req.session.user, obs: req.session.idobs,stream: "indx",helper: ""});
 
                 //console.log(query.sql);
             });
@@ -23,7 +23,7 @@ exports.indx_stream = function(req, res){
     if(req.session.isUserLogged){
         var input = JSON.parse(JSON.stringify(req.body));
         var wher;
-        var render = "";
+        var render = "posts/";
         var query = 'SELECT post.*, GROUP_CONCAT(DISTINCT megusta.iduser) as laiktoken,user.avatar_pat AS iconouser,user.username,' +
             'GROUP_CONCAT(DISTINCT tags.tag,"@", tags.idtag ORDER BY tags.tag) AS tagz, COUNT(DISTINCT megusta.iduser) as likes FROM' +
             ' post LEFT JOIN tagpost ON post.idpost = tagpost.idpost LEFT JOIN tags ON tagpost.idtag = tags.idtag INNER JOIN user ON user.iduser = post.iduser' +
@@ -45,7 +45,7 @@ exports.indx_stream = function(req, res){
                 break;
             case "usrpost":
                 wher = "AND post.iduser = ? GROUP BY post.idpost ORDER BY post.fecha DESC LIMIT 6";
-                render = "my";
+                render += "my";
                 break;
             case "archives":
                 wher = 'AND post.fecha > ? AND post.estado = 2 GROUP BY post.idpost ORDER BY post.fecha DESC LIMIT 6';
@@ -94,7 +94,7 @@ exports.getpost = function(req, res){
                     if(err)
                         console.log("Error Selecting : %s ",err );
 
-                    res.render('getpost',{data:post,usr:req.session.user, obs: req.session.idobs,comments : rows});
+                    res.render('posts/getpost',{data:post,usr:req.session.user, obs: req.session.idobs,comments : rows});
 
                     //console.log(query.sql);
                 });
@@ -114,7 +114,7 @@ exports.getcomments = function(req, res){
                 if(err)
                     console.log("Error Selecting : %s ",err );
 
-                res.render('cmnt_stream',{data:input.idpost,usr:req.session.user,comments : rows});
+                res.render('posts/cmnt_stream',{data:input.idpost,usr:req.session.user,comments : rows});
 
                 //console.log(query.sql);
             });
@@ -233,13 +233,15 @@ exports.b_fecha = function(req, res){
         {
             if(err)
                 console.log("Error Selecting : %s ",err );
-            res.render('cdd_index',{data:rows,usr:req.session.user, obs: req.session.idobs, stream: "archives", helper: input.desde});
+            res.render('posts/cdd_index',{data:rows,usr:req.session.user, obs: req.session.idobs, stream: "archives", helper: input.desde});
 
             //console.log(query.sql);
         });
     });
 
-};// Buscar por tag
+};
+
+// Buscar por tag
 exports.b_tag = function(req, res){
 
     req.getConnection(function(err,connection){
@@ -251,13 +253,14 @@ exports.b_tag = function(req, res){
         {
             if(err)
                 console.log("Error Selecting : %s ",err );
-            res.render('cdd_index',{data:rows,usr:req.session.user, obs: req.session.idobs, stream: "btag", helper: input.busqueda});
+            res.render('posts/cdd_index',{data:rows,usr:req.session.user, obs: req.session.idobs, stream: "btag", helper: input.busqueda});
 
             //console.log(query.sql);
         });
     });
 
 };
+
 exports.post_obs = function(req, res){
     if(req.session.isUserLogged && req.session.user.tipo == 3){
         req.getConnection(function(err,connection){
@@ -268,13 +271,14 @@ exports.post_obs = function(req, res){
             {
                 if(err)
                     console.log("Error Selecting : %s ",err );
-                res.render('cdd_index',{data :rows, usr:req.session.user, obs: req.session.idobs, stream: "miobs", helper: req.session.idobs[0].idobservatorio});
+                res.render('posts/cdd_index',{data :rows, usr:req.session.user, obs: req.session.idobs, stream: "miobs", helper: req.session.idobs[0].idobservatorio});
 
                 //console.log(query.sql);
             });
         });
     } else res.redirect('/bad_login');
 };
+
 exports.p_edit = function(req, res){
     if(req.session.isUserLogged && req.session.user.tipo == 3){
         var input = JSON.parse(JSON.stringify(req.body));
@@ -313,7 +317,7 @@ exports.usr_post = function(req, res){
             {
                 if(err)
                     console.log("Error Selecting : %s ",err );
-                res.render('cdd_post',{data :rows, usr:req.session.user, obs: req.session.idobs, pat:"usrpost",helper: req.session.user.iduser});
+                res.render('posts/cdd_post',{data :rows, usr:req.session.user, obs: req.session.idobs, pat:"usrpost",helper: req.session.user.iduser});
                 //console.log(query.sql);
             });
         });
@@ -353,7 +357,7 @@ exports.get_cat = function(req, res){
         {
             if(err)
                 console.log("Error Selecting : %s ",err );
-            res.render('cdd_index',{data:rows,usr:req.session.user, obs: req.session.idobs, stream: "getcat", helper: req.params.id});
+            res.render('posts/cdd_index',{data:rows,usr:req.session.user, obs: req.session.idobs, stream: "getcat", helper: req.params.id});
 
             //console.log(query.sql);
         });

@@ -1,4 +1,4 @@
-<%- include layouts/user_header.ejs %>
+<%- include ../layouts/user_header.ejs %>
 <div class="container blog-content">
     <div class="row">
 
@@ -9,12 +9,20 @@
                         <div class="panel panel-default">
                             <div class="panel-body">
                                 <div class="blog-post-meta">
-                                    <h1 class="blog-post-title"><%= obs.nom%> <a class="btn btn-info pull-right" href="/obs_monit">Volver</a></h1>
+                                    <h1 class="blog-post-title">Ciudadanos de: <%= obs.nom%> <a class="btn btn-info pull-right" href="/obs_monit">Volver</a></h1>
                                 </div>
-                                <div class="blog-post-content">
                                     <div class="table table-responsive">
-                                        <h2>Ciudadanos</h2>
-                                        <table class="table">
+                                        <div class="form-inline pull-right">
+                                            <form action="/add_cdd" method="post">
+                                                <input type="email" name="correo" class="form-control" placeholder="Correo" id="add_mail">
+                                                <button type="submit" name="idobs" class="btn btn-info" value="<%= obs.idobservatorio%>">+ <i class="glyphicon glyphicon-user"></i></button>
+                                            </form>
+                                        </div>
+                                        <% if(data.length < obs.max){%>
+                                        <%}%>
+
+                                        <table class="table table-striped">
+                                            <thead>
                                             <tr>
                                                 <th>N°</th>
                                                 <th>Usuario</th>
@@ -23,11 +31,13 @@
                                                 <th>Correo</th>
                                                 <th></th>
                                             </tr>
+                                            </thead>
+                                            <tbody>
                                     <% if(data.length) {
                                         for(var i = 0;i<data.length;i++){%>
                                         <tr>
                                             <td><%= i+1%></td>
-                                            <td><%= data[i].username%></td>
+                                            <td><% if(data[i].username){%><%= data[i].username%><%}%></td>
                                             <td><% if(data[i].nombre){%><%= data[i].nombre%><%}%></td>
                                             <td><% if(data[i].apellido){%><%= data[i].apellido%><%}%></td>
                                             <td><%= data[i].correo%></td>
@@ -42,17 +52,10 @@
                                             <td>No hay ciudadanos inscritos</td>
                                         </tr>
                                     <% } %>
+                                            </tbody>
+
                                         </table>
-                                        <% if(data.length < obs.max){%>
-                                    <div class="form-inline pull-right">
-                                        <form action="/add_cdd" method="post">
-                                            <input type="email" name="correo" class="form-control" placeholder="Correo" id="add_mail">
-                                            <button type="submit" name="idobs" class="btn btn-info" value="<%= obs.idobservatorio%>">+ <i class="glyphicon glyphicon-user"></i></button>
-                                        </form>
-                                    </div>
-                                        <%}%>
                                 </div>
-                            </div>
                         </div>
                     </section>
                 </div>
@@ -60,4 +63,4 @@
 
         </div><!-- /.blog-main -->
 
-<%- include layouts/cdd_footer.ejs %>
+<%- include ../layouts/cdd_footer.ejs %>

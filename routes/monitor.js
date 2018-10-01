@@ -86,7 +86,7 @@ exports.get_obs = function(req, res){
                     if(err)
                         console.log("Error Selecting : %s ",err );
 
-                    res.render('get_obs',{data:rows,usr:req.session.user,obs : obs});
+                    res.render('monitor/get_obs',{data:rows,usr:req.session.user,obs : obs});
 
                 });
 
@@ -99,12 +99,12 @@ exports.get_obs = function(req, res){
 exports.obs_monit = function(req, res){
     if(req.session.isUserLogged && req.session.user.tipo == 1){
 
-            res.render('monit_obs',{page_title:"Observatorios",data:req.session.idobs,usr:req.session.user, obs: req.session.idobs});
+            res.render('monitor/monit_obs',{page_title:"Observatorios",data:req.session.idobs,usr:req.session.user, obs: req.session.idobs});
     }
     else res.redirect('/bad_login');
 };
 exports.drop_cdd = function (req, res) {
-    if(req.session.isUserLogged && req.session.user.tipo == 1){
+    if((req.session.isUserLogged && req.session.user.tipo == 1) || req.session.isAdminLogged){
         var input = JSON.parse(JSON.stringify(req.body));
         req.getConnection(function(err,connection){
 
@@ -143,7 +143,7 @@ exports.get_prepost = function(req, res){
                 if(err)
                     console.log("Error Selecting : %s ",err );
 
-                res.render('app_post',{data:rows, usr:req.session.user, obs: req.session.idobs});
+                res.render('monitor/app_post',{data:rows, usr:req.session.user, obs: req.session.idobs});
 
                 //console.log(query.sql);
             });
@@ -169,7 +169,7 @@ exports.get_modpost = function(req, res){
                     if(err)
                         console.log("Error Selecting : %s ",err );
 
-                    res.render('mod_moderate',{data:posts, data2:rows, usr:req.session.user, obs: req.session.idobs});
+                    res.render('monitor/mod_moderate',{data:posts, data2:rows, usr:req.session.user, obs: req.session.idobs});
 
                     //console.log(query.sql);
                 });

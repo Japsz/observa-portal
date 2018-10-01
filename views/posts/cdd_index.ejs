@@ -1,4 +1,4 @@
-<%- include layouts/user_header %>
+<%- include ../layouts/user_header %>
 
 <style>
     .modalpost {
@@ -70,15 +70,15 @@
                                         <img src="<%= data[i].iconouser%>" style="margin: 0;height: 30px" width="30px" class="img-circle img-responsive">
                                         <h5 style="margin-left: 10px"><%= data[i].username%></h5>
                                     </div>
-                                    <div class="blog-post-share pull-right">
-                                        <input type="hidden" class="laiktoken" value="<%=data[i].laiktoken%>" data-id="<%= data[i].idpost%>">
-                                        <a class="comm btn btn-info" data-id="<%= data[i].idpost%>">
-                                            <i class="glyphicon glyphicon-comment"></i> Comentar
-                                        </a>
-                                        <a class="laik btn btn-inverse" data-id="<%= data[i].idpost%>" href="#">
-                                            <i class="glyphicon glyphicon-thumbs-up"></i> <%= data[i].likes%>
-                                        </a>
-                                    </div>
+                                </div>
+                                <div class="blog-post-share pull-right">
+                                    <input type="hidden" class="laiktoken" value="<%=data[i].laiktoken%>" data-id="<%= data[i].idpost%>">
+                                    <a class="comm btn btn-info" data-id="<%= data[i].idpost%>">
+                                        <i class="glyphicon glyphicon-comment"></i> Comentar
+                                    </a>
+                                    <a class="laik btn btn-inverse" data-id="<%= data[i].idpost%>" href="#">
+                                        <i class="glyphicon glyphicon-thumbs-up"></i> <%= data[i].likes%>
+                                    </a>
                                 </div>
                             </div>
                             <div class="panel-footer blog-comments collapse">
@@ -137,4 +137,4 @@
         </div><!-- /.blog-main -->
 
 
-<%- include layouts/cdd_footer.ejs %>
+<%- include ../layouts/cdd_footer.ejs %>
