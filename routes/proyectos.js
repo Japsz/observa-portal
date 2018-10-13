@@ -20,6 +20,7 @@ exports.indx = function(req, res){
         });
     } else res.redirect('/bad_login');
 };
+//
 exports.proy_stream = function(req,res){
   if(req.session.isUserLogged){
       var input = JSON.parse(JSON.stringify(req.body));
@@ -176,7 +177,7 @@ exports.render_proyinfo = function(req,res){
         });
     } else res.redirect('/bad_login');
 
-}
+};
 exports.save = function(req,res){
     if(req.session.isUserLogged){
         req.getConnection(function(err,connection){

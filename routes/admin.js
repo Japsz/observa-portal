@@ -168,7 +168,6 @@ exports.save = function(req,res){
 		}
 		else res.redirect('/bad_login');
 };
-
 //Vista editar usuario.
 exports.edit = function(req, res){
 	
@@ -192,7 +191,6 @@ exports.edit = function(req, res){
 		}
 		else res.redirect('/bad_login');
 };
-
 //Logica editar usuario.
 exports.save_edit = function(req,res){
 
@@ -324,7 +322,6 @@ exports.g_csv_proy = function(req,res){
     }
     else res.redirect('/bad_login');
 };
-
 //Borrar usuario.
 exports.delete_user = function(req,res){
 

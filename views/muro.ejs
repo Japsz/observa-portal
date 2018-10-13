@@ -134,7 +134,7 @@
                                             <%}%>
                                         </a>
                                         <%}%>
-                                        <% if(data[i].tipo == 3 && data[i].laiks == "fin" && gral.gotlaik && gral.gotuser && gral.idcreador == usr.iduser){%>
+                                        <% if(data[i].tipo == 3 && data[i].laiks == "fin" && gral.gotuser && gral.idcreador == usr.iduser){%>
                                             <a class="btn btn-success sendprogress" href="#" data-id="<%=data[i].idpostinterno%>">Enviar a aprobación</a>
                                             <script type="text/javascript">
                                                 $(document).on("click",".sendprogress",function(){
@@ -188,10 +188,9 @@
                         <%}%>
                         <br>
                         <% if(gral.etapa <= etapas.length){%>
-                        <h5>Conseguir <%= gral.etapa*gral.likes %> Likes <span class="glyphicon <%if(gral.gotlaik){%>glyphicon-ok<%} else {%>glyphicon-remove<%}%>"></span></h5>
                         <h5>Añadir un Integrante en esta etapa <span class="glyphicon <%if(gral.gotuser){%>glyphicon-ok<%} else {%>glyphicon-remove<%}%>"></span></h5>
                         <br>
-                        <a class="btn btn-success" href="/sol/get/<%= gral.idproyecto%>">Ver soluciones</a>
+                        <a class="btn btn-success" href="/sol/get/<%= gral.idproyecto%>">Ver Aportes</a>
                         <%}%>
                     </div>
                 </div>
