@@ -16,8 +16,6 @@ var event = require('./routes/eventos');
 var cdd = require('./routes/ciudadano');
 var monitor = require('./routes/monitor');
 var posts = require('./routes/posts');
-var intern = require('./routes/intern');
-var proyect = require('./routes/proyectos');
 var admin = require('./routes/admin');
 
 mailer.extend(app, {
@@ -131,28 +129,8 @@ app.post('/post/edit/:idpost', posts.p_edit);
 
 // Proyectos
 
-app.get('/lab2',proyect.indx);
-app.post('/proy_stream', proyect.proy_stream);
-app.post('/render_proyinfo', proyect.render_proyinfo);
 app.get('/mod_proys',admin.modproy);
 app.post('/mod',admin.moderate_p);
-app.post('/laik_p',cdd.add_p_laik);
-app.post('/proy/add',proyect.save);
-app.get('/proy_cdd',proyect.myproy);
-app.get('/proy/get/:idproy',proyect.getproy);
-app.post('/act/add',proyect.act_save);
-app.post('/sol/add',proyect.sol_save);
-app.get('/sol/get/:idproy',proyect.getsol);
-
-// Muro interno proyectos
-
-app.post('/postsol',intern.post_sol);
-app.post('/progress',intern.progress);
-app.post('/comment_stream',intern.getcomments);
-app.post('/intcomment/add', intern.save_comment);
-app.get('/intern/:idproy',intern.getproy);
-app.post('/intern/add',intern.intern_save);
-app.post('/laik_intern',cdd.intern_laik);
 
 //Users
 
