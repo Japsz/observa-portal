@@ -1,7 +1,14 @@
 var express = require('express');
-var routes = require('./routes');
+var routes = require('./routes/index');
 var http = require('http');
 var path = require('path');
+
+
+var app = express(), mailer = require("express-mailer");
+var logger = require('morgan');
+var cookieParser = require('cookie-parser');
+var cookieSession = require('cookie-session');
+var bodyParser = require('body-parser');
 
 var users = require('./routes/users');
 var observ = require('./routes/observatorio');
@@ -12,11 +19,6 @@ var posts = require('./routes/posts');
 var intern = require('./routes/intern');
 var proyect = require('./routes/proyectos');
 var admin = require('./routes/admin');
-var app = express(), mailer = require("express-mailer");
-var flash = require('connect-flash');
-
-var connection  = require('express-myconnection');
-var mysql = require('mysql');
 
 mailer.extend(app, {
     from: 'no-reply@example.com',
@@ -29,25 +31,25 @@ mailer.extend(app, {
         pass: 'proyectaobserva'
     }
 });
-// all environments
+
+// view engine setup
 app.set('port', process.env.PORT || 8080);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-app.use(express.logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.methodOverride());
-app.use(flash());
-app.use(express.cookieParser('isLogged'));
-app.use(express.cookieParser('laiks'));
-
-app.use(express.cookieSession());
-
+// uncomment after placing your favicon in /public
+//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser("usuarios"));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cookieSession({
+    name: 'session',
+    keys: ['usuarios']
+}));
 
-if ('development' == app.get('env')) {
-  app.use(express.errorHandler());
-}
+var connection  = require('express-myconnection');
+var mysql = require('mysql');
 
 app.use(
 
@@ -55,15 +57,13 @@ app.use(
 
         host: '127.0.0.1',
         user: 'root',
-        password : 'observaproyecta',
+        password : '1234',
         port : 3306,
         database:'Observapp'
 
     },'pool')
 
 );
-
-
 
 app.get('/', routes.index);
 
@@ -78,6 +78,7 @@ app.get('/show_obs/:idobs', observ.admin_obs);
 app.post('/obs/add', observ.obs_save);
 app.post("/csv_cdd",admin.g_csv_cdd);
 app.post("/csv_proy",admin.g_csv_proy);
+
 // Eventos
 
 app.get('/event', event.list);
@@ -99,7 +100,6 @@ app.get('/app_post/:idobs', monitor.get_prepost);
 app.get('/mod_indx', monitor.get_modpost);
 app.post('/rmm_comm', monitor.del_comment);
 app.post('/approve_comm', monitor.approve_comment);
-
 
 //Ciudadano
 
@@ -131,7 +131,7 @@ app.post('/post/edit/:idpost', posts.p_edit);
 
 // Proyectos
 
-app.get('/lab',proyect.indx);
+app.get('/lab2',proyect.indx);
 app.post('/proy_stream', proyect.proy_stream);
 app.post('/render_proyinfo', proyect.render_proyinfo);
 app.get('/mod_proys',admin.modproy);
@@ -175,6 +175,26 @@ app.get('/bad_login', users.bad_login);
 app.post('/admin_login_handler', users.admin_login_handler);
 app.post('/user_login_handler', users.user_login_handler);
 
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+    var err = new Error('Not Found');
+    err.status = 404;
+    console.log("?");
+    next(err);
+});
+
+// error handler
+app.use(function(err, req, res, next) {
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+    // render the error page
+    res.status(err.status || 500);
+    res.render('bad_login');
+});
+
+
 // file ajax
 
 app.post('/subir_pic', function (req,res) {
@@ -201,8 +221,10 @@ app.post('/subir_pic', function (req,res) {
 });
 
 
-app.use(app.router);
+var server  = http.createServer(app);
 
-http.createServer(app).listen(app.get('port'), function(){
-  console.log('The game starts on port ' + app.get('port'));
+server.listen(app.get('port'), function(){
+    console.log('The game starts on port ' + app.get('port'));
 });
+
+const io = require('socket.io')(server);
