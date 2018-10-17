@@ -150,6 +150,74 @@ exports.admin_login_handler = function(req, res){
     });
   
 };
+exports.reset_pass = function (req, res) {
+    if(req.params.recovery.length == 15){
+        res.render("reset_pass",{recovery: req.params.recovery});
+    } else {
+        res.send("FALSOS PROFETAS ALÉJENSE DE LA GRAN ZANAHORIA, ARREPIÉNTETE PECADOR.")
+    }
+};
+// Lógica enviar correo de recuperación
+exports.send_mail = function (req, res) {
+    var pass = require('generate-password').generate({length : 15,numbers : true});
+    req.getConnection(function(err,connection){
+        if(err) console.log("Error en la conexión %s",err);
+        // Se setea el flag para recuperar la contraseña
+        connection.query("SELECT iduser,username FROM user WHERE correo = ? ",[req.params.correo],function(err,cdd)
+        {
+            if(err){
+                console.log("Error Selecting : %s ",err );
+                res.send({error: true, str: "Hubo un error al hacer la búsqueda"});
+                return;
+            }
+            if(cdd.length == 1){
+                connection.query("UPDATE user SET recovery = ? WHERE iduser = ?",[pass,cdd[0].iduser],function(err,rows){
+                    if(err){
+                        console.log("Error Selecting : %s ",err );
+                        res.send({error: true, str: "Hubo un error con la Base de datos (UPDATE)"});
+                    }
+                    res.mailer.send('mail_recovery_pass', {
+                        to: req.params.correo, // REQUIRED. This can be a comma delimited string just like a normal email to field.
+                        subject: 'Recupera tu contraseña', // REQUIRED.
+                        data: cdd[0],
+                        link: pass// All additional properties are also passed to the template as local variables.
+                    }, function (err) {
+                        if (err) {
+                            // handle error
+                            console.log(err);
+                            res.send({error: true, str: "Hubo un error al agregar al hacer la búsqueda"});
+                            return;
+                        }
+                        res.send({error: false});
+                        return;
+                    });
+                });
+            } else {
+                res.send({error: true, str: "No encontramos un usuario con ese correo"});
+            }
+        });
+        //console.log(query.sql);
+    });
+};
+//Lógica validar reestablecimiento contraseña
+exports.validate_recovery = function (req, res) {
+
+    req.getConnection(function(err,connection){
+        if(err) console.log("Error en la conexión %s",err);
+        // Se setea el flag para recuperar la contraseña
+        connection.query("UPDATE user SET recovery = 0, password = ? WHERE recovery = ?",[req.body.pass,req.body.recovery],function(err,cdd)
+        {
+            if(err){
+                console.log("Error Selecting : %s ",err );
+                res.send({error: true, str: "Hubo un error al hacer la búsqueda"});
+                return;
+            }
+            res.send({error: false})
+        });
+        //console.log(query.sql);
+    });
+};
+
 exports.add_obsmonit = function (req, res) {
     req.getConnection(function(err,connection){
 

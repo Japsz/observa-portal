@@ -8,7 +8,7 @@
 
 <body>
 <h1>Hola Ciudadano/a!</h1>
-<p>Te escribimos para informarte que el avance de etapa para tu proyecto "<a href="app.observaciudadania.org/proy/get/<%= data.idproyecto%>"><%= data.titulo%></a> fue <%= estado%>"</p>
+<p>Te escribimos para informarte que el avance de etapa para tu proyecto "<a href="app.observaciudadania.org/lab/proy/get/<%= data.idproyecto%>"><%= data.titulo%></a> fue <%= estado%>"</p>
 
 <% switch(estado){
     case "aprobado":
@@ -21,7 +21,7 @@
 %>
 <p>y el que revisó tu proyecto dijo: </p>
 <p style="margin: 50px;"class="text-center"><%= comm%></p>
-<p>Si quieres revisar y/o reeditar el avance rechazado ve al muro de tu proyecto o simplemente has click <a href="app.observaciudadania.org/intern/<%= data.idproyecto%> ">aquí</a></p>
+<p>Si quieres revisar y/o reeditar el avance rechazado ve al muro de tu proyecto o simplemente has click <a href="app.observaciudadania.org/lab/intern/<%= data.idproyecto%> ">aquí</a></p>
 <%
     break;
     default:

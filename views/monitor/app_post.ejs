@@ -54,10 +54,10 @@
                                         Creado por: <%= data[i].username%>
                                     </a>
                                     <div class="blog-post-share pull-right">
-                                        <a class="comm col-xs-2 " data-id="<%= data[i].idpost%>" href="#">
+                                        <a class="comm" style="display: block" data-id="<%= data[i].idpost%>">
                                             <i class="success glyphicon glyphicon-thumbs-up"></i> Aprobar
                                         </a>
-                                        <a class="laik col-xs-2 danger" data-toggle="modal" data-target="#rm" data-id="<%= data[i].idpost%>" href="#">
+                                        <a class="laik danger" style="display: block" data-toggle="modal" data-target="#rm" data-id="<%= data[i].idpost%>">
                                             <i class="glyphicon glyphicon-remove"></i> Rechazar
                                         </a>
                                     </div>
@@ -168,36 +168,7 @@
 </div><!-- /.container -->
 
 
-
-<footer class="blog-footer">
-
-    <div id="links">
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-2">
-                    <i class="material-icons brand">&#xE871;</i>
-                    <p> Versión 1.4</p>
-                </div>
-
-                <div class="col-sm-8 text-center offset">
-                    <ul class="list-inline">
-                        <li><a href="#">Inicio</a></li>
-                        <li><a href="#">Privacidad</a></li>
-                    </ul>
-                </div>
-
-                <div class="col-md-2 text-right offset">
-                    <ul class="list-inline">
-                        <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                        <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
-                        <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-</footer>
+<%- include ../layouts/footer_x.ejs %>
 
 <button class="material-scrolltop primary" type="button"></button>
 

@@ -67,26 +67,27 @@
                         <div class="panel panel-default">
                             <div class="panel-body">
                                 <div class="blog-post-meta">
-                                    <h1 class="blog-post-title">Iniciar Sesión</h1>
+                                    <h1 class="blog-post-title">Reestablecer contraseña</h1>
                                 </div>
                                 <div class="blog-post-content form-group">
-                                    <form action="/user_login_handler" method="POST">
-                                        <label for="userame"> Usuario o Correo</label>
+                                    <form id="send_recovery">
+                                        <label for="pass">Nueva Contraseña</label>
                                         <div class="input-group">
-                                            <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                                            <input type="text" class="form-control" name="username" required>
+                                            <input type="password" onkeyup="check()" class="form-control" id="pass" name="pass" required>
+                                            <span class="input-group-addon glyphicon glyphicon-remove" id="span"></span>
                                         </div>
-                                        <label for="pass">Contraseña</label>
+                                        <label for="pass2">Vuelva a escribir la contraseña</label>
                                         <div class="input-group">
-                                            <span class="input-group-addon"><i class="fa fa-key"></i></span>
-                                            <input type="password" class="form-control" name="password" required>
-                                            <a href="#passrecover" data-toggle="modal" class="pull-right">¿Olvidaste tu contraseña?</a>
+                                            <input type="password" onkeyup="check()" class="form-control" id="pass2" name="pass2" required>
+                                            <span class="input-group-addon glyphicon glyphicon-remove" id="span2"></span>
                                         </div>
+                                        <div id="checkpass" class="alert hidden"></div>
+                                        <input type="hidden" name="recovery" id="recover" value="<%= recovery%>">
+
                                         <div class="form-group form-inline pull-right">
-                                            <button type="submit" class="form-control btn btn-primary">Entrar</button>
+                                            <button type="submit" id="savedit" class="form-control btn btn-primary" disabled>Entrar</button>
                                         </div>
                                     </form>
-
                                 </div>
                             </div>
                         </div>
@@ -102,26 +103,6 @@
 
 <%- include layouts/footer_x.ejs %>
 
-<div class="modal fade" id="passrecover" tabindex="-1" role="dialog" >
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Recuperar Contraseña</h4>
-            </div>
-            <div class="modal-body">
-                <p>Ingresa aquí tu correo y te enviaremos un link para reestablecer tu contraseña.</p>
-                <input type="email" name="query" placeholder="algun@correo.cl" id="recover_q" class="form-control" require>
-            </div>
-            <div class="modal-footer">
-                <div class="btn-group">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-                    <button class="btn btn-primary" onclick="send_mail()">Enviar Correo</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 <button class="material-scrolltop primary" type="button"></button>
 <script src="/assets/js/ripples.min.js"></script>
 <script src="/assets/js/material.min.js"></script>
@@ -130,23 +111,54 @@
 <script type="text/javascript">
     $.material.init();
     $('body').materialScrollTop();
-    function send_mail(){
-        var value = $("#recover_q").val();
-        if(value != ""){
-            $.ajax({
-                type: 'GET',
-                url: '/send_recovery_mail/' + value,
-                success: function(data) {
-                    if(!data.error){
-                        alert("¡El correo se envió exitosamente!");
-                        $("#passrecover").modal('toggle');
-                    } else {
-                        alert(data.str);
-                    }
-                }
-            });
+
+    var ispass, isusr;
+
+    function check() {
+        if($("#pass").val() == "" || $("#pass").val() != $("#pass2").val()){
+
+            ispass=false;
+            $("#savedit").attr("disabled", true);
+            $("#span").removeClass("glyphicon-ok");
+            $("#span2").removeClass("glyphicon-ok");
+            $("#span").addClass("glyphicon-remove");
+            $("#span2").addClass("glyphicon-remove");
+            $("#checkpass").removeClass("hidden");
+            $("#checkpass").removeClass("alert-success");
+            $('#checkpass').addClass("alert-danger");
+            $('#checkpass').html("<i class='glyphicon glyphicon-remove'></i> <strong>No Coinciden!</strong> rayos, las contraseñas no son iguales.");
+
+        } else {
+            ispass = true;
+            if(isusr) $("#savedit").attr("disabled", true);
+            $("#savedit").attr("disabled", false);
+            $("#span").removeClass("glyphicon-remove");
+            $("#span2").removeClass("glyphicon-remove");
+            $("#span").addClass("glyphicon-ok");
+            $("#span2").addClass("glyphicon-ok");
+            $("#checkpass").removeClass("alert-danger");
+            $('#checkpass').addClass("alert-success");
+            $('#checkpass').html("<i class='glyphicon glyphicon-ok'></i>  <strong>Coinciden!</strong> no la olvides.");
+
+
         }
     }
+    $("#send_recovery").submit(function(e){
+        e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            data: {pass: $("#pass").val(),recovery: $("#recover").val()},
+            url: '/validate_recovery/',
+            success: function(data) {
+                if(!data.error){
+                    alert("¡Tu Contraseña fue cambiada exitosamente!");
+                    window.location.href = "https://app.observaciudadania.org"
+                } else {
+                    alert(data.str);
+                }
+            }
+        });
+    });
 </script>
 </body>
 </html>
