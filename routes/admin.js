@@ -326,18 +326,21 @@ exports.g_csv_proy = function(req,res){
 exports.delete_user = function(req,res){
 
 	if(req.session.isAdminLogged){
-		 var username = req.params.username;
-		
+
 		 req.getConnection(function (err, connection) {
 				
-				connection.query("DELETE FROM user WHERE iduser = ? ",[username], function(err, rows)
-				{
-						
+				connection.query("DELETE FROM ciudadano WHERE iduser = ? ",[req.params.iduser], function(err, rows)
+                {
 						 if(err)
 								 console.log("Error deleting : %s ",err );
+						 connection.query("UPDATE user SET tipo = 4 WHERE iduser = ?",[req.params.iduser],function(err,rows){
+                             if(err)
+                                 console.log("Error deleting : %s ",err );
+
+                             res.redirect(req.header("Referer") || '/');
+                         });
 						
-						 res.redirect('/user');
-						 
+
 				});
 				
 		 });

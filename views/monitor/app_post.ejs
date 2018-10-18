@@ -54,10 +54,10 @@
                                         Creado por: <%= data[i].username%>
                                     </a>
                                     <div class="blog-post-share pull-right">
-                                        <a class="comm" style="display: block" data-id="<%= data[i].idpost%>">
-                                            <i class="success glyphicon glyphicon-thumbs-up"></i> Aprobar
+                                        <a class="comm btn btn-success" data-id="<%= data[i].idpost%>" style="display: inline-block">
+                                            <i class="glyphicon glyphicon-thumbs-up"></i> Aprobar
                                         </a>
-                                        <a class="laik danger" style="display: block" data-toggle="modal" data-target="#rm" data-id="<%= data[i].idpost%>">
+                                        <a class="laik btn btn-danger" data-toggle="modal" data-target="#rm" data-id="<%= data[i].idpost%>" style="display: inline-block">
                                             <i class="glyphicon glyphicon-remove"></i> Rechazar
                                         </a>
                                     </div>
@@ -83,10 +83,10 @@
                                         Creado por: <%= data[i].username%>
                                     </a>
                                     <div class="blog-post-share pull-right">
-                                        <a class="comm col-xs-2 success" data-id="<%= data[i].idpost%>" href="#">
+                                        <a class="comm btn btn-success" data-id="<%= data[i].idpost%>" style="display: inline-block">
                                             <i class="glyphicon glyphicon-thumbs-up"></i> Aprobar
                                         </a>
-                                        <a class="laik col-xs-2 danger" data-toggle="modal" data-target="#rm" data-id="<%= data[i].idpost%>" href="#">
+                                        <a class="laik btn btn-danger" data-toggle="modal" data-target="#rm" data-id="<%= data[i].idpost%>" style="display: inline-block">
                                             <i class="glyphicon glyphicon-remove"></i> Rechazar
                                         </a>
                                     </div>
@@ -111,10 +111,10 @@
                                         Creado por: <%= data[i].username%>
                                     </a>
                                     <div class="blog-post-share pull-right">
-                                        <a class="comm col-xs-2 success" data-id="<%= data[i].idpost%>" href="#">
+                                        <a class="comm btn btn-success" data-id="<%= data[i].idpost%>" style="display: inline-block">
                                             <i class="glyphicon glyphicon-thumbs-up"></i> Aprobar
                                         </a>
-                                        <a class="laik col-xs-2 danger" data-toggle="modal" data-target="#rm" data-id="<%= data[i].idpost%>" href="#">
+                                        <a class="laik btn btn-danger" data-toggle="modal" data-target="#rm" data-id="<%= data[i].idpost%>" style="display: inline-block">
                                             <i class="glyphicon glyphicon-remove"></i> Rechazar
                                         </a>
                                     </div>
@@ -138,10 +138,10 @@
                                         Creado por: <%= data[i].username%>
                                     </a>
                                     <div class="blog-post-share pull-right">
-                                        <a class="comm col-sm-2 success" data-id="<%= data[i].idpost%>" href="#">
+                                        <a class="comm btn btn-success" data-id="<%= data[i].idpost%>" style="display: inline-block">
                                             <i class="glyphicon glyphicon-thumbs-up"></i> Aprobar
                                         </a>
-                                        <a class="laik col-sm-2 danger" data-toggle="modal" data-target="#rm" data-id="<%= data[i].idpost%>" href="#">
+                                        <a class="laik btn btn-danger" data-toggle="modal" data-target="#rm" data-id="<%= data[i].idpost%>" style="display: inline-block">
                                             <i class="glyphicon glyphicon-remove"></i> Rechazar
                                         </a>
                                     </div>
@@ -260,7 +260,7 @@
             for(var i = 0; i < tagger.length;i++){
                 if(tagger[i] != "null") {
                     $(idpost+" .blog-post-meta").append('<span class="label label-light label-primary">' + tagger[i] + '</span> ');
-                } else $(idpost).append('<span class="label label-light label-primary">jeje</span> ');
+                } else $(idpost).append('<span class="label label-light label-primary">Sin Tags</span> ');
 
             }
         })

@@ -288,7 +288,6 @@ exports.save_edit = function(req, res){
 
     if(req.session.isUserLogged){
         var input = JSON.parse(JSON.stringify(req.body));
-        console.log(input.avatr);
         var data = {
             avatar_pat: input.avatr,
             username : input.username,
@@ -296,7 +295,7 @@ exports.save_edit = function(req, res){
             tipo : req.session.user.tipo,
             nombre : input.name,
             apellido : input.ape,
-            fnac : new Date(input.fnac),
+            fnac : input.fnac,
             gender : input.gend,
             correo : input.correo,
             comuna : input.comuna

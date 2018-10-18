@@ -141,7 +141,7 @@ app.get('/send_recovery_mail/:correo', users.send_mail);
 app.get('/reset_pass/:recovery', users.reset_pass);
 app.post('/validate_recovery', users.validate_recovery);
 
-app.get('/user/delete/:username', admin.delete_user);
+app.get('/user/delete/:iduser', admin.delete_user);
 app.get('/user/edit/:username', admin.edit);
 app.post('/user/edit/:username',admin.save_edit);
 app.post('/monit_stream', users.get_monit);

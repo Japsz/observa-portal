@@ -27,6 +27,7 @@
         <td><%= users[i].username%></td>
         <td><%= users[i].correo%></td>
         <td><%= users[i].posts%></td>
+        <td><a class="btn btn-danger" href="/user/delete/<%= users[i].iduser%>"><i class="fa fa-minus"></i> Quitar</a></td>
     </tr>
     <%
     }
